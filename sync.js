@@ -5,7 +5,7 @@ const KEY="cockpit",STAMP="deck-stamp";
 let user=null,t=null;
 async function pull(){const {data}=await sb.from("app_state").select("data,updated_at").maybeSingle();
   const local=localStorage.getItem(KEY),ls=+localStorage.getItem(STAMP)||0;
-  if(data&&data.data&&Object.keys(data.data).length&&new Date(data.updated_at).getTime()>ls){
+  if(data&&data.data&&data.data.v===2&&new Date(data.updated_at).getTime()>ls){
     const txt=JSON.stringify(data.data);if(txt!==local){localStorage.setItem(KEY,txt);localStorage.setItem(STAMP,new Date(data.updated_at).getTime());location.reload();return}}
   else if(local)push()}
 async function push(){if(!user)return;const d=localStorage.getItem(KEY);if(!d)return;const now=new Date();
