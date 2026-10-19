@@ -14,7 +14,11 @@ async function push(){if(!user)return;const d=localStorage.getItem(KEY);if(!d)re
 window.deckSync={
   get email(){return user&&user.email},
   changed(){if(!user)return;clearTimeout(t);t=setTimeout(push,1500)},
-  async signIn(email){const {error}=await sb.auth.signInWithOtp({email,options:{emailRedirectTo:location.origin+location.pathname}});return !error},
+  // Password sign-in works inside the installed iPhone app (a magic link would open Safari instead).
+  async signIn(email,password){let r=await sb.auth.signInWithPassword({email,password});if(!r.error)return "ok";
+    if(/invalid/i.test(r.error.message)){const u=await sb.auth.signUp({email,password,options:{emailRedirectTo:location.origin+location.pathname}});
+      if(u.error)return u.error.message;if(u.data.session)return "ok";return "Compte créé : confirme via le mail reçu, puis reviens taper OK"}
+    if(/confirm/i.test(r.error.message))return "Confirme d'abord ton e-mail via le mail reçu, puis OK";return r.error.message},
   async signOut(){await sb.auth.signOut();user=null;window.deckRender&&window.deckRender()}};
 sb.auth.onAuthStateChange((_e,s)=>{const was=user;user=s?s.user:null;if(user&&!was){pull();window.deckRender&&window.deckRender()}});
 addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"&&user)pull()});
