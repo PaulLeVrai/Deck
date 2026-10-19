@@ -77,3 +77,32 @@ create table if not exists icloud_accounts (
 alter table icloud_accounts enable row level security;
 drop policy if exists own on icloud_accounts;
 create policy own on icloud_accounts for all using (user_id = auth.uid()) with check (user_id = auth.uid());
+
+-- Apple Santé : un jeton personnel permet au raccourci iPhone d'envoyer tes données.
+create table if not exists health_tokens (
+  user_id uuid primary key references auth.users on delete cascade default auth.uid(),
+  token text not null unique default replace(gen_random_uuid()::text,'-',''),
+  created_at timestamptz not null default now()
+);
+alter table health_tokens enable row level security;
+drop policy if exists own on health_tokens;
+create policy own on health_tokens for all using (user_id = auth.uid()) with check (user_id = auth.uid());
+create unique index if not exists health_daily_user_day on health_daily(user_id, day);
+
+create or replace function ingest_health(p_token text, p_day date, p_sleep_minutes int, p_hrv int, p_resting_hr int, p_steps int)
+returns text language plpgsql security definer set search_path = public as $$
+declare uid uuid;
+begin
+  select user_id into uid from health_tokens where token = p_token;
+  if uid is null then raise exception 'jeton inconnu'; end if;
+  insert into health_daily(user_id, day, sleep_minutes, hrv, resting_hr, steps, source, updated_at)
+  values (uid, coalesce(p_day, current_date), p_sleep_minutes, p_hrv, p_resting_hr, p_steps, 'raccourci', now())
+  on conflict (user_id, day) do update set
+    sleep_minutes = coalesce(excluded.sleep_minutes, health_daily.sleep_minutes),
+    hrv = coalesce(excluded.hrv, health_daily.hrv),
+    resting_hr = coalesce(excluded.resting_hr, health_daily.resting_hr),
+    steps = coalesce(excluded.steps, health_daily.steps),
+    updated_at = now();
+  return 'ok';
+end $$;
+grant execute on function ingest_health(text, date, int, int, int, int) to anon, authenticated;
