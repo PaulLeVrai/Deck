@@ -1131,8 +1131,8 @@ journal(){const d=S.jd,J=JRN[d],[u,...rest]=J[1],f=S.set.jform||"1",
   return `<div class="top"><button class="back" data-go="home" aria-label="Retour">‹</button></div><div class="eyebrow">Réglages</div><div class="title greet" id="stitle" data-go="home" role="button" tabindex="0">${esc(S.name)}</div>
   <div class="slabel">Compte</div><div class="card scard">
    <label class="srow ro" for="sname"><span class="t"><span>Nom</span><span class="vs">Utilisé dans l'accueil</span></span><input id="sname" class="sinput" value="${esc(S.name)}" maxlength="24" autocomplete="off"></label>
-   <div class="srow ro"><span class="t"><span>Connexion à Claude</span><span class="vs">Lecture et écriture de tes données</span></span><span class="m" style="color:#86b892">Active</span></div>
-   <div class="srow ro"><span class="t"><span>Synchronisation</span><span class="vs">iPhone, iPad, Windows</span></span><span class="m">À l'instant</span></div>
+   ${window.deckSync?(deckSync.email?`<div class="srow ro"><span class="t"><span>Synchronisation</span><span class="vs">${esc(deckSync.email)}</span></span><button class="m" data-sout style="background:none;border:0;color:var(--muted);font:inherit;cursor:pointer">Se déconnecter</button></div>`:`<form class="srow ro" id="sinf"><span class="t"><span>Synchronisation</span><span class="vs" id="sinm">Tes données sur tous tes appareils</span></span><input id="sinmail" class="sinput" type="email" placeholder="ton e-mail" autocomplete="email"></form>`):""}
+   <div class="srow ro"><span class="t"><span>Connexion à Claude</span><span class="vs">Lecture et écriture de tes données</span></span><span class="m">Bientôt</span></div>
   </div>
   <div class="slabel">Calendriers</div><div class="card scard">${S.apple.on?`<div class="srow ro"><span class="t"><span>Calendrier Apple</span><span class="vs">iCloud · synchronisé</span></span><button class="sbtn" data-apple="off">Déconnecter</button></div>${S.apple.cals.map(([n,c,on],k)=>`<button class="srow" data-acal="${k}" role="switch" aria-checked="${on}"><span class="t"><span><i class="cdot" style="background:${c}"></i>${n}</span></span><span class="sw ${on?"on":""}"><i></i></span></button>`).join("")}`:`<div class="srow ro"><span class="t"><span>Calendrier Apple</span><span class="vs">Afficher tes calendriers iCloud</span></span><button class="sbtn on" data-apple="on">Connecter</button></div>`}</div>
   <div class="slabel">Santé</div><div class="card scard"><div class="srow ro"><span class="t"><span>Apple Santé</span><span class="vs">${S.health.on?"Sommeil, cœur, pas et entraînements":"Lire tes données depuis l'iPhone"}</span></span>${S.health.on?'<button class="sbtn" data-health="off">Déconnecter</button>':'<button class="sbtn on" data-health="on">Connecter</button>'}</div></div>
@@ -1155,7 +1155,7 @@ journal(){const d=S.jd,J=JRN[d],[u,...rest]=J[1],f=S.set.jform||"1",
   ${isNew?"":'<button class="edel bdel" data-bdel="1">Supprimer le livre</button>'}`},
  projects(){return page("Projets",S.projects.length+" projets",ctaOrForm("projects")+S.projects.map(([t],i)=>{const p=pjPct(i);return `<div class="card tap" data-pj="${i}"><div class="mrow"><span>${esc(t)}</span><span class="m">${p} %</span></div><div class="small">${pjSub(i)}</div><div class="bar"><i style="width:${p}%"></i></div></div>`}).join(""))}
 };
-function render(){$("#scr").innerHTML=V[S.view]();document.querySelectorAll("#tabs button,.homebtn,.drawer .it[data-go]").forEach(b=>b.classList.toggle("on",b.dataset.go===S.view));
+function render(){clearTimeout(window._pt);window._pt=setTimeout(persist,800);$("#scr").innerHTML=V[S.view]();document.querySelectorAll("#tabs button,.homebtn,.drawer .it[data-go]").forEach(b=>b.classList.toggle("on",b.dataset.go===S.view));
  const t=$("#talk");t.hidden=!S.chat.length;t.innerHTML=S.chat.map(([w,x])=>`<div class="msg ${w}">${w==="cl"?"<b>Claude</b>":""}${x}</div>`).join("");t.scrollTop=t.scrollHeight}
 let tapT=null;
 function menu(o){document.querySelector(".phone").classList.toggle("menu-open",o)}
@@ -1256,8 +1256,8 @@ function endDrag(e){clearTimeout(DR.t);DR.t=null;if(!DR.on)return;DR.on=false;
 document.addEventListener("pointerup",endDrag);document.addEventListener("pointercancel",()=>endDrag(null));
 $("#scr").addEventListener("contextmenu",e=>{if(e.target.closest(".fcard,.nrow"))e.preventDefault()});
 // remember settings, name, folders and notes on this device
-function persist(){try{localStorage.setItem("cockpit",JSON.stringify({set:S.set,name:S.name,folders:S.folders,nb:S.nb,books:S.books,wos:S.wos,hm:S.hm,cmods:S.cmods,apple:{on:S.apple.on,cals:S.apple.cals}}))}catch(e){}}
-try{const d=JSON.parse(localStorage.getItem("cockpit")||"null");if(d){Object.assign(S.set,d.set||{});if(d.name)S.name=d.name;if(Array.isArray(d.folders))S.folders=d.folders;if(Array.isArray(d.nb))S.nb=d.nb;if(Array.isArray(d.books)&&d.books.length){const ids=new Set(d.books.map(b=>b.id)),ex=S.books.filter(b=>b.id>3&&!d.books.some(y=>y.t===b.t));S.books=d.books.concat(ex.map(b=>({...b,id:b.id+1000})));bid=Math.max(bid,...S.books.map(b=>b.id))}if(Array.isArray(d.wos))S.wos=d.wos;if(Array.isArray(d.hm))S.hm=d.hm;if(Array.isArray(d.cmods)){S.cmods=d.cmods;const c1=S.cmods.find(m=>m.id==="c1");if(c1&&c1.sum.join()==="sport")c1.sum=["tip"]}if(d.apple){S.apple.on=!!d.apple.on;if(Array.isArray(d.apple.cals))S.apple.cals=d.apple.cals}nid=Math.max(nid,...S.nb.map(n=>n.id))}}catch(e){}
+function persist(){try{localStorage.setItem("cockpit",JSON.stringify({set:S.set,name:S.name,folders:S.folders,nb:S.nb,books:S.books,wos:S.wos,hm:S.hm,cmods:S.cmods,apple:{on:S.apple.on,cals:S.apple.cals},data:{tasks:S.tasks,habits:S.habits,goals:S.goals,projects:S.projects,money:S.money,fin:S.fin,sess:S.sess}}))}catch(e){}window.deckSync&&deckSync.changed()}
+try{const d=JSON.parse(localStorage.getItem("cockpit")||"null");if(d){Object.assign(S.set,d.set||{});if(d.name)S.name=d.name;if(Array.isArray(d.folders))S.folders=d.folders;if(Array.isArray(d.nb))S.nb=d.nb;if(Array.isArray(d.books)&&d.books.length){const ids=new Set(d.books.map(b=>b.id)),ex=S.books.filter(b=>b.id>3&&!d.books.some(y=>y.t===b.t));S.books=d.books.concat(ex.map(b=>({...b,id:b.id+1000})));bid=Math.max(bid,...S.books.map(b=>b.id))}if(Array.isArray(d.wos))S.wos=d.wos;if(Array.isArray(d.hm))S.hm=d.hm;if(Array.isArray(d.cmods)){S.cmods=d.cmods;const c1=S.cmods.find(m=>m.id==="c1");if(c1&&c1.sum.join()==="sport")c1.sum=["tip"]}if(d.apple){S.apple.on=!!d.apple.on;if(Array.isArray(d.apple.cals))S.apple.cals=d.apple.cals}nid=Math.max(nid,...S.nb.map(n=>n.id));if(d.data)for(const k in d.data)if(d.data[k]!=null)S[k]=d.data[k]}}catch(e){}
 
 const QP={t:null,skip:false};
 $("#scr").addEventListener("pointerdown",e=>{const r=e.target.closest(".vrow[data-ti],.qnow");if(!r||(S.view!=="tasks"&&S.view!=="home"))return;const i=r.dataset.ti!=null?+r.dataset.ti:+r.querySelector("[data-i]").dataset.i;clearTimeout(QP.t);QP.t=setTimeout(()=>{QP.skip=true;if(navigator.vibrate)navigator.vibrate(10);S.qpick=S.qpick===i?null:i;const st=$("#scr").scrollTop;render();$("#scr").scrollTop=st},450)});
@@ -1443,5 +1443,9 @@ $("#scr").addEventListener("click",e=>{if(S.hedit||S.view!=="home")return;if(e.t
 $("#scr").addEventListener("keydown",e=>{if(e.target.id==="lbn"&&e.key==="Enter"){e.preventDefault();const k=document.querySelector("[data-lbok]");if(k)k.click()}});
 </script>
 
+<script>window.deckRender=()=>{if(S.view==="settings")render()};
+document.addEventListener("submit",async e=>{if(e.target.id!=="sinf")return;e.preventDefault();const v=$("#sinmail").value.trim();if(!v)return;const ok=await deckSync.signIn(v);$("#sinm").textContent=ok?"Lien envoyé : ouvre-le depuis ta boîte mail":"Échec, réessaie"});
+document.addEventListener("click",e=>{if(e.target.closest("[data-sout]"))deckSync.signOut()});</script>
+<script type="module" src="sync.js"></script>
 <script>if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js")</script>
 </body></html>
