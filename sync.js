@@ -12,6 +12,7 @@ async function push(){if(!user)return;const d=localStorage.getItem(KEY);if(!d)re
   const {error}=await sb.from("app_state").upsert({user_id:user.id,data:JSON.parse(d),updated_at:now.toISOString()});
   if(!error)localStorage.setItem(STAMP,now.getTime())}
 window.deckSync={
+  async token(){const {data}=await sb.auth.getSession();return data.session&&data.session.access_token},
   get email(){return user&&user.email},
   changed(){if(!user)return;clearTimeout(t);t=setTimeout(push,1500)},
   // Password sign-in works inside the installed iPhone app (a magic link would open Safari instead).
@@ -20,6 +21,6 @@ window.deckSync={
       if(u.error)return u.error.message;if(u.data.session)return "ok";return "Compte créé : confirme via le mail reçu, puis reviens taper OK"}
     if(/confirm/i.test(r.error.message))return "Confirme d'abord ton e-mail via le mail reçu, puis OK";return r.error.message},
   async signOut(){await sb.auth.signOut();user=null;window.deckRender&&window.deckRender()}};
-sb.auth.onAuthStateChange((_e,s)=>{const was=user;user=s?s.user:null;if(user&&!was){pull();window.deckRender&&window.deckRender()}});
+sb.auth.onAuthStateChange((_e,s)=>{const was=user;user=s?s.user:null;if(user&&!was){pull();window.deckRender&&window.deckRender();window.deckCal&&deckCal.load(0)}});
 addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"&&user)pull()});
 window.deckRender&&window.deckRender();

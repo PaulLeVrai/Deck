@@ -66,3 +66,14 @@ begin
     execute format('create policy own on %I for all using (user_id = auth.uid()) with check (user_id = auth.uid())', t);
   end loop;
 end $$;
+
+-- Calendrier Apple : identifiant iCloud et mot de passe d'app, lisibles seulement par toi.
+create table if not exists icloud_accounts (
+  user_id uuid primary key references auth.users on delete cascade default auth.uid(),
+  apple_id text not null,
+  app_password text not null,
+  updated_at timestamptz not null default now()
+);
+alter table icloud_accounts enable row level security;
+drop policy if exists own on icloud_accounts;
+create policy own on icloud_accounts for all using (user_id = auth.uid()) with check (user_id = auth.uid());
