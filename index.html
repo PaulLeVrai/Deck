@@ -560,7 +560,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--hi);outline-off
 .spine{position:relative;border:0;border-radius:3px 3px 1px 1px;padding:10px 0;cursor:pointer;display:flex;justify-content:center;transition:transform .3s cubic-bezier(.3,1.3,.5,1);box-shadow:inset -2px 0 0 rgba(0,0,0,.25),inset 2px 0 0 rgba(255,255,255,.05)}.spine span{writing-mode:vertical-rl;transform:rotate(180deg);font-size:11.5px;color:#eae6de;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-height:100%}.spine i{position:absolute;top:6px;font-style:normal;font-size:9px;color:#e3c26b}.spine.up{transform:translateY(-22px)}
 .shdet{display:flex;gap:16px;align-items:center;margin-top:-6px}.shdet .bcv{width:84px;flex:none;padding:8px}.shdet .bcvt{font-size:10px}.shdet .t{display:flex;flex-direction:column;gap:3px}
 .jkiosk,.shcar{cursor:grab;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch}.jkiosk *,.shcar *{-webkit-user-drag:none;user-select:none}
-.hgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.hm{position:relative;min-width:0;display:flex}.hm>.card{flex:1;margin:0}.hfull{grid-column:1/-1}
+.hgrid{display:grid;grid-template-columns:1fr;gap:10px}.hm{position:relative;min-width:0;display:flex}.hm>.card{flex:1;margin:0}.hfull{grid-column:1/-1}
 .hedit .hm{animation:wig .28s ease-in-out infinite alternate;touch-action:none;cursor:grab}.hedit .hm:nth-child(2n){animation-delay:-.14s}.hedit .hm>.card{pointer-events:none}.hm.drag{animation:none;z-index:5;box-shadow:0 16px 40px rgba(0,0,0,.6);border-radius:36px;cursor:grabbing}
 .hmx{position:absolute;top:-6px;left:-6px;width:24px;height:24px;border-radius:50%;border:0;background:#3a3a3a;color:var(--ink);font-size:16px;line-height:1;cursor:pointer;z-index:2;display:grid;place-items:center;padding:0}
 .hfoot{display:flex;justify-content:center;gap:8px;padding:6px 0 4px}.hdone{color:var(--ink)!important}
@@ -826,7 +826,9 @@ Object.assign(S,{habits:[],tasks:[],evx:{},events:{},goals:[],nb:[],books:[],mon
 S.apple={on:false,cals:[],ev:{},msg:""};S.day=TDOW;S.hm=S.hm.filter(k=>k!=="c1");
 const $=s=>document.querySelector(s),esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const week=42,yearPct=78.9;
-const JRN=[];
+// Journal: the day's headlines (api/news), kept per day in this browser so earlier days stay readable.
+const JRN=(()=>{try{return JSON.parse(localStorage.getItem("deck-jrn")||"[]").filter(x=>x&&x[2])}catch(e){return []}})();
+const jLabel=k=>{const d=new Date(k+"T12:00:00");return DL[(d.getDay()+6)%7][0].toUpperCase()+DL[(d.getDay()+6)%7].slice(1)+" "+d.getDate()+" "+MN[d.getMonth()]};
 const mod=(v,label,inner)=>`<div class="card" role="button" tabindex="0" style="cursor:pointer" data-go="${v}"><div class="label"><span>${label}</span><span>›</span></div>${inner}</div>`;
 const todo=()=>S.tasks.filter(x=>!x.done);
 const QN=["","Faire maintenant","Planifier","Expédier","Plus tard"];
@@ -1110,7 +1112,7 @@ journal(){const d=S.jd,J=JRN[d],[u,...rest]=J[1],f=S.set.jform||"1",
    top=`<div class="top"><button class="back" data-go="library" aria-label="Retour">‹</button>${nav}</div>`,tags=[...new Set(rest.map(a=>a[2]))];
   if(f==="2")return top+`<article class="jf2"><div class="eyebrow">${J[0]} · ${u[2]}</div><h1>${esc(u[0])}</h1><p class="jchap">${esc(u[3])}</p><div class="jsrc">${u[1]}</div>${rest.map(([t,src,tag,sum])=>`<h2>${esc(t)}</h2><p>${esc(sum)}</p><div class="jsrc">${src} · ${tag}</div>`).join("")}</article>`;
   if(f==="3")return top+`<div class="eyebrow">${J[0]}</div><div class="title">Journal</div><div class="card jrune"><div class="jrtag">À la une · ${u[2]}</div><div class="jrbig">${esc(u[0])}</div><p>${esc(u[3])}</p><div class="jrsrc">${u[1]}</div></div><div class="jf3">${rest.map(([t,src,tag,sum])=>`<div class="card"><span class="jrtag">${tag}</span><b>${esc(t)}</b><p>${esc(sum)}</p><em>${src}</em></div>`).join("")}</div>`;
-  return top+`<div class="jf1"><div class="jmast">Le Journal</div><div class="jmd"><span>${J[0]}</span><span>Veille commerciale</span></div><div class="jtag">À la une · ${u[2]}</div><h1>${esc(u[0])}</h1><p class="jchap">${esc(u[3])}</p><div class="jsrc">${u[1]}</div>${tags.map(tg=>`<div class="jsec">${tg}</div>${rest.filter(a=>a[2]===tg).map(([t,src,,sum])=>`<div class="jart"><h3>${esc(t)}</h3><p>${esc(sum)}</p><div class="jsrc">${src}</div></div>`).join("")}`).join("")}</div>`},
+  return top+`<div class="jf1"><div class="jmast">Le Journal</div><div class="jmd"><span>${J[0]}</span><span>Actualités</span></div><div class="jtag">À la une · ${u[2]}</div><h1>${esc(u[0])}</h1><p class="jchap">${esc(u[3])}</p><div class="jsrc">${u[1]}</div>${tags.map(tg=>`<div class="jsec">${tg}</div>${rest.filter(a=>a[2]===tg).map(([t,src,,sum])=>`<div class="jart"><h3>${esc(t)}</h3><p>${esc(sum)}</p><div class="jsrc">${src}</div></div>`).join("")}`).join("")}</div>`},
  shelf(){const v=S.set.shv||"A",B=S.books,fl=S.shf,F=[["all","Tous"],["lecture","En lecture"],["fav","Favoris"],["pal","À lire"],["fini","Lus"]],L=B.filter(b=>fl==="all"||(fl==="fav"?b.fav:b.st===fl));
   const top=`<div class="top"><button class="back" data-go="library" aria-label="Retour">‹</button></div><div class="eyebrow">${B.length} livres · ${B.filter(b=>b.st==="fini").length} lus</div><div class="title">Bibliothèque</div>`;
   if(v==="B"){return top+`<div class="shcar" id="shcar">${B.map(b=>`<button class="shc" data-book="${b.id}">${bigCover(b)}</button>`).join("")}</div><div class="shcap" id="shcap"></div>`}
@@ -1452,6 +1454,10 @@ document.querySelector(".phone").addEventListener("click",e=>{if(pgEat){e.stopPr
 let swX=null;$("#scr").addEventListener("touchstart",e=>{swX=e.target.closest(".wkrow")?e.touches[0].clientX:null},{passive:true});
 $("#scr").addEventListener("touchend",e=>{if(swX===null)return;const dx=e.changedTouches[0].clientX-swX;swX=null;if(Math.abs(dx)>50){S.wk+=dx<0?1:-1;render()}});
 render();
+(async function jrLoad(){try{const r=await fetch("api/news");if(!r.ok)return;const {articles}=await r.json();if(!articles||!articles.length)return;
+  const k=new Date(TD.getTime()-TD.getTimezoneOffset()*6e4).toISOString().slice(0,10),A=articles.map(a=>[a.t,a.src,a.cat,a.sum||""]);
+  const i=JRN.findIndex(x=>x[2]===k);if(i>=0)JRN.splice(i,1);JRN.unshift([jLabel(k),A,k]);JRN.forEach(x=>x[0]=jLabel(x[2]));JRN.splice(7);
+  try{localStorage.setItem("deck-jrn",JSON.stringify(JRN))}catch(e){}if(["home","journal","library","goals"].includes(S.view))keepRender()}catch(e){}})();
 function jrShow(i){const r=$("#jrot");if(!r)return;const A=JRN[0][1];i=(i+A.length)%A.length;r.classList.add("out");setTimeout(()=>{S.jri=i;r.innerHTML=`<div class="jrh">${esc(A[i][0])}</div><div class="small">${A[i][1]} · ${A[i][2]}</div>`;document.querySelectorAll(".jrdots button").forEach((d,k)=>d.classList.toggle("on",k===i));r.classList.remove("out")},250)}
 setInterval(()=>{if(!$("#jrot")||Date.now()<(S.jrHold||0))return;jrShow(S.jri+1)},4000);
 const JRS={x:0,y:0,on:false,eat:false};
