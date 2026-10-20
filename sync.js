@@ -1,6 +1,9 @@
 // Sync Deck data with Supabase: email sign-in, then the app state is saved to app_state and restored on other devices.
 import {createClient} from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/+esm";
-const sb=createClient("https://dzsdzwoabgswnqruarhe.supabase.co","sb_publishable_w4HmYMGX1dySixUPJMoBzw_uTh38b2N");
+const sb=createClient("https://dzsdzwoabgswnqruarhe.supabase.co","sb_publishable_w4HmYMGX1dySixUPJMoBzw_uTh38b2N",
+  {auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:"deck-auth",storage:window.localStorage}});
+// Remembered so the app shows you as signed in right away, until you sign out yourself.
+const ME="deck-me";
 const KEY="cockpit",STAMP="deck-stamp";
 let user=null,t=null;
 async function pull(){const {data}=await sb.from("app_state").select("data,updated_at").maybeSingle();
@@ -18,14 +21,14 @@ window.deckSync={
     if(!ses||ses.expires_at*1000<Date.now()+60e3){const r=await sb.auth.refreshSession();if(r.data&&r.data.session)ses=r.data.session}
     if(!ses&&user){const r=await sb.auth.getSession();ses=r.data.session}
     return ses&&ses.access_token},
-  get email(){return user&&user.email},
+  get email(){return (user&&user.email)||localStorage.getItem(ME)},
   changed(){if(!user)return;clearTimeout(t);t=setTimeout(push,1500)},
   // Password sign-in works inside the installed iPhone app (a magic link would open Safari instead).
   async signIn(email,password){let r=await sb.auth.signInWithPassword({email,password});if(!r.error)return "ok";
     if(/invalid/i.test(r.error.message)){const u=await sb.auth.signUp({email,password,options:{emailRedirectTo:location.origin+location.pathname}});
       if(u.error)return u.error.message;if(u.data.session)return "ok";return "Compte créé : confirme via le mail reçu, puis reviens taper OK"}
     if(/confirm/i.test(r.error.message))return "Confirme d'abord ton e-mail via le mail reçu, puis OK";return r.error.message},
-  async signOut(){await sb.auth.signOut();user=null;window.deckRender&&window.deckRender()}};
-sb.auth.onAuthStateChange((_e,s)=>{const was=user;user=s?s.user:null;if(user&&!was){pull();window.deckRender&&window.deckRender();window.deckCal&&deckCal.load(0);window.deckHealth&&deckHealth.load();window.deckClaude&&deckClaude.load()}});
+  async signOut(){localStorage.removeItem(ME);await sb.auth.signOut();user=null;window.deckRender&&window.deckRender()}};
+sb.auth.onAuthStateChange((ev,s)=>{const was=user;if(!s&&ev!=="SIGNED_OUT")return;user=s?s.user:null;if(user)localStorage.setItem(ME,user.email);if(user&&!was){pull();window.deckRender&&window.deckRender();window.deckCal&&deckCal.load(0);window.deckHealth&&deckHealth.load();window.deckClaude&&deckClaude.load()}});
 addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"&&user)pull()});
 window.deckRender&&window.deckRender();
