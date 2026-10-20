@@ -734,10 +734,13 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--hi);outline-off
 /* App mode: full screen on phones and when installed */
 @media (max-width:520px),(display-mode:standalone){
   html,body{height:100%;overscroll-behavior:none}
-  body{padding:0!important}
+  body{padding:0!important;margin:0!important}
+  .screen{padding-top:22px!important}
+  .screen>:first-child:not(.hero):not(.heroP){margin-top:env(safe-area-inset-top,0px)}
+  /* first grey module runs under the status bar to the very top */
+  .screen>.hero:first-child,.screen>.heroP:first-child{margin-top:calc(-22px - env(safe-area-inset-top,0px))!important;padding-top:calc(44px + env(safe-area-inset-top,0px))!important}
   .wrap{display:block;height:100%}
   .phone{max-width:none;height:100dvh;max-height:none;min-height:0;border:0;border-radius:0}
-  .screen{padding-top:calc(22px + env(safe-area-inset-top,0px))}
   .dock{margin-bottom:env(safe-area-inset-bottom,0px)}
   .note,.propsw{display:none!important}
 }
@@ -861,7 +864,10 @@ function weekDays(wk){const m=new Date(TD.getFullYear(),TD.getMonth(),TD.getDate
 function isoWeek(d){const x=new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate()));const n=x.getUTCDay()||7;x.setUTCDate(x.getUTCDate()+4-n);const y=new Date(Date.UTC(x.getUTCFullYear(),0,1));return Math.ceil(((x-y)/864e5+1)/7)}
 function evRows(d,wk=0){const ae=S.apple.err&&S.view==="plan"?`<div class="vs" style="color:#e8a25b">${esc(S.apple.err)}</div>`:"";return ae+evRows0(d,wk)}
 function evRows0(d,wk=0){let e=((wk===0?S.events[d]:S.evx[wk+":"+d])||[]).slice();if(S.apple.on||S.apple.cals.some(c=>c[4]))(S.apple.ev[wk+":"+d]||[]).forEach(([h,t,c])=>{const k=S.apple.cals[c];if(k&&k[2])e.push([h,t,k[0],k[1]])});e.sort((a,b)=>a[0].localeCompare(b[0]));if(!e.length)return '<div class="vs">Rien de prévu.</div>';
- return e.map(([h,t,p,col])=>`<div class="vslot"><span class="vtime">${h}</span>${t?`<div class="vev" ${col?`style="border-left-color:${col}"`:""}><div>${esc(t)}</div><div>${p}</div></div>`:`<div class="vev free">Créneau libre jusqu'à 18:00</div>`}</div>`).join("")}
+ // Free slot between two events at least 2 h apart (events count as 1 h when no end is known).
+ const m=h=>/^\d\d:\d\d$/.test(h)?+h.slice(0,2)*60+ +h.slice(3):null,hh=n=>String(Math.floor(n/60)).padStart(2,"0")+":"+String(n%60).padStart(2,"0"),f=[];
+ e.forEach((x,i)=>{f.push(x);const a=m(x[0]),n=e[i+1]&&m(e[i+1][0]);if(a!=null&&n!=null&&n-(a+60)>=120)f.push([hh(a+60),null,e[i+1][0]])});e=f;
+ return e.map(([h,t,p,col])=>`<div class="vslot"><span class="vtime">${h}</span>${t?`<div class="vev" ${col?`style="border-left-color:${col}"`:""}><div>${esc(t)}</div><div>${p}</div></div>`:`<div class="vev free">Créneau libre jusqu'à ${p}</div>`}</div>`).join("")}
 function habitRows(){const D=["L","M","M","J","V","S","D"];return S.habits.map((h,i)=>`<div class="vrow hrow ${h.done?"done":""}" data-hi="${i}"><button class="vcheck hcheck ${h.done?"on":""}" data-h="${i}" aria-label="Fait aujourd'hui"></button><div class="t"><div>${esc(h.t)}</div><div class="vs">${h.r&&h.r!=="Tous les jours"?h.r+" · ":""}${h.done?h.s+1:h.s} jours d'affilée</div></div><div class="hweek" aria-hidden="true">${[...h.w,h.done?1:0].map((x,k)=>`<span class="${x?"y":""} ${k===6?"td":""}">${D[k]}</span>`).join("")}</div></div>${edPanel("h",i)}`).join("")}
 function dayProg(){const items=[...S.tasks.filter(x=>x.d==="Aujourd'hui"||(S.set.late&&x.late)).map(x=>x.done),...(S.set.habits?S.habits.map(h=>h.done):[])],d=items.filter(Boolean).length,n=items.length;return{items,d,n,p:n?Math.round(d*100/n):0}}
 function progA(){const g=dayProg();return `<div class="dprog"><div class="dph"><span>Ta journée</span><span>${g.p} %</span></div><div class="dbar"><i style="width:${g.p}%"></i></div><div class="vs">${g.d} sur ${g.n} validés · tâches et habitudes du jour</div></div>`}
