@@ -1,0 +1,4 @@
+{
+  "functions": {"api/veille.js": {"maxDuration": 300}},
+  "crons": [{"path": "/api/veille", "schedule": "0 4 * * *"}]
+}
