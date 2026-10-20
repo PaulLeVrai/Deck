@@ -40,8 +40,11 @@ const utc=d=>d.toISOString().replace(/[-:]/g,"").replace(/\.\d+/,"");
 
 async function events(auth,cals,from,to){
   const body=`<c:calendar-query xmlns:d="DAV:" xmlns:c="urn:ietf:params:xml:ns:caldav"><d:prop><c:calendar-data><c:expand start="${utc(from)}" end="${utc(to)}"/></c:calendar-data></d:prop><c:filter><c:comp-filter name="VCALENDAR"><c:comp-filter name="VEVENT"><c:time-range start="${utc(from)}" end="${utc(to)}"/></c:comp-filter></c:comp-filter></c:filter></c:calendar-query>`;
-  const all=await Promise.all(cals.map(async c=>{const r=await dav(c.href,auth,"REPORT",1,body);
-    return r.text.split(/<(?:[\w-]+:)?calendar-data[^>]*>/).slice(1).flatMap(x=>parseIcs(x.split(/<\/(?:[\w-]+:)?calendar-data>/)[0])).map(e=>({...e,cal:c.i}))}));
+  const plain=body.replace(/<c:expand[^>]*\/>/,"");
+  const all=await Promise.all(cals.map(async c=>{let r;
+    // Some iCloud calendars refuse server-side expansion of recurring events; fall back to plain events.
+    try{r=await dav(c.href,auth,"REPORT",1,body)}catch(e){if(e.code===401)throw e;r=await dav(c.href,auth,"REPORT",1,plain)}
+    return r.text.replace(/<!\[CDATA\[|\]\]>/g,"").split(/<(?:[\w-]+:)?calendar-data[^>]*>/).slice(1).flatMap(x=>parseIcs(x.split(/<\/(?:[\w-]+:)?calendar-data>/)[0])).map(e=>({...e,cal:c.i}))}));
   return all.flat();
 }
 
