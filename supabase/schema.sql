@@ -106,3 +106,36 @@ begin
   return 'ok';
 end $$;
 grant execute on function ingest_health(text, date, int, int, int, int) to anon, authenticated;
+
+-- Claude : un jeton personnel permet au connecteur Claude (MCP) de lire et modifier tes données Deck.
+create table if not exists claude_tokens (
+  user_id uuid primary key references auth.users on delete cascade default auth.uid(),
+  token text not null unique default replace(gen_random_uuid()::text,'-','') || replace(gen_random_uuid()::text,'-',''),
+  created_at timestamptz not null default now()
+);
+alter table claude_tokens enable row level security;
+drop policy if exists own on claude_tokens;
+create policy own on claude_tokens for all using (user_id = auth.uid()) with check (user_id = auth.uid());
+
+create or replace function claude_get_state(p_token text) returns jsonb
+language plpgsql security definer set search_path = public as $$
+declare uid uuid; d jsonb; h jsonb;
+begin
+  select user_id into uid from claude_tokens where token = p_token;
+  if uid is null then raise exception 'jeton inconnu'; end if;
+  select data into d from app_state where user_id = uid;
+  select to_jsonb(x) into h from (select day, sleep_minutes, hrv, resting_hr, steps from health_daily where user_id = uid order by day desc limit 1) x;
+  return jsonb_build_object('data', coalesce(d, '{}'::jsonb), 'health', h);
+end $$;
+
+create or replace function claude_set_state(p_token text, p_data jsonb) returns text
+language plpgsql security definer set search_path = public as $$
+declare uid uuid;
+begin
+  select user_id into uid from claude_tokens where token = p_token;
+  if uid is null then raise exception 'jeton inconnu'; end if;
+  insert into app_state(user_id, data, updated_at) values (uid, p_data, now())
+  on conflict (user_id) do update set data = excluded.data, updated_at = now();
+  return 'ok';
+end $$;
+grant execute on function claude_get_state(text), claude_set_state(text, jsonb) to anon, authenticated;

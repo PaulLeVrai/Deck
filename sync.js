@@ -22,6 +22,6 @@ window.deckSync={
       if(u.error)return u.error.message;if(u.data.session)return "ok";return "Compte créé : confirme via le mail reçu, puis reviens taper OK"}
     if(/confirm/i.test(r.error.message))return "Confirme d'abord ton e-mail via le mail reçu, puis OK";return r.error.message},
   async signOut(){await sb.auth.signOut();user=null;window.deckRender&&window.deckRender()}};
-sb.auth.onAuthStateChange((_e,s)=>{const was=user;user=s?s.user:null;if(user&&!was){pull();window.deckRender&&window.deckRender();window.deckCal&&deckCal.load(0);window.deckHealth&&deckHealth.load()}});
+sb.auth.onAuthStateChange((_e,s)=>{const was=user;user=s?s.user:null;if(user&&!was){pull();window.deckRender&&window.deckRender();window.deckCal&&deckCal.load(0);window.deckHealth&&deckHealth.load();window.deckClaude&&deckClaude.load()}});
 addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"&&user)pull()});
 window.deckRender&&window.deckRender();
