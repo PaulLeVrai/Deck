@@ -793,6 +793,11 @@ body,body *{font-family:var(--sans)!important;font-variant-numeric:tabular-nums}
 .vi .va{color:#86b892;font-size:14px}.vi .vsrc{display:flex;flex-wrap:wrap;gap:10px}.vi .vsrc a{color:var(--muted);font-size:13px;text-decoration:none}
 .vlv{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--muted)}.vlv i{width:7px;height:7px;border-radius:50%;background:#555}.vlv.elevee i{background:#d9776b}.vlv.moyenne i{background:#e0a26a}.vlv.faible i{background:#6f6f6f}
 .vsec{font-size:15px;color:var(--muted);margin:18px 0 0}.vempty{color:#5c5c5c;font-size:14px;padding:8px 0}
+.crop{position:fixed;inset:0;z-index:80;background:#000;display:flex;flex-direction:column;padding:calc(20px + env(safe-area-inset-top)) 16px calc(20px + env(safe-area-inset-bottom));animation:fade .2s both}
+.crst{position:relative;flex:1;display:flex;align-items:center;justify-content:center;min-height:0}.crst img{max-width:100%;max-height:100%;display:block;user-select:none;-webkit-user-drag:none}
+.crbox{position:absolute;border:1.5px solid #fff;box-shadow:0 0 0 9999px rgba(0,0,0,.45);touch-action:none;cursor:move}.crbox i{position:absolute;width:26px;height:26px;border:3px solid #fff}
+.crbox i[data-c=tl]{left:-4px;top:-4px;border-right:0;border-bottom:0}.crbox i[data-c=tr]{right:-4px;top:-4px;border-left:0;border-bottom:0}.crbox i[data-c=bl]{left:-4px;bottom:-4px;border-right:0;border-top:0}.crbox i[data-c=br]{right:-4px;bottom:-4px;border-left:0;border-top:0}
+.crbar{display:flex;justify-content:space-between;align-items:center;padding-top:16px}.crbar button:first-child{all:unset;cursor:pointer;color:var(--muted);font-size:16px}.crbar .wsave{margin:0}
 .hgrid{gap:6px}.screen{gap:6px;padding-left:6px!important;padding-right:6px!important}.hero{margin-left:-6px!important;margin-right:-6px!important}
 .title{font-weight:400}
 </style>
@@ -1241,7 +1246,7 @@ journal(){if(S.jsrc==="v"&&JRV.length)return veilleView();const d=S.jd,J=JRX()[d
   <div class="card" style="padding:4px 22px">${l.map(noteRow).join("")||'<div class="row"><div class="t" style="color:var(--muted)">Aucune note pour l\'instant. Les notes qui parlent de « '+esc(S.folder)+' » arriveront ici toutes seules.</div></div>'}</div>`},
  book(){const isNew=!S.book,b=isNew?S.bdraft:S.books.find(x=>x.id===S.book);if(!b)return "";const p=b.tot?Math.round(b.cur*100/b.tot):0,stl=[["lecture","En lecture"],["pal","Bibliothèque"],["fini","Terminé"]];
   return `<div class="top"><button class="back" data-go="${S.fromShelf?"shelf":"goals"}" aria-label="Retour">‹</button><span style="flex:1"></span>${isNew?'<button class="wsave" id="badd">Ajouter</button>':`<button class="bfav ${b.fav?"on":""}" data-bfav="1" aria-label="Favori"><svg viewBox="0 0 24 24"><path d="m12 4 2.4 4.9 5.4.8-3.9 3.8.9 5.4L12 16.4 7.2 18.9l.9-5.4L4.2 9.7l5.4-.8z"/></svg></button>`}</div>
-  <div class="bk"><label class="bcover" for="bcov" aria-label="Photo de couverture">${b.cover?`<img src="${b.cover}" alt="">`:IC_CAM}</label><input type="file" id="bcov" accept="image/*" capture="environment" hidden>${b.bmsg?`<span class="vs" style="font-size:12px">${b.bmsg}</span>`:""}
+  <div class="bk"><label class="bcover" for="bcov" aria-label="Photo de couverture">${b.cover?`<img src="${b.cover}" alt="">`:IC_CAM}</label><input type="file" id="bcov" accept="image/*" capture="environment" hidden>${b.bmsg?`<span class="vs" style="font-size:12px">${b.bmsg}</span>`:""}${b.cover&&!b.bmsg?`<button data-recrop style="all:unset;cursor:pointer;color:var(--muted);font-size:12px">Recadrer</button>`:""}
    <div class="bmeta"><input class="bti" id="bti" placeholder="Titre" value="${esc(b.t)}" autocomplete="off"><input class="bau" id="bau" placeholder="Auteur" value="${esc(b.a)}" autocomplete="off"></div></div>
   <div class="card bprog"><div class="mrow"><span class="bpages"><input id="bcur" inputmode="numeric" value="${b.cur||""}" placeholder="0"><span>/</span><input id="btot" inputmode="numeric" value="${b.tot||""}" placeholder="pages"></span><span class="m" id="bpct">${p} %</span></div><div class="bar"><i id="bbar" style="width:${p}%"></i></div></div>
   <div class="chips bst">${stl.map(([k,l])=>`<button class="chip ${b.st===k?"on":""}" data-bst="${k}">${l}</button>`).join("")}</div>
@@ -1465,15 +1470,26 @@ $("#scr").addEventListener("click",e=>{const t=e.target,c=s=>t.closest(s);let x;
 $("#scr").addEventListener("input",e=>{if(S.view!=="book")return;const b=S.book?S.books.find(y=>y.id===S.book):S.bdraft;if(!b)return;const id=e.target.id,v=e.target.value;
  if(id==="bti")b.t=v;else if(id==="bau")b.a=v;else if(id==="bnotes")b.notes=v;else if(id==="bcur"||id==="btot"){const n=parseInt(v.replace(/\D/g,""))||0;if(id==="bcur")b.cur=n;else b.tot=n;if(b.tot&&b.cur>b.tot)b.cur=b.tot;const p=b.tot?Math.round(b.cur*100/b.tot):0;$("#bpct").textContent=p+" %";$("#bbar").style.width=p+"%"}
  if(S.book)persist()});
-// Cover photo: Claude finds the cover in the picture and reads title and author; without it, a centred 2:3 crop.
+// Cover photo: Claude suggests the frame and reads title and author, then a crop screen lets you adjust it.
+const COVSRC={};
+function cropCover(b,im,box){const W=im.width,H=im.height;let [x0,y0,x1,y1]=box&&box[2]-box[0]>.15&&box[3]-box[1]>.15?box:(()=>{const r=2/3;if(W/H>r){const w=H*r/W;return [(1-w)/2,0,(1+w)/2,1]}const h=W/r/H;return [0,(1-h)/2,1,(1+h)/2]})();
+ const o=document.createElement("div");o.className="crop";o.innerHTML=`<div class="crst"><img src="${im.src}" alt=""><div class="crbox"><i data-c="tl"></i><i data-c="tr"></i><i data-c="bl"></i><i data-c="br"></i></div></div><div class="crbar"><button data-x="0">Annuler</button><button class="wsave" data-x="1">Valider</button></div>`;document.body.appendChild(o);
+ const st=o.querySelector(".crst"),img=st.querySelector("img"),bx=st.querySelector(".crbox");
+ const draw=()=>{const r=img.getBoundingClientRect(),p=st.getBoundingClientRect();Object.assign(bx.style,{left:r.left-p.left+x0*r.width+"px",top:r.top-p.top+y0*r.height+"px",width:(x1-x0)*r.width+"px",height:(y1-y0)*r.height+"px"})};
+ img.onload=draw;if(img.complete)requestAnimationFrame(draw);
+ let d=null;bx.addEventListener("pointerdown",e=>{e.preventDefault();bx.setPointerCapture(e.pointerId);d={c:e.target.dataset.c||"m",x:e.clientX,y:e.clientY,b:[x0,y0,x1,y1]}});
+ bx.addEventListener("pointermove",e=>{if(!d)return;const r=img.getBoundingClientRect(),dx=(e.clientX-d.x)/r.width,dy=(e.clientY-d.y)/r.height,[a,b2,c,dd]=d.b,m=.08,cl=v=>Math.max(0,Math.min(1,v));
+  if(d.c==="m"){const w=c-a,h=dd-b2;x0=cl(Math.min(a+dx,1-w));y0=cl(Math.min(b2+dy,1-h));x1=x0+w;y1=y0+h}
+  else{if(d.c[1]==="l")x0=cl(Math.min(a+dx,c-m));else x1=cl(Math.max(c+dx,a+m));if(d.c[0]==="t")y0=cl(Math.min(b2+dy,dd-m));else y1=cl(Math.max(dd+dy,b2+m))}draw()});
+ bx.addEventListener("pointerup",()=>{d=null});
+ o.addEventListener("click",e=>{const x=e.target.closest("[data-x]");if(!x)return;if(x.dataset.x==="1"){const sw=(x1-x0)*W,sh=(y1-y0)*H,w=240,h=Math.round(sh*w/sw),cv=document.createElement("canvas");cv.width=w;cv.height=h;cv.getContext("2d").drawImage(im,x0*W,y0*H,sw,sh,0,0,w,h);b.cover=cv.toDataURL("image/jpeg",.82);persist()}o.remove();keepRender()})}
 $("#scr").addEventListener("change",e=>{if(e.target.id!=="bcov"||!e.target.files[0])return;const b=S.book?S.books.find(y=>y.id===S.book):S.bdraft,fr=new FileReader();
- fr.onload=()=>{const im=new Image();im.onload=async()=>{const W=im.width,H=im.height,sc=Math.min(1,900/Math.max(W,H)),c0=document.createElement("canvas");c0.width=Math.round(W*sc);c0.height=Math.round(H*sc);c0.getContext("2d").drawImage(im,0,0,c0.width,c0.height);
-  const put=box=>{let [x0,y0,x1,y1]=box;if(!(x1-x0>.15&&y1-y0>.15)){const r=2/3;if(W/H>r){const w=H*r/W;x0=(1-w)/2;x1=x0+w;y0=0;y1=1}else{const h=W/r/H;y0=(1-h)/2;y1=y0+h;x0=0;x1=1}}
-   const sw=(x1-x0)*W,sh=(y1-y0)*H,w=240,h=Math.round(sh*w/sw),cv=document.createElement("canvas");cv.width=w;cv.height=h;cv.getContext("2d").drawImage(im,x0*W,y0*H,sw,sh,0,0,w,h);b.cover=cv.toDataURL("image/jpeg",.82)};
-  put([0,0,0,0]);b.bmsg="Lecture de la couverture…";keepRender();
-  try{const r=await fetch("api/cover",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({image:c0.toDataURL("image/jpeg",.8)})});const j=await r.json();
-   if(r.ok){if(j.box)put(j.box);if(j.title&&!b.t.trim())b.t=j.title;if(j.author&&!b.a.trim())b.a=j.author;persist()}}catch(err){}
-  b.bmsg="";keepRender()};im.src=fr.result};fr.readAsDataURL(e.target.files[0])});
+ fr.onload=()=>{const im0=new Image();im0.onload=async()=>{const sc=Math.min(1,1200/Math.max(im0.width,im0.height)),c0=document.createElement("canvas");c0.width=Math.round(im0.width*sc);c0.height=Math.round(im0.height*sc);c0.getContext("2d").drawImage(im0,0,0,c0.width,c0.height);
+  const im=new Image();im.src=c0.toDataURL("image/jpeg",.85);await im.decode();COVSRC[b.id||"d"]=im;b.bmsg="Lecture de la couverture…";keepRender();let box=null;
+  try{const r=await fetch("api/cover",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({image:im.src})});const j=await r.json();
+   if(r.ok){box=j.box;if(j.title&&!b.t.trim())b.t=j.title;if(j.author&&!b.a.trim())b.a=j.author}}catch(err){}
+  b.bmsg="";cropCover(b,im,box)};im0.src=fr.result};fr.readAsDataURL(e.target.files[0])});
+document.addEventListener("click",async e=>{if(!e.target.closest("[data-recrop]"))return;e.preventDefault();e.stopPropagation();const b=S.book?S.books.find(y=>y.id===S.book):S.bdraft;if(!b||!b.cover)return;let im=COVSRC[b.id||"d"];if(!im){im=new Image();im.src=b.cover;await im.decode()}cropCover(b,im,null)},true);
 $("#scr").addEventListener("click",e=>{const t=e.target,c=q=>t.closest(q);let x;
  if(x=c("[data-form]")){S.form={k:x.dataset.form,d:Object.fromEntries(FORMS[x.dataset.form].f.map(f=>[f[0],f[2]]))};if(S.form.k==="money"&&S.fk)S.form.d.dir={r:"Revenu",d:"Dépense",i:"Investissement"}[S.fk];S.ied=null;keepRender();const i=$(".fform .finput");if(i)i.focus();return}
  if(x=c("[data-fwopen]")){S.form.d._wheel=true;keepRender();wheelCenter(false);return}
