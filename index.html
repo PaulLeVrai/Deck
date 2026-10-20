@@ -927,9 +927,9 @@ function compHTML(){const r=S.dr,v=S.set.ptop||"4";if(v!=="1"){const ph=r.m==="h
   tg=`<button class="pttg" data-cm="${r.m==="t"?"h":"t"}" aria-label="Changer">${r.m==="h"?IC_H:IC_T}</button>`,
   bar=x=>`<div class="crow"><div class="card ntask">${x}</div></div>`,
   body=v==="2"?seg+bar(inp+add):v==="3"?bar(tg+inp+add):v==="4"?bar(seg+inp+add):v==="5"?seg+bar(inp+add):bar(inp+add+seg);
-  return `<div class="comp pt${v} ${r.focus&&r.text.trim()?"open":""} ${r.text.trim()?"has":""}" id="comp">${body}<div class="copts">${compOpts()}</div></div>`}
- return `<div class="comp ${r.focus&&r.text.trim()?"open":""} ${r.text.trim()?"has":""}" id="comp">${S.pis==="B"?cmodeHTML():""}<div class="crow">${S.pis==="A"?cmodeHTML():""}<div class="card ntask"><input id="ntname" placeholder="${r.m==="h"?"Nouvelle habitude":r.m==="t"?"Nouvelle tâche":"Nouvelle tâche ou habitude"}" maxlength="80" autocomplete="off" value="${esc(r.text)}"><button class="wsave" id="ntcreate">Créer</button></div></div><div class="copts">${compOpts()}</div></div>`}
-function refreshComp(){const c=$("#comp");if(!c)return;const r=S.dr;c.classList.toggle("open",r.focus&&!!r.text.trim());c.classList.toggle("has",!!r.text.trim());c.querySelector(".copts").innerHTML=compOpts();c.querySelectorAll("[data-cm]").forEach(b=>b.classList.toggle("on",b.dataset.cm===r.m));$("#ntname").placeholder=r.m==="h"?"Nouvelle habitude":r.m==="t"?"Nouvelle tâche":"Nouvelle tâche ou habitude"}
+  return `<div class="comp pt${v} ${(r.focus||r.cal)&&r.text.trim()?"open":""} ${r.text.trim()?"has":""}" id="comp">${body}<div class="copts">${compOpts()}</div></div>`}
+ return `<div class="comp ${(r.focus||r.cal)&&r.text.trim()?"open":""} ${r.text.trim()?"has":""}" id="comp">${S.pis==="B"?cmodeHTML():""}<div class="crow">${S.pis==="A"?cmodeHTML():""}<div class="card ntask"><input id="ntname" placeholder="${r.m==="h"?"Nouvelle habitude":r.m==="t"?"Nouvelle tâche":"Nouvelle tâche ou habitude"}" maxlength="80" autocomplete="off" value="${esc(r.text)}"><button class="wsave" id="ntcreate">Créer</button></div></div><div class="copts">${compOpts()}</div></div>`}
+function refreshComp(){const c=$("#comp");if(!c)return;const r=S.dr;c.classList.toggle("open",(r.focus||r.cal)&&!!r.text.trim());c.classList.toggle("has",!!r.text.trim());c.querySelector(".copts").innerHTML=compOpts();c.querySelectorAll("[data-cm]").forEach(b=>b.classList.toggle("on",b.dataset.cm===r.m));$("#ntname").placeholder=r.m==="h"?"Nouvelle habitude":r.m==="t"?"Nouvelle tâche":"Nouvelle tâche ou habitude"}
 function addTask(){const r=S.dr,v=r.text.trim();if(!v)return;if(r.m==="h"){S.habits.push({t:v,w:[0,0,0,0,0,0],done:false,s:0,r:REC[r.rec]})}else{const e=r.dk===-1?r.e:NTD[r.dk][1],imp=/payer|envoy|rendre|rendez|médecin|docteur|examen|client|devis|facture|impôt|banque|projet|cockpit|réviser|dossier|contrat/i.test(v);S.tasks.push({t:v,p:/devis|client|atelier|commande/i.test(v)?"Atelier":"Perso",d:e===TD.getDate()?"Aujourd'hui":dLabel(e),done:false,i:imp?1:0,c:NOW,e})}
  r.text="";r.cal=false;const st=$("#scr").scrollTop;render();$("#scr").scrollTop=st;const el=$("#ntname");if(el)el.focus()}
 
@@ -1411,7 +1411,8 @@ $("#scr").addEventListener("keydown",e=>{if(e.target.id==="wotitle"&&e.key==="En
 $("#scr").addEventListener("keydown",e=>{if(e.target.id==="ntname"&&e.key==="Enter"){e.preventDefault();addTask()}if(e.target.id==="ntname"&&e.key==="Escape")e.target.blur()});
 $("#scr").addEventListener("input",e=>{if(e.target.id!=="ntname")return;S.dr.text=e.target.value;refreshComp()});
 $("#scr").addEventListener("focusin",e=>{if(e.target.id!=="ntname")return;S.dr.focus=true;refreshComp()});
-$("#scr").addEventListener("focusout",e=>{if(e.target.id!=="ntname"||S._rr)return;if(e.relatedTarget&&e.relatedTarget.closest("#comp"))return;S.dr.focus=false;S.dr.cal=false;S.dr.rmenu=false;refreshComp()});
+$("#scr").addEventListener("pointerdown",e=>{if(e.target.closest("#comp button")&&document.activeElement&&document.activeElement.id==="ntname")e.preventDefault()});
+$("#scr").addEventListener("focusout",e=>{if(e.target.id!=="ntname"||S._rr)return;if(e.relatedTarget&&e.relatedTarget.closest("#comp"))return;S.dr.focus=false;S.dr.rmenu=false;refreshComp()});
 $("#scr").addEventListener("pointerdown",e=>{if(e.target.closest("#comp button"))e.preventDefault()});
 $("#scr").addEventListener("click",e=>{const c=e.target.closest("#comp");if(!c)return;const b=e.target.closest("button");if(!b)return;e.stopPropagation();const r=S.dr,d=b.dataset;
  if(b.id==="ntcreate"){addTask();return}
