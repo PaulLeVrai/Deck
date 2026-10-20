@@ -13,7 +13,11 @@ async function push(){if(!user)return;const d=localStorage.getItem(KEY);if(!d)re
   if(!error)localStorage.setItem(STAMP,now.getTime())}
 window.deckSync={
   db:sb,
-  async token(){const {data}=await sb.auth.getSession();return data.session&&data.session.access_token},
+  // The session can still be loading when the app opens: refresh it before giving up.
+  async token(){let {data}=await sb.auth.getSession();let ses=data.session;
+    if(!ses||ses.expires_at*1000<Date.now()+60e3){const r=await sb.auth.refreshSession();if(r.data&&r.data.session)ses=r.data.session}
+    if(!ses&&user){const r=await sb.auth.getSession();ses=r.data.session}
+    return ses&&ses.access_token},
   get email(){return user&&user.email},
   changed(){if(!user)return;clearTimeout(t);t=setTimeout(push,1500)},
   // Password sign-in works inside the installed iPhone app (a magic link would open Safari instead).

@@ -1455,7 +1455,9 @@ document.addEventListener("click",e=>{if(e.target.closest("[data-sout]"))deckSyn
 <script>
 // Apple Calendar through the /api/calendar function (iCloud CalDAV).
 window.deckCal={busy:{},
-  async call(body){const tk=window.deckSync&&await deckSync.token();if(!tk)throw new Error("Connecte d'abord la synchronisation (Compte, plus haut)");
+  async call(body){for(let i=0;i<30&&!(window.deckSync&&deckSync.token);i++)await new Promise(r=>setTimeout(r,100));
+    if(!window.deckSync)throw new Error("Deck n'a pas pu charger la connexion, rouvre l'app");
+    const tk=await deckSync.token();if(!tk)throw new Error(deckSync.email?"Ta session a expiré : déconnecte-toi puis reconnecte-toi (Compte, plus haut)":"Connecte d'abord la synchronisation (Compte, plus haut)");
     const r=await fetch("api/calendar",{method:"POST",headers:{"Content-Type":"application/json",Authorization:"Bearer "+tk},body:JSON.stringify(body)});const j=await r.json().catch(()=>({error:"Erreur "+r.status}));if(!r.ok)throw new Error(j.error||"Erreur");return j},
   async connect(){if(this.ing)return;this.ing=1;setTimeout(()=>{this.ing=0},1500);const id=(S.apple.id||"").trim(),pw=(S.apple.pw||"").trim();if(!id||!pw){S.apple.msg="Remplis les deux champs";render();return}
     S.apple.msg="Connexion…";render();
