@@ -823,7 +823,7 @@ const ISOW=(d=>{d=new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate()));d
 const TODAY_L=JOURS[TDOW]+" "+TD.getDate()+" "+MOIS[TD.getMonth()];
 (()=>{const mon=new Date(TD);mon.setDate(TD.getDate()-TDOW);S.days=["lun","mar","mer","jeu","ven","sam","dim"].map((n,i)=>{const d=new Date(mon);d.setDate(mon.getDate()+i);return[n,d.getDate()]});S.wkd=TDOW;S.psel={j:TDOW,s:5,m:5}})();
 Object.assign(S,{habits:[],tasks:[],evx:{},events:{},goals:[],nb:[],books:[],money:[],sport:[],projects:[],sess:[],wos:[],hq:[],cmods:[],fin:{bal:0,out:0,inn:0,inv:0},spt:{n:0,km:0},health:{on:false,sync:null,sleep:null,sleepH:null,rec:null,hrv:null,hr:null,steps:null}});
-S.apple={on:false,cals:[],ev:{},msg:""};S.day=TDOW;S.hm=S.hm.filter(k=>k!=="c1"&&k!=="journal");
+S.apple={on:false,cals:[],ev:{},msg:""};S.day=TDOW;S.hm=S.hm.filter(k=>k!=="c1");
 const $=s=>document.querySelector(s),esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const week=42,yearPct=78.9;
 const JRN=[];
@@ -1046,7 +1046,7 @@ function lbMod(){const b=curBook();if(!b)return mod("library","Bibliothèque",'<
  if(v==="E")return mod("library","Bibliothèque",h).replace('<span>›</span>',plus.replace('class="lbplus','class="lbplus lbhd'));
  return mod("library","Bibliothèque",h)}
 function homeMods(){const E=S.hedit;return `<div class="hgrid ${E?"hedit":""}" id="hgrid">${S.hm.map(k=>{const B=BASEM[k],C=S.cmods.find(m=>m.id===k);if(!B&&!C)return"";const w=B?B[1]:C.w;return `<div class="hm ${w===2?"hfull":""}" data-hk="${k}">${B?B[2]():cmodHTML(C)}${E?`<button class="hmx" data-hmx="${k}" aria-label="Retirer">−</button>`:""}</div>`}).join("")}</div><div class="hfoot">${E?'<button class="bplus hdone" data-hdone="1">Terminé</button>':""}<button class="bplus" data-hadd="1"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg><span>Ajouter un module</span></button></div>`}
-function jrMod(){if(!JRN.length)return mod("journal","Journal",`<div class="small">Bientôt : ta veille chaque matin</div>`);const A=JRN[0][1],o=S.jh;let b;
+function jrMod(){if(!JRN.length)return mod("journal","Journal",`<div class="small">Ta veille arrivera ici chaque matin.</div>`);const A=JRN[0][1],o=S.jh;let b;
  if(o==="B")b=`<div class="jrl">${A.slice(0,3).map(([t,src],i)=>`<div class="${i?"":"f"}"><span>${esc(t)}</span><em>${src}</em></div>`).join("")}</div>`;
  else if(o==="C"){const i=S.jri%A.length;b=`<div class="jrw" id="jrw"><div class="jrrot" id="jrot"><div class="jrh">${esc(A[i][0])}</div><div class="small">${A[i][1]} · ${A[i][2]}</div></div><div class="jrdots">${A.map((_,k)=>`<button class="${k===i?"on":""}" data-jri="${k}" aria-label="Titre ${k+1}"><i></i></button>`).join("")}</div></div>`}
  else b=`<div class="jrh">${esc(A[0][0])}</div><div class="small">${A[0][1]} · ${A.length} articles aujourd'hui</div>`;
@@ -1293,7 +1293,10 @@ document.addEventListener("pointerup",endDrag);document.addEventListener("pointe
 $("#scr").addEventListener("contextmenu",e=>{if(e.target.closest(".fcard,.nrow"))e.preventDefault()});
 // remember settings, name, folders and notes on this device
 function persist(){try{localStorage.setItem("cockpit",JSON.stringify({set:S.set,name:S.name,folders:S.folders,nb:S.nb,books:S.books,wos:S.wos,hm:S.hm,cmods:S.cmods,apple:{on:S.apple.on,cals:S.apple.cals,id:S.apple.id||""},hon:S.health.on,v:2,data:{tasks:S.tasks,habits:S.habits,goals:S.goals,projects:S.projects,money:S.money,fin:S.fin,sess:S.sess}}))}catch(e){}window.deckSync&&deckSync.changed()}
+// One-time: put the Journal back right under the Tâches module (it was hidden while empty).
+const _jfix=()=>{if(!S.set.jback){S.set.jback=1;S.hm=S.hm.filter(k=>k!=="journal");const i=S.hm.indexOf("today");S.hm.splice(i<0?0:i+1,0,"journal")}};
 try{const d=JSON.parse(localStorage.getItem("cockpit")||"null");if(d&&d.v===2){Object.assign(S.set,d.set||{});if(d.name)S.name=d.name;if(Array.isArray(d.folders))S.folders=d.folders;if(Array.isArray(d.nb))S.nb=d.nb;if(Array.isArray(d.books)&&d.books.length){const ids=new Set(d.books.map(b=>b.id)),ex=S.books.filter(b=>b.id>3&&!d.books.some(y=>y.t===b.t));S.books=d.books.concat(ex.map(b=>({...b,id:b.id+1000})));bid=Math.max(bid,...S.books.map(b=>b.id))}if(Array.isArray(d.wos))S.wos=d.wos;if(Array.isArray(d.hm))S.hm=d.hm;if(Array.isArray(d.cmods)){S.cmods=d.cmods;const c1=S.cmods.find(m=>m.id==="c1");if(c1&&c1.sum.join()==="sport")c1.sum=["tip"]}if(d.hon)S.health.on=true;if(d.apple){S.apple.on=!!d.apple.on;S.apple.id=d.apple.id||"";if(Array.isArray(d.apple.cals))S.apple.cals=d.apple.cals}nid=Math.max(nid,...S.nb.map(n=>n.id));if(d.data)for(const k in d.data)if(d.data[k]!=null)S[k]=d.data[k]}}catch(e){}
+_jfix();
 // Date labels are stored at creation: recompute them for today.
 S.tasks.forEach(x=>{if(x.e!=null){x.d=dLabel(x.e);x.late=!x.done&&x.e<TD.getDate()}});
 
@@ -1569,7 +1572,7 @@ window.deckHealth={
 function keyRow(){const k=S.dkey||{},lk="background:none;border:0;color:var(--muted);font:inherit;cursor:pointer";
   if(deckSync.email){if(!k.v&&!k.busy){k.busy=1;S.dkey=k;deckSync.myKey().then(v=>{k.busy=0;k.v=v&&v.err?null:v;k.msg=v&&v.err?"Relance d'abord le script SQL dans Supabase":"";if(S.view==="settings")keepRender()})}
     return `<div class="srow ro"><span class="t"><span>Clé de données</span><span class="vs mono" style="user-select:all">${esc(k.v||k.msg||"…")}</span></span>${k.v?`<button data-dkcopy style="${lk}">${k.cp?"Copiée":"Copier"}</button>`:""}</div>`}
-  if(deckSync.usedKey)return `<div class="srow ro"><span class="t"><span>Clé de données</span><span class="vs">Active · données importées</span></span><button data-dkoff style="${lk}">Retirer</button></div>`;
+  if(deckSync.usedKey){k.v=deckSync.usedKey;return `<div class="srow ro"><span class="t"><span>Clé de données</span><span class="vs mono" style="user-select:all">${esc(k.v)}</span></span><button data-dkcopy style="${lk}">${k.cp?"Copiée":"Copier"}</button><button data-dkoff style="${lk}">Retirer</button></div>`}
   return `<div class="srow ro" style="flex-wrap:wrap;gap:10px"><span class="t"><span>Clé de données</span><span class="vs">${esc(k.msg||"Ou colle ta clé pour tout récupérer")}</span></span><div style="display:flex;gap:8px;width:100%"><input id="dkin" class="sinput" placeholder="XXXX-XXXX-…" autocapitalize="characters" style="flex:1;max-width:none"><button data-dkuse style="background:#fff;color:#000;border:0;border-radius:99px;padding:0 16px;font:inherit;font-size:15px;cursor:pointer">OK</button></div></div>`}
 document.addEventListener("click",async e=>{const k=S.dkey=S.dkey||{};
   if(e.target.closest("[data-dkcopy]")){e.stopPropagation();navigator.clipboard&&navigator.clipboard.writeText(k.v);k.cp=1;render()}
