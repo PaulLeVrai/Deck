@@ -139,3 +139,35 @@ begin
   return 'ok';
 end $$;
 grant execute on function claude_get_state(text), claude_set_state(text, jsonb) to anon, authenticated;
+
+-- Clé de données: a private key shown in Réglages; entering it on another device loads and keeps syncing all data.
+create table if not exists data_keys (
+  user_id uuid primary key references auth.users on delete cascade default auth.uid(),
+  key text not null unique default upper(regexp_replace(substr(replace(gen_random_uuid()::text,'-','') || replace(gen_random_uuid()::text,'-',''),1,24),'(.{4})(?!$)','\1-','g')),
+  created_at timestamptz not null default now()
+);
+alter table data_keys enable row level security;
+drop policy if exists own on data_keys;
+create policy own on data_keys for all using (user_id = auth.uid()) with check (user_id = auth.uid());
+
+create or replace function data_key_get(p_key text) returns jsonb
+language plpgsql security definer set search_path = public as $$
+declare uid uuid; r jsonb;
+begin
+  select user_id into uid from data_keys where key = upper(trim(p_key));
+  if uid is null then raise exception 'clé inconnue'; end if;
+  select jsonb_build_object('data', data, 'updated_at', updated_at) into r from app_state where user_id = uid;
+  return coalesce(r, '{}'::jsonb);
+end $$;
+
+create or replace function data_key_set(p_key text, p_data jsonb) returns text
+language plpgsql security definer set search_path = public as $$
+declare uid uuid;
+begin
+  select user_id into uid from data_keys where key = upper(trim(p_key));
+  if uid is null then raise exception 'clé inconnue'; end if;
+  insert into app_state(user_id, data, updated_at) values (uid, p_data, now())
+  on conflict (user_id) do update set data = excluded.data, updated_at = now();
+  return 'ok';
+end $$;
+grant execute on function data_key_get(text), data_key_set(text, jsonb) to anon, authenticated;

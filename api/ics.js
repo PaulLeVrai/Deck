@@ -38,6 +38,6 @@ module.exports=async(req,res)=>{
     const {name,events}=parse(txt),out=[];
     // Moved occurrences (RECURRENCE-ID) replace the generated one at the same start time.
     const moved=new Set(events.filter(e=>e.rid).map(e=>e.title));
-    for(const e of events)for(const d of expand(e,from,to))out.push({start:e.allDay?d.toISOString().slice(0,10):e.utc?d.toISOString():d.toISOString().slice(0,19),allDay:e.allDay,title:e.title||"Sans titre"});
+    for(const e of events)for(const d of expand(e,from,to))out.push({start:e.allDay?d.toISOString().slice(0,10):e.utc?d.toISOString():d.toISOString().slice(0,19),allDay:e.allDay,title:e.title||"Sans titre",dur:e.end?Math.round((e.end-e.start)/6e4):null});
     res.setHeader("Cache-Control","s-maxage=300");res.json({name:name||"Calendrier",events:out})}
   catch(e){res.status(500).json({error:e.message})}};

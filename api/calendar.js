@@ -25,12 +25,17 @@ async function calendars(auth){
     href:new URL(href(r),home).href,name:unx(tag(r,"displayname")||"Calendrier"),color:((tag(r,"calendar-color")||"#7fa7d9").trim()).slice(0,7)}));
 }
 
+// Event length in minutes, from DTEND or DURATION (null when unknown).
+function dur(ev){const t=v=>{const m=(v||"").match(/^(\d{4})(\d{2})(\d{2})(?:T(\d{2})(\d{2}))?/);return m?Date.UTC(m[1],m[2]-1,m[3],m[4]||0,m[5]||0):null};
+  const s=t(ev.start.replace(/[-:]/g,""));if(ev.DTEND){const e=t(ev.DTEND);return e&&s!=null?Math.round((e-s)/6e4):null}
+  const d=(ev.DURATION||"").match(/P(?:(\d+)D)?T?(?:(\d+)H)?(?:(\d+)M)?/);return d&&d[0].length>1?(+(d[1]||0))*1440+(+(d[2]||0))*60+(+(d[3]||0)):null}
 function parseIcs(ics){
   const lines=unx(ics).replace(/\r?\n[ \t]/g,"").split(/\r?\n/),out=[];let ev=null;
   for(const l of lines){
-    if(l==="BEGIN:VEVENT")ev={};else if(l==="END:VEVENT"){if(ev&&ev.start)out.push(ev);ev=null}
+    if(l==="BEGIN:VEVENT")ev={};else if(l==="END:VEVENT"){if(ev&&ev.start){ev.dur=dur(ev);delete ev.DTEND;delete ev.DURATION;out.push(ev)}ev=null}
     else if(ev){const i=l.indexOf(":");if(i<0)continue;const k=l.slice(0,i),v=l.slice(i+1),key=k.split(";")[0];
       if(key==="SUMMARY")ev.title=v.replace(/\\([,;\\])/g,"$1").replace(/\\n/gi," ");
+      if(key==="DTEND"||key==="DURATION")ev[key]=v;
       if(key==="DTSTART"){ev.allDay=/VALUE=DATE(;|$)/.test(k)||/^\d{8}$/.test(v);
         const m=v.match(/^(\d{4})(\d{2})(\d{2})(?:T(\d{2})(\d{2})(\d{2})(Z)?)?/);
         ev.start=m[4]?(m[7]?`${m[1]}-${m[2]}-${m[3]}T${m[4]}:${m[5]}:${m[6]}Z`:`${m[1]}-${m[2]}-${m[3]}T${m[4]}:${m[5]}:${m[6]}`):`${m[1]}-${m[2]}-${m[3]}`}}}
