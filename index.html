@@ -798,6 +798,15 @@ body,body *{font-family:var(--sans)!important;font-variant-numeric:tabular-nums}
 .crbox{position:absolute;border:1.5px solid #fff;box-shadow:0 0 0 9999px rgba(0,0,0,.45);touch-action:none;cursor:move}.crbox i{position:absolute;width:26px;height:26px;border:3px solid #fff}
 .crbox i[data-c=tl]{left:-4px;top:-4px;border-right:0;border-bottom:0}.crbox i[data-c=tr]{right:-4px;top:-4px;border-left:0;border-bottom:0}.crbox i[data-c=bl]{left:-4px;bottom:-4px;border-right:0;border-top:0}.crbox i[data-c=br]{right:-4px;bottom:-4px;border-left:0;border-top:0}
 .crbar{display:flex;justify-content:space-between;align-items:center;padding-top:16px}.crbar button:first-child{all:unset;cursor:pointer;color:var(--muted);font-size:16px}.crbar .wsave{margin:0}
+/* No blue focus square or tap flash while typing or tapping. */
+*{-webkit-tap-highlight-color:transparent}:focus,:focus-visible,input:focus,textarea:focus,[contenteditable]:focus{outline:none!important;box-shadow:none}
+input,textarea{-webkit-appearance:none;appearance:none}
+/* Double tap on the dock: the capsule stretches into the Claude bar, the icons come back with a little spring. */
+.chat-mode .dock{animation:dkOpen .45s cubic-bezier(.2,1.25,.4,1)}@keyframes dkOpen{from{transform:translateX(-50%) scaleX(.7);opacity:.6}}
+.chat-mode .dock .ask{animation:askIn .35s .1s cubic-bezier(.2,.9,.3,1) both}@keyframes askIn{from{opacity:0;transform:translateX(-14px)}}
+.chat-mode .talk{animation:pop .3s .12s both}
+.phone:not(.chat-mode) .dock .drawer>*{animation:icIn .34s cubic-bezier(.2,1.4,.4,1) both}.phone:not(.chat-mode) .dock .drawer>*:nth-child(2){animation-delay:.03s}.phone:not(.chat-mode) .dock .drawer>*:nth-child(3){animation-delay:.06s}.phone:not(.chat-mode) .dock .drawer>*:nth-child(4){animation-delay:.09s}.phone:not(.chat-mode) .dock .drawer>*:nth-child(5){animation-delay:.12s}
+@keyframes icIn{from{opacity:0;transform:scale(.6)}}
 .hgrid{gap:6px}.screen{gap:6px;padding-left:6px!important;padding-right:6px!important}.hero{margin-left:-6px!important;margin-right:-6px!important}
 .title{font-weight:400}
 </style>
