@@ -744,6 +744,11 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--hi);outline-off
   .dock{margin-bottom:env(safe-area-inset-bottom,0px)}
   .note,.propsw{display:none!important}
 }
+/* Installed app: iOS may report no safe area while drawing the status bar over the page, so keep at least its height clear. */
+@media (display-mode:standalone){
+  .screen>.hero:first-child,.screen>.heroP:first-child{padding-top:calc(44px + max(env(safe-area-inset-top,0px),50px))!important;margin-top:calc(-22px - max(env(safe-area-inset-top,0px),0px))!important}
+  .screen>:first-child:not(.hero):not(.heroP){margin-top:max(env(safe-area-inset-top,0px),50px)!important}
+}
 </style>
 </head><body>
 
