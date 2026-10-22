@@ -171,3 +171,5 @@ begin
   return 'ok';
 end $$;
 grant execute on function data_key_get(text), data_key_set(text, jsonb) to anon, authenticated;
+
+-- Deck spaces (sync by name) are in deck_spaces.sql: run it after this file.
