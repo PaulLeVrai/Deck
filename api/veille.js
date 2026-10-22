@@ -11,7 +11,7 @@ async function generate(day){const key=process.env.ANTHROPIC_API_KEY;if(!key)thr
   const messages=[{role:"user",content:`${BRIEF}\n\nNous sommes le ${day} (heure de Paris)${monday?", un lundi : couvre les 72 dernières heures":" : couvre les 24 dernières heures"}.\n\n${SHAPE}`}];
   // Web search can pause a long turn (pause_turn): send the partial answer back until it finishes.
   for(let k=0;k<4;k++){const r=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"content-type":"application/json","x-api-key":key,"anthropic-version":"2023-06-01","anthropic-beta":"server-side-fallback-2026-07-01"},
-      body:JSON.stringify({model:"claude-opus-5-5",max_tokens:16000,output_config:{effort:"medium"},fallbacks:"default",tools:[{type:"web_search_20260209",name:"web_search",max_uses:15,user_location:{type:"approximate",country:"FR",timezone:"Europe/Paris"}}],messages})});
+      body:JSON.stringify({model:"claude-opus-5-5",max_tokens:16000,output_config:{effort:"medium"},fallbacks:"default",tools:[{type:"web_search_20260209",name:"web_search",max_uses:10,user_location:{type:"approximate",country:"FR",timezone:"Europe/Paris"}}],messages})});
     const j=await r.json();if(!r.ok)throw new Error((j.error&&j.error.message)||"Claude indisponible");
     if(j.stop_reason==="pause_turn"){messages.push({role:"assistant",content:j.content});continue}
     if(j.stop_reason==="refusal")throw new Error("Claude a refusé la demande");
