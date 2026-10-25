@@ -965,6 +965,12 @@ transition:transform .55s cubic-bezier(.3,1.35,.45,1),width .55s cubic-bezier(.3
 .ptB .crow,.ptB .copts{display:none!important}
 .nsov{position:relative}.nsov input,.nsov select{position:absolute;inset:0;width:100%;height:100%;opacity:0;-webkit-appearance:none;appearance:none;border:0;font-size:16px;cursor:pointer}
 .nsbox{transition:background .2s,color .2s}.nsbox.on{background:#fff;color:#000}
+.txp{padding:0 0 12px 38px;border-bottom:.5px solid #2e2e30;animation:nsb .25s ease}
+.txr{display:flex;gap:8px;align-items:center}.txc{min-width:0;white-space:nowrap}
+.txc{position:relative;display:flex;align-items:center;gap:8px;background:#2a2a2c;border-radius:14px;padding:5px 12px 5px 5px;font-size:14px;color:#fff;cursor:pointer}.txc .m{color:#8a8a8a}.txc .nsi{width:30px;height:30px}.txc .nspas{width:30px;height:32px;border-radius:9px}.txc .nspas b{font-size:14px}.txc .nspas i{font-size:8px}
+.txc input{position:absolute;inset:0;width:100%;height:100%;opacity:0;border:0;-webkit-appearance:none;appearance:none;font-size:16px}
+.txdel{margin-left:auto;width:36px;height:36px;border-radius:50%;border:0;background:#2a2a2c;display:grid;place-items:center;cursor:pointer}.txdel svg{width:18px;height:18px;fill:none;stroke:#d9776b;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.txn{display:block;width:100%;box-sizing:border-box;margin-top:8px;background:#2a2a2c;border:0;border-radius:14px;color:#ddd;font:inherit;font-size:14px;padding:9px 12px;resize:none;outline:0}
 </style>
 </head><body>
 
@@ -1117,7 +1123,7 @@ function dlColor(f){return f>=1?"#d9776b":f>=.85?"#e0a26a":f>=.5?"#d8c67a":"#86b
 function dlRing(x){const f=elapsed(x);if(f==null||x.done||S.dl==="N")return"";const c=S.dl==="C"?dlColor(f):"#8c8c8c";return `<svg class="dlr" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="11" class="dlt"/><circle cx="12" cy="12" r="11" pathLength="100" style="stroke:${c};stroke-dasharray:${Math.max(1,Math.round(f*100))} 100"/></svg>`}
 // Tasks grouped into one card per day, date in a pastille; swipe right on a task to strike it.
 function dayCards(l){const t=TD.getDate(),k=x=>x.late?-1:x.e==null?999:(x.e<t?x.e+100:x.e);const L=l.slice().sort((a,b)=>k(a[0])-k(b[0]));
- return L.length?`<div class="tlist">${L.map(([x,i])=>taskRow(x,i)).join("")}</div>`:'<div class="vs" style="padding:0 6px">Rien à faire.</div>'}
+ return L.length?`<div class="tlist">${L.map(([x,i])=>taskRow(x,i)+txPanel(x,i)).join("")}</div>`:'<div class="vs" style="padding:0 6px">Rien à faire.</div>'}
 // Tapping the left part of a task row (the square) only ticks it, never opens a page.
 document.addEventListener("click",e=>{const r=e.target.closest(".tlist .vrow[data-ti]");if(!r||e.target.closest(".vcheck"))return;const b=r.getBoundingClientRect();if(e.clientX-b.left>48)return;e.stopPropagation();e.preventDefault();r.querySelector(".vcheck").click()},true);
 // Creation sheet: opened by the + in Productivité; rows Date / Heure / Urgent / Note, one open at a time.
@@ -1148,6 +1154,17 @@ document.addEventListener("click",e=>{const b=e.target.closest("#nsheet [data-ns
  if(d.nsx){nsClose();return}if(d.nsok){nsSave();return}
  if(d.nsm){NS.m=d.nsm;NS.sec=null}else if(d.nss){NS.sec=NS.sec===d.nss?null:d.nss}else if(d.nsd){NS.e=NS.e===+d.nsd?null:+d.nsd;NS.sec=null}else if(d.nsu){NS.u=!NS.u;NS.sec=null}else if(d.nsrec){NS.rec=+d.nsrec;NS.sec=null}
  nsDraw();if(NS.sec==="n"){const t=$("#nsn");t&&t.focus()}},true);
+// Tap a task in Productivité: it unfolds with date, time and note (each editable) and a delete button.
+function isoOf(n){const d=dOf(n);return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
+function txPanel(x,i){if(S.view!=="tasks"||S.tx!==i)return"";const d=x.e!=null?dOf(x.e):null;
+ return `<div class="txp" data-txp="${i}"><div class="txr"><label class="txc">${d?`<span class="nspas"><i>${DNF[d.getDay()].slice(0,3).toUpperCase()}</i><b>${d.getDate()}</b></span><span>${DNF[d.getDay()]} ${d.getDate()}</span>`:`<span class="nsi">${IC_C}</span><span class="m">Ajouter une date</span>`}<input type="date" data-txd="${i}" value="${d?isoOf(x.e):""}"></label>
+ <label class="txc"><span class="nsi">${NSI.h}</span><span class="${x.h?"":"m"}">${x.h||"Heure"}</span><input type="time" data-txh="${i}" value="${x.h||""}"></label>
+ <button class="txdel" data-txdel="${i}" aria-label="Supprimer"><svg viewBox="0 0 24 24"><path d="M5 7h14M10 7V5h4v2M7 7l1 12h8l1-12"/></svg></button></div>
+ <textarea class="txn" data-txn="${i}" rows="${x.n?2:1}" placeholder="Ajouter une note">${esc(x.n||"")}</textarea></div>`}
+document.addEventListener("click",e=>{if(S.view!=="tasks")return;const del=e.target.closest("[data-txdel]");if(del){e.stopPropagation();e.preventDefault();const i=+del.dataset.txdel,old=S.tasks.slice();undo("Tâche supprimée",()=>{S.tasks=old});S.tasks.splice(i,1);S.tx=null;keepRender();return}
+ if(e.target.closest(".txp"))return;const r=e.target.closest(".tlist .vrow[data-ti]");if(!r||e.target.closest(".vcheck"))return;const b=r.getBoundingClientRect();if(e.clientX-b.left<=48)return;e.stopPropagation();e.preventDefault();const i=+r.dataset.ti;S.ed=null;S.tx=S.tx===i?null:i;const st=$("#scr").scrollTop;render();$("#scr").scrollTop=st},true);
+document.addEventListener("change",e=>{const t=e.target,d=t.dataset;if(d.txd!=null){const x=S.tasks[+d.txd];if(t.value){const [y,m,dd]=t.value.split("-").map(Number);setDue(x,Math.round((new Date(y,m-1,dd)-new Date(TD.getFullYear(),TD.getMonth(),TD.getDate()))/864e5)+TD.getDate())}else setDue(x,null);keepRender()}else if(d.txh!=null){const x=S.tasks[+d.txh];if(t.value)x.h=t.value;else delete x.h;keepRender()}});
+document.addEventListener("input",e=>{const d=e.target.dataset;if(d.txn!=null){S.tasks[+d.txn].n=e.target.value;persist()}});
 const TSW={};
 document.addEventListener("pointerdown",e=>{const r=e.target.closest(".dayc .vrow[data-ti]");if(!r)return;TSW.el=r;TSW.x=e.clientX;TSW.y=e.clientY;TSW.dx=0},true);
 document.addEventListener("pointermove",e=>{const r=TSW.el;if(!r)return;const dx=e.clientX-TSW.x;if(Math.abs(e.clientY-TSW.y)>14&&!TSW.dx){TSW.el=null;return}if(dx<8&&!TSW.dx)return;TSW.dx=Math.max(0,dx);r.classList.add("tsw");r.style.setProperty("--sx",Math.min(100,TSW.dx/1.4)+"%")},true);
