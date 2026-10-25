@@ -887,18 +887,16 @@ button:not(.card),[role=button]:not(.card){transition:opacity .2s ease-out}
 .undo{position:fixed;left:50%;bottom:calc(100px + env(safe-area-inset-bottom,0px));transform:translate(-50%,20px);opacity:0;pointer-events:none;z-index:60;display:flex;align-items:center;gap:16px;padding:12px 14px 12px 20px;border-radius:99px;background:rgba(40,40,46,.85);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 8px 24px rgba(0,0,0,.5);color:#fff;font-size:14.5px;transition:transform .35s cubic-bezier(.2,.8,.2,1),opacity .25s}
 .undo.on{transform:translate(-50%,0);opacity:1;pointer-events:auto}.undo button{border:0;background:none;color:#a08bff;font:inherit;font-weight:500;padding:6px 8px;cursor:pointer}
 @media (prefers-reduced-motion:reduce){#scr,.tmod{transform:none!important}}
-
-/* 5 règles */
-.cta{background:var(--ink)!important;color:#000!important;font-weight:500;font-size:16px;padding:17px!important}
-.hero .label span:last-child,.card[data-go]>.label span:last-child{display:none}
-.noday .hero .gb{display:none}
-.wkc{display:none!important}
-.v1 h2{text-transform:none;letter-spacing:0;font-size:14px}
-.comp:not(.has) .cmode,.comp:not(.has) .pts{display:none}
-.wk6 .wkper{display:none}.wk6.pshow .wkper{display:flex}.wk6 .wkbig{cursor:pointer}
-.wk6.nochart .wkh{display:none}
-.wband .wfold{flex:none!important;width:40px!important;background:transparent!important;color:var(--muted)}
-.wband .wsave[hidden]{display:none}
+.dglass{position:absolute;left:0;top:0;width:48px;height:48px;border-radius:99px;pointer-events:none;z-index:0;opacity:0;
+background:linear-gradient(160deg,rgba(255,255,255,.26),rgba(255,255,255,.07));-webkit-backdrop-filter:blur(10px) saturate(180%);backdrop-filter:blur(10px) saturate(180%);
+box-shadow:inset 0 1px 0 rgba(255,255,255,.45),inset 0 -1px 0 rgba(255,255,255,.08),inset 0 0 0 .5px rgba(255,255,255,.22),0 4px 14px rgba(0,0,0,.35);
+transition:transform .55s cubic-bezier(.3,1.35,.45,1),width .55s cubic-bezier(.3,1.35,.45,1),opacity .2s}
+.chat-mode .dglass{opacity:0!important}
+.dglass.mv{animation:dgs .55s ease}@keyframes dgs{30%{scale:1.18 .9}100%{scale:1 1}}
+.dock .drawer .it,.dock .menubtn{position:relative;z-index:1}
+.dock .drawer .it.on .ic{background:transparent!important;color:var(--ink)!important}
+.dock .drawer .it .ic{background:transparent}
+.dock .menubtn{background:transparent}
 </style>
 </head><body>
 
@@ -906,7 +904,7 @@ button:not(.card),[role=button]:not(.card){transition:opacity .2s ease-out}
   <div class="phone">
     <div class="scrim" id="scrim"></div>
     <div class="screen" id="scr"></div>
-    <div class="dock" id="dock"><svg class="dring" id="dring" aria-hidden="true"><rect class="dr-bg"/><rect class="dr-fg" pathLength="100"/></svg><span class="dpct" id="dpct"></span>
+    <div class="dock" id="dock"><svg class="dring" id="dring" aria-hidden="true"><rect class="dr-bg"/><rect class="dr-fg" pathLength="100"/></svg><span class="dpct" id="dpct"></span><i class="dglass" id="dglass" aria-hidden="true"></i>
       <button class="menubtn" id="menubtn" aria-label="Accueil, double appui pour discuter avec Claude"><i></i><i class="mid"></i><i></i><i></i><i></i><svg class="mq" viewBox="0 0 24 24"><path d="M20.5 3.5C12.5 4 7.6 9 6.3 17.2"/><path d="M20.5 3.5c.4 6.6-3.6 11.4-11.3 12.6"/><path d="M10.2 10.6h5.2M8.4 13.6h4.6"/><path d="M6.3 17.2 4.8 21"/></svg></button>
       <nav class="drawer" id="drawer" aria-label="Menu">
         <button class="it" data-go="write" aria-label="Note" title="Note"><span class="ic"><svg viewBox="0 0 24 24"><path d="M20.5 3.5C12.5 4 7.6 9 6.3 17.2"/><path d="M20.5 3.5c.4 6.6-3.6 11.4-11.3 12.6"/><path d="M10.2 10.6h5.2M8.4 13.6h4.6"/><path d="M6.3 17.2 4.8 21"/></svg></span></button>
@@ -1453,7 +1451,8 @@ function setupEditor(){const body=$("#nbody"),menuEl=$("#nslash");
  $(".nedit").addEventListener("focusout",e=>{if(!$(".nedit").contains(e.relatedTarget))saveNote()});
  $("#wsave").addEventListener("click",()=>{const n=saveNote();if(n){S.folder=n.folder;go("folder")}});
  if(!cur)setTimeout(()=>$("#ntitle").focus(),50)}
-const _render=render;render=function(){_render();const ph0=document.querySelector(".phone");ph0.classList.toggle("no-ring",!S.set.ring);ph0.classList.toggle("noday",!dayProg().n);ph0.classList.toggle("no-pct",!S.set.pct);if(typeof scrollMark==="function")scrollMark();ph0.classList.toggle("prop-b",S.prop==="B");$("#menubtn").style.setProperty("--p",dayProg().p);if(typeof drawRing==="function")drawRing();document.querySelector(".phone").classList.toggle("note-mode",S.view==="write");if(S.view==="write")setupEditor()};
+function dglass(){const g=$("#dglass"),d=$("#dock");if(!g||!d)return;const t=d.querySelector(".drawer .it.on")||(S.view==="home"?$("#menubtn"):null);if(!t){g.style.opacity=0;return}const a=d.getBoundingClientRect(),b=t.getBoundingClientRect(),x=b.left-a.left,y=b.top-a.top;const k=x+"|"+y;if(g.dataset.k&&g.dataset.k!==k){g.classList.remove("mv");void g.offsetWidth;g.classList.add("mv")}g.dataset.k=k;g.style.width=b.width+"px";g.style.height=b.height+"px";g.style.transform=`translate(${x}px,${y}px)`;g.style.opacity=1}
+const _render=render;render=function(){_render();requestAnimationFrame(dglass);const ph0=document.querySelector(".phone");ph0.classList.toggle("no-ring",!S.set.ring);ph0.classList.toggle("no-pct",!S.set.pct);if(typeof scrollMark==="function")scrollMark();ph0.classList.toggle("prop-b",S.prop==="B");$("#menubtn").style.setProperty("--p",dayProg().p);if(typeof drawRing==="function")drawRing();document.querySelector(".phone").classList.toggle("note-mode",S.view==="write");if(S.view==="write")setupEditor()};
 
 function drawRing(){const s=$("#dring"),w=s.clientWidth,h=s.clientHeight;if(!w)return;s.setAttribute("viewBox",`0 0 ${w} ${h}`);
  s.querySelectorAll("rect").forEach(r=>{r.setAttribute("x",1.5);r.setAttribute("y",1.5);r.setAttribute("width",w-3);r.setAttribute("height",h-3);r.setAttribute("rx",(h-3)/2)});
