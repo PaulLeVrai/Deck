@@ -897,6 +897,10 @@ transition:transform .55s cubic-bezier(.3,1.35,.45,1),width .55s cubic-bezier(.3
 .dock .drawer .it.on .ic{background:transparent!important;color:var(--ink)!important}
 .dock .drawer .it .ic{background:transparent}
 .dock .menubtn{background:transparent}
+.tmod .label{display:block}.tmod .tgo{display:none}
+.tmod .hm3{display:flex;width:100%;gap:0;position:relative;text-transform:none;letter-spacing:0}
+.tmod .hm3 button{flex:1;position:relative;z-index:1;text-align:center;padding:9px 0;font-size:14px;text-transform:none;letter-spacing:0;color:#8a8a8a;transition:color .25s}
+.tmod .hind{top:0;bottom:auto!important;height:100%;border-radius:99px;background:linear-gradient(160deg,rgba(255,255,255,.24),rgba(255,255,255,.06));box-shadow:inset 0 1px 0 rgba(255,255,255,.42),inset 0 0 0 .5px rgba(255,255,255,.2),0 4px 14px rgba(0,0,0,.3);-webkit-backdrop-filter:blur(8px) saturate(180%);backdrop-filter:blur(8px) saturate(180%);z-index:0;transition:left .5s cubic-bezier(.3,1.3,.45,1)}
 </style>
 </head><body>
 
@@ -1660,7 +1664,7 @@ $("#scr").addEventListener("keydown",e=>{if(e.target.dataset.fin&&e.key==="Enter
 
 
 $("#scr").addEventListener("click",e=>{if(e.target.closest(".tmod .label")&&!e.target.closest(".tgo")&&!e.target.closest("[data-hm]")){e.stopPropagation();return}const b=e.target.closest("[data-hm]");if(!b)return;e.stopPropagation();S.hmode=b.dataset.hm;{const w=$("#hswipe");document.querySelectorAll(".hm3 button").forEach(i=>i.classList.toggle("on",i.dataset.hm===S.hmode));hFlip(S.hmode==="h"?1:-1);return}keepRender()},true);
-function hInd(f){const h=document.querySelector(".tmod .hm3");if(!h)return;const b=h.querySelectorAll("button"),i=h.querySelector(".hind"),c=x=>x.offsetLeft+x.offsetWidth/2-8;if(f==null)f=S.hmode==="h"?1:0;i.style.left=(c(b[0])+(c(b[1])-c(b[0]))*f)+"px"}
+function hInd(f){const h=document.querySelector(".tmod .hm3");if(!h)return;const b=h.querySelectorAll("button"),i=h.querySelector(".hind");if(f==null)f=S.hmode==="h"?1:0;i.style.width=b[0].offsetWidth+"px";i.style.left=(b[0].offsetLeft+(b[1].offsetLeft-b[0].offsetLeft)*f)+"px";h.querySelectorAll("button").forEach((x,k)=>x.style.color=Math.abs(f-k)<.5?"var(--ink)":"")}
 function hFit(){const w=$("#hswipe");if(!w)return;w.dataset.f=S.hmode;w.style.height=w.children[S.hmode==="h"?1:0].offsetHeight+"px";hInd()}
 // Springs: critically damped by default, always start from the value on screen so any motion can be grabbed mid-flight.
 // Undo bar after a deletion: discreet, 4 s, no confirmation dialog.
