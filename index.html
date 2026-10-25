@@ -936,6 +936,7 @@ transition:transform .55s cubic-bezier(.3,1.35,.45,1),width .55s cubic-bezier(.3
 .dayc .vrow[data-ti].done{background:none!important;box-shadow:none!important}
 .dayc .vrow[data-ti] .vs{display:none}
 .dayc .vrow[data-ti]:not(.done) .t>div:first-child{color:#fff}
+.hdc .dayc{background:#2a2a2c;padding:10px 12px}
 </style>
 </head><body>
 
@@ -1075,7 +1076,7 @@ function keepRender(focus){const st=$("#scr").scrollTop;S._rr=true;render();S._r
 function todayMod(){const tl=qsort(S.tasks.map((x,i)=>[x,i]).filter(([x])=>x.d==="Aujourd'hui"||x.late||x.d==="Bientôt")),m=S.hmode,o=S.hopt,
   nt=tl.filter(([x])=>!x.done).length,hd=S.habits.filter(h=>h.done).length,
   up=S.tasks.map((x,i)=>[x,i]).filter(([x])=>!x.done&&x.e!=null&&x.e>TD.getDate()).sort((a,b)=>a[0].e-b[0].e).slice(0,3),
-  tH=`<div class="v1" style="padding:0">${tl.map(([x,i])=>taskRow(x,i)).join("")||(up.length?"":'<div class="vs">Rien pour aujourd\'hui.</div>')}${up.length?`<div class="eyebrow" style="margin:14px 0 2px">À venir</div>${up.map(([x,i])=>taskRow(x,i)).join("")}`:""}</div>`,hH=`<div class="v1 hmod" style="padding:0">${habitRows()}</div>`;
+  tH=`<div class="v1 hdc" style="padding:0">${dayCards(tl.concat(up))}</div>`,hH=`<div class="v1 hmod" style="padding:0">${habitRows()}</div>`;
  const head=`<span class="hm3"><button class="${m==="t"?"on":""}" data-hm="t">Tâches</button><button class="${m==="h"?"on":""}" data-hm="h">Habitudes</button><i class="hind"></i></span><span class="tgo">›</span>`,body=`<div class="hswipe" id="hswipe"><div class="hpane">${tH}</div><div class="hpane">${hH}</div></div>`;
  return `<div class="card tmod" role="button" tabindex="0" style="cursor:pointer" data-go="tasks" data-tf="${m==="h"?"Habitudes":"Tâches"}"><div class="label">${head}</div>${body}</div>`}
 const BCOL=["#34404f","#4f3f34","#36493e","#4a3647","#3d3d52","#55492f","#2f4a4d","#503434"];
