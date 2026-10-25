@@ -939,7 +939,7 @@ transition:transform .55s cubic-bezier(.3,1.35,.45,1),width .55s cubic-bezier(.3
 .hdc .dayc{background:#2a2a2c;padding:10px 12px}
 .tlist .vrow[data-ti]{display:flex!important;align-items:flex-start!important;gap:12px;background:none!important;box-shadow:none!important;border-radius:0!important;padding:11px 0!important;margin:0!important;border-bottom:.5px solid #2e2e30!important}
 .tlist .vrow[data-ti]:last-of-type{border-bottom:0!important}
-.tlist .vrow[data-ti] .vwrap{display:block!important;order:0!important;margin:1px 0 0!important}
+.tlist .vrow[data-ti] .vwrap{display:block!important;padding:8px;margin:-7px -8px -8px!important;order:0!important;margin:1px 0 0!important}
 .tlist .vrow[data-ti] .vwrap>:not(.vcheck){display:none}
 .tlist .vrow[data-ti] .vcheck{width:26px!important;height:26px!important;border-radius:9px!important;border:2px solid #5a5a5c!important;background:none!important;box-shadow:none!important;box-sizing:border-box;position:relative}
 .tlist .vrow[data-ti] .vcheck.on{background:#fff!important;border-color:#fff!important}
@@ -1103,6 +1103,8 @@ function dlRing(x){const f=elapsed(x);if(f==null||x.done||S.dl==="N")return"";co
 // Tasks grouped into one card per day, date in a pastille; swipe right on a task to strike it.
 function dayCards(l){const t=TD.getDate(),k=x=>x.late?-1:x.e==null?999:(x.e<t?x.e+100:x.e);const L=l.slice().sort((a,b)=>(a[0].done-b[0].done)||(k(a[0])-k(b[0])));
  return L.length?`<div class="tlist">${L.map(([x,i])=>taskRow(x,i)).join("")}</div>`:'<div class="vs" style="padding:0 6px">Rien à faire.</div>'}
+// Tapping the left part of a task row (the square) only ticks it, never opens a page.
+document.addEventListener("click",e=>{const r=e.target.closest(".tlist .vrow[data-ti]");if(!r||e.target.closest(".vcheck"))return;const b=r.getBoundingClientRect();if(e.clientX-b.left>48)return;e.stopPropagation();e.preventDefault();r.querySelector(".vcheck").click()},true);
 const TSW={};
 document.addEventListener("pointerdown",e=>{const r=e.target.closest(".dayc .vrow[data-ti]");if(!r)return;TSW.el=r;TSW.x=e.clientX;TSW.y=e.clientY;TSW.dx=0},true);
 document.addEventListener("pointermove",e=>{const r=TSW.el;if(!r)return;const dx=e.clientX-TSW.x;if(Math.abs(e.clientY-TSW.y)>14&&!TSW.dx){TSW.el=null;return}if(dx<8&&!TSW.dx)return;TSW.dx=Math.max(0,dx);r.classList.add("tsw");r.style.setProperty("--sx",Math.min(100,TSW.dx/1.4)+"%")},true);
