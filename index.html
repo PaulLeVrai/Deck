@@ -950,6 +950,19 @@ transition:transform .55s cubic-bezier(.3,1.35,.45,1),width .55s cubic-bezier(.3
 .tlist .vrow[data-ti].done .t>div:first-child{text-decoration:line-through;color:#6a6a6a}
 .ttm{flex:none;font-size:15px;font-weight:600;color:#fff;margin-top:1px}.done .ttm{color:#6a6a6a;font-weight:400}
 .hdc .tlist{padding:0 2px}
+#nsheet{position:fixed;inset:0;z-index:80;background:#1b1b1d;transform:translateY(100%);transition:transform .38s cubic-bezier(.3,1.1,.45,1);overflow-y:auto;color:#fff}#nsheet.on{transform:none}
+.nsin{padding:calc(env(safe-area-inset-top) + 14px) 16px 40px;max-width:560px;margin:0 auto}
+.nstop{display:flex;align-items:center;gap:10px;margin-bottom:18px}.nstop .pseg{flex:1;position:relative;display:flex;background:#0c0c0e;border-radius:99px;padding:3px}.nstop .pseg button{flex:1;position:relative;z-index:1;background:none;border:0;color:#8a8a8a;font:inherit;font-size:14px;padding:8px 0;border-radius:99px}.nstop .pseg button.on{color:#fff}.nstop .pind{position:absolute;top:3px;bottom:3px;border-radius:99px;background:linear-gradient(160deg,rgba(255,255,255,.24),rgba(255,255,255,.06));box-shadow:inset 0 1px 0 rgba(255,255,255,.42);transition:left .3s cubic-bezier(.3,1.3,.45,1),width .3s}
+.nsx,.nsok{flex:none;width:42px;height:42px;border-radius:50%;border:0;display:grid;place-items:center;cursor:pointer}.nsx{background:linear-gradient(160deg,rgba(255,255,255,.22),rgba(255,255,255,.06));box-shadow:inset 0 1px 0 rgba(255,255,255,.4),inset 0 0 0 .5px rgba(255,255,255,.2)}.nsok{background:#fff}.nsx svg,.nsok svg{width:20px;height:20px;fill:none;stroke-width:2.2;stroke-linecap:round}.nsx svg{stroke:#fff}.nsok svg{stroke:#000}
+.nsc{background:#2a2a2c;border-radius:20px;margin-bottom:10px;overflow:hidden}.nstx input{width:100%;box-sizing:border-box;background:none;border:0;outline:0;color:#fff;font:inherit;font-size:22px;padding:16px}
+.nsr{all:unset;box-sizing:border-box;width:100%;display:flex;align-items:center;gap:12px;padding:12px 14px;cursor:pointer}.nsl{flex:1;font-size:16px}.nsv{font-size:14px;color:#8a8a8a}.nsv.w{color:#fff}
+.nsi{width:34px;height:34px;flex:none;border-radius:10px;display:grid;place-items:center;color:#8a8a8a;transition:color .2s}.nsi.w{color:#fff}.nsi svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.nspas{background:#3a3a3c;display:flex;flex-direction:column;line-height:1.05;gap:0}.nspas i{font-style:normal;font-size:8px;color:#9a9a9a;letter-spacing:.3px}.nspas b{font-size:14px;color:#fff}
+.nsb{padding:0 14px 14px;animation:nsb .25s ease}@keyframes nsb{from{opacity:0;transform:translateY(-4px)}}
+.nsb input[type=time]{width:100%;box-sizing:border-box;background:#3a3a3c;border:0;border-radius:12px;color:#fff;font:inherit;font-size:18px;padding:10px 12px}
+.nsb textarea{width:100%;box-sizing:border-box;background:#3a3a3c;border:0;border-radius:12px;color:#fff;font:inherit;font-size:15px;padding:10px 12px;resize:none;outline:0}
+.nsrec{display:flex;flex-wrap:wrap;gap:6px}.nsrec button{border:0;border-radius:99px;background:#3a3a3c;color:#bbb;font:inherit;font-size:13px;padding:7px 12px}.nsrec button.on{background:#fff;color:#000}
+.ptB .crow,.ptB .copts{display:none!important}
 </style>
 </head><body>
 
@@ -1101,10 +1114,38 @@ let bid=10;function elapsed(x){if(x.e==null)return null;return Math.max(0,Math.m
 function dlColor(f){return f>=1?"#d9776b":f>=.85?"#e0a26a":f>=.5?"#d8c67a":"#86b892"}
 function dlRing(x){const f=elapsed(x);if(f==null||x.done||S.dl==="N")return"";const c=S.dl==="C"?dlColor(f):"#8c8c8c";return `<svg class="dlr" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="11" class="dlt"/><circle cx="12" cy="12" r="11" pathLength="100" style="stroke:${c};stroke-dasharray:${Math.max(1,Math.round(f*100))} 100"/></svg>`}
 // Tasks grouped into one card per day, date in a pastille; swipe right on a task to strike it.
-function dayCards(l){const t=TD.getDate(),k=x=>x.late?-1:x.e==null?999:(x.e<t?x.e+100:x.e);const L=l.slice().sort((a,b)=>(a[0].done-b[0].done)||(k(a[0])-k(b[0])));
+function dayCards(l){const t=TD.getDate(),k=x=>x.late?-1:x.e==null?999:(x.e<t?x.e+100:x.e);const L=l.slice().sort((a,b)=>k(a[0])-k(b[0]));
  return L.length?`<div class="tlist">${L.map(([x,i])=>taskRow(x,i)).join("")}</div>`:'<div class="vs" style="padding:0 6px">Rien à faire.</div>'}
 // Tapping the left part of a task row (the square) only ticks it, never opens a page.
 document.addEventListener("click",e=>{const r=e.target.closest(".tlist .vrow[data-ti]");if(!r||e.target.closest(".vcheck"))return;const b=r.getBoundingClientRect();if(e.clientX-b.left>48)return;e.stopPropagation();e.preventDefault();r.querySelector(".vcheck").click()},true);
+// Creation sheet: opened by the + in Productivité; rows Date / Heure / Urgent / Note, one open at a time.
+const NS={};
+const NSI={h:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>',u:'<svg viewBox="0 0 24 24"><path d="M12 4v10M12 19v.5"/></svg>',n:'<svg viewBox="0 0 24 24"><path d="M20 4c-6 0-11 4-12.5 10.5L6 20"/><path d="M20 4c0 6-4 10.5-10 11.5"/><path d="M9 15l4-4"/></svg>',r:'<svg viewBox="0 0 24 24"><path d="M4 12a8 8 0 0 1 14-5l2 2M20 12a8 8 0 0 1-14 5l-2-2"/><path d="M20 4v5h-5M4 20v-5h5"/></svg>'};
+function nsOpen(){Object.assign(NS,{m:S.dr.m==="h"?"h":"t",t:"",e:null,h:"",u:false,n:"",rec:0,sec:null});let el=$("#nsheet");if(!el){el=document.createElement("div");el.id="nsheet";document.body.appendChild(el)}nsDraw();requestAnimationFrame(()=>el.classList.add("on"));setTimeout(()=>{const i=$("#nst");i&&i.focus()},350)}
+function nsClose(){const el=$("#nsheet");if(el)el.classList.remove("on")}
+function nsDraw(){const el=$("#nsheet");if(!el)return;const T0=TD.getDate(),ed=NS.e!=null?dOf(NS.e):null,o=k=>NS.sec===k?"op":"";
+ const row=(k,ic,lab,val,on,body)=>`<div class="nsc ${o(k)}"><button class="nsr" data-nss="${k}">${ic}<span class="nsl">${lab}</span><span class="nsv ${on?"w":""}">${val}</span></button>${NS.sec===k?`<div class="nsb">${body}</div>`:""}</div>`;
+ let strip=`<label class="dsd dsc" aria-label="Calendrier">${IC_C}<input type="date" id="nsdat" value="${ed?ed.getFullYear()+"-"+String(ed.getMonth()+1).padStart(2,"0")+"-"+String(ed.getDate()).padStart(2,"0"):""}"></label>`;for(let n=T0;n<T0+60;n++){const d=dOf(n);strip+=`<button class="dsd ${NS.e===n?"on":""}" data-nsd="${n}"><small>${n===T0?"Auj.":DNF[d.getDay()].slice(0,3)}</small>${d.getDate()}</button>`}
+ const dic=ed?`<span class="nsi nspas"><i>${DNF[ed.getDay()].slice(0,3).toUpperCase()}</i><b>${ed.getDate()}</b></span>`:`<span class="nsi ${NS.sec==="d"?"w":""}">${IC_C}</span>`,ic=k=>`<span class="nsi ${NS.sec===k||(k==="h"&&NS.h)||(k==="u"&&NS.u)||(k==="n"&&NS.n)||(k==="r"&&NS.sec==="r")?"w":""}">${NSI[k]}</span>`;
+ const rows=NS.m==="h"?row("r",ic("r"),"Fréquence",REC[NS.rec],true,`<div class="nsrec">${REC.map((x,k)=>`<button class="${NS.rec===k?"on":""}" data-nsrec="${k}">${x}</button>`).join("")}</div>`)
+  +row("n",ic("n"),"Note",NS.n?"":"›",!!NS.n,`<textarea id="nsn" rows="3" placeholder="Écris une note">${esc(NS.n)}</textarea>`)
+  :row("d",dic,"Date",ed?DNF[ed.getDay()]+" "+ed.getDate()+" "+MOIS[ed.getMonth()]:"Aucune",!!ed,`<div class="dstrip">${strip}</div>`)
+  +row("h",ic("h"),"Heure",NS.h||"Aucune",!!NS.h,`<input type="time" id="nsh" value="${NS.h}">`)
+  +row("u",ic("u"),"Urgent",NS.u?"Oui":"Non",NS.u,`<div class="nsrec"><button class="${NS.u?"":"on"}" data-nsu="0">Non</button><button class="${NS.u?"on":""}" data-nsu="1">Oui</button></div>`)
+  +row("n",ic("n"),"Note",NS.n?"":"›",!!NS.n,`<textarea id="nsn" rows="3" placeholder="Écris une note">${esc(NS.n)}</textarea>`);
+ el.innerHTML=`<div class="nsin"><div class="nstop"><button class="nsx" data-nsx="1" aria-label="Annuler"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button><span class="pseg ${NS.m==="h"?"h":""}"><i class="pind"></i><button class="${NS.m==="t"?"on":""}" data-nsm="t">Tâche</button><button class="${NS.m==="h"?"on":""}" data-nsm="h">Habitude</button></span><button class="nsok" data-nsok="1" aria-label="Créer"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button></div><div class="nsc nstx"><input id="nst" placeholder="${NS.m==="h"?"Nouvelle habitude":"Nouvelle tâche"}" maxlength="80" autocomplete="off" value="${esc(NS.t)}"></div>${rows}</div>`;
+ const sg=el.querySelector(".pseg"),pi=sg.querySelector(".pind"),on=sg.querySelector("button.on");if(pi&&on){pi.style.left=on.offsetLeft+"px";pi.style.width=on.offsetWidth+"px"}
+ if(NS.sec==="d"){const b=el.querySelector(".dsd.on");if(b)b.scrollIntoView({inline:"center",block:"nearest"})}}
+function nsSave(){const v=NS.t.trim();if(!v){$("#nst")&&$("#nst").focus();return}
+ if(NS.m==="h")S.habits.push({t:v,w:[0,0,0,0,0,0],done:false,s:0,r:REC[NS.rec],...(NS.n?{n:NS.n}:{})});
+ else{const e=NS.e;S.tasks.push({t:v,p:"Perso",d:e==null?"Un jour":e===TD.getDate()?"Aujourd'hui":dLabel(e),done:false,i:NS.u?1:0,c:NOW,e,...(NS.h?{h:NS.h}:{}),...(NS.n?{n:NS.n}:{})})}
+ nsClose();const st=$("#scr").scrollTop;render();$("#scr").scrollTop=st}
+document.addEventListener("input",e=>{if(e.target.id==="nst")NS.t=e.target.value;else if(e.target.id==="nsn")NS.n=e.target.value});
+document.addEventListener("change",e=>{if(e.target.id==="nsh"){NS.h=e.target.value;nsDraw()}else if(e.target.id==="nsdat"&&e.target.value){const [y,m,d]=e.target.value.split("-").map(Number),n=Math.round((new Date(y,m-1,d)-new Date(TD.getFullYear(),TD.getMonth(),TD.getDate()))/864e5)+TD.getDate();NS.e=n;NS.sec=null;nsDraw()}});
+document.addEventListener("click",e=>{const b=e.target.closest("#nsheet [data-nsx],#nsheet [data-nsok],#nsheet [data-nsm],#nsheet [data-nss],#nsheet [data-nsd],#nsheet [data-nsu],#nsheet [data-nsrec]");if(!b)return;const d=b.dataset;e.stopPropagation();
+ if(d.nsx){nsClose();return}if(d.nsok){nsSave();return}
+ if(d.nsm){NS.m=d.nsm;NS.sec=null}else if(d.nss){NS.sec=NS.sec===d.nss?null:d.nss}else if(d.nsd){NS.e=NS.e===+d.nsd?null:+d.nsd;NS.sec=null}else if(d.nsu){NS.u=d.nsu==="1";NS.sec=null}else if(d.nsrec){NS.rec=+d.nsrec;NS.sec=null}
+ nsDraw();if(NS.sec==="n"){const t=$("#nsn");t&&t.focus()}if(NS.sec==="h"){const t=$("#nsh");t&&t.showPicker&&setTimeout(()=>{try{t.showPicker()}catch(_){}},50)}},true);
 const TSW={};
 document.addEventListener("pointerdown",e=>{const r=e.target.closest(".dayc .vrow[data-ti]");if(!r)return;TSW.el=r;TSW.x=e.clientX;TSW.y=e.clientY;TSW.dx=0},true);
 document.addEventListener("pointermove",e=>{const r=TSW.el;if(!r)return;const dx=e.clientX-TSW.x;if(Math.abs(e.clientY-TSW.y)>14&&!TSW.dx){TSW.el=null;return}if(dx<8&&!TSW.dx)return;TSW.dx=Math.max(0,dx);r.classList.add("tsw");r.style.setProperty("--sx",Math.min(100,TSW.dx/1.4)+"%")},true);
@@ -1600,7 +1641,7 @@ document.addEventListener("pointerdown",e=>{const r=S.dr;if(r&&r.pin&&!e.target.
 $("#scr").addEventListener("pointerdown",e=>{if(e.target.closest("#comp button"))e.preventDefault()});
 $("#scr").addEventListener("click",e=>{const c=e.target.closest("#comp");if(!c)return;const b=e.target.closest("button");if(!b)return;e.stopPropagation();const r=S.dr,d=b.dataset;
  if(b.id==="ntcreate"){addTask();return}
- if(b.id==="pplus"){if(S.dr.text.trim()){addTask();return}S.dr.pin=true;keepRender(true);setTimeout(()=>{const i=$("#ntname");i&&i.focus()},30);return}
+ if(b.id==="pplus"){nsOpen();return}
  if(d.cm){r.m=d.cm;r.cal=false;r.rmenu=false;S.ed=null;keepRender(r.focus||!!r.text);return}else if(d.ntd){r.dk=+d.ntd;r.cal=false}else if(d.cal){r.cal=!r.cal}else if(d.cd&&(S.set.dsel||"2")==="2"&&r.dk!==3&&(r.dk===-1?r.e:NTD[r.dk][1])===+d.cd){r.dk=3}else if(d.cd){const n=+d.cd,T0=TD.getDate();r.dk=n===T0?0:n===T0+1?1:-1;r.e=n;r.cal=false}else if(d.imp){r.imp=!r.imp}else if(d.rec){r.rec=+d.rec;r.rmenu=false}else if(d.rmenu){r.rmenu=!r.rmenu}
  r.pin=true;if(d.cal||d.rmenu){const el=$("#ntname");if(el)el.blur();refreshComp();return}refreshComp();if(r.focus)$("#ntname").focus()});
 $("#scr").addEventListener("click",e=>{if(S.view!=="tasks"||e.target.closest("#comp"))return;const ed=S.ed,b=e.target.closest(".edp button");
