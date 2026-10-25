@@ -957,12 +957,14 @@ transition:transform .55s cubic-bezier(.3,1.35,.45,1),width .55s cubic-bezier(.3
 .nsc{background:#2a2a2c;border-radius:20px;margin-bottom:10px;overflow:hidden}.nstx input{width:100%;box-sizing:border-box;background:none;border:0;outline:0;color:#fff;font:inherit;font-size:22px;padding:16px}
 .nsr{all:unset;box-sizing:border-box;width:100%;display:flex;align-items:center;gap:12px;padding:12px 14px;cursor:pointer}.nsl{flex:1;font-size:16px}.nsv{font-size:14px;color:#8a8a8a}.nsv.w{color:#fff}
 .nsi{width:34px;height:34px;flex:none;border-radius:10px;display:grid;place-items:center;color:#8a8a8a;transition:color .2s}.nsi.w{color:#fff}.nsi svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
-.nspas{background:#3a3a3c;display:flex;flex-direction:column;line-height:1.05;gap:0}.nspas i{font-style:normal;font-size:8px;color:#9a9a9a;letter-spacing:.3px}.nspas b{font-size:14px;color:#fff}
+.nspas{background:#3a3a3c;display:flex!important;flex-direction:column;align-items:center;justify-content:center;width:36px;height:38px;border-radius:11px;gap:1px}.nspas i{font-style:normal;font-size:9px;font-weight:600;color:#9a9a9a;letter-spacing:.4px;line-height:1}.nspas b{font-size:16px;font-weight:600;color:#fff;line-height:1}
 .nsb{padding:0 14px 14px;animation:nsb .25s ease}@keyframes nsb{from{opacity:0;transform:translateY(-4px)}}
 .nsb input[type=time]{width:100%;box-sizing:border-box;background:#3a3a3c;border:0;border-radius:12px;color:#fff;font:inherit;font-size:18px;padding:10px 12px}
 .nsb textarea{width:100%;box-sizing:border-box;background:#3a3a3c;border:0;border-radius:12px;color:#fff;font:inherit;font-size:15px;padding:10px 12px;resize:none;outline:0}
 .nsrec{display:flex;flex-wrap:wrap;gap:6px}.nsrec button{border:0;border-radius:99px;background:#3a3a3c;color:#bbb;font:inherit;font-size:13px;padding:7px 12px}.nsrec button.on{background:#fff;color:#000}
 .ptB .crow,.ptB .copts{display:none!important}
+.nsov{position:relative}.nsov input,.nsov select{position:absolute;inset:0;width:100%;height:100%;opacity:0;-webkit-appearance:none;appearance:none;border:0;font-size:16px;cursor:pointer}
+.nsbox{transition:background .2s,color .2s}.nsbox.on{background:#fff;color:#000}
 </style>
 </head><body>
 
@@ -1121,17 +1123,17 @@ document.addEventListener("click",e=>{const r=e.target.closest(".tlist .vrow[dat
 // Creation sheet: opened by the + in Productivité; rows Date / Heure / Urgent / Note, one open at a time.
 const NS={};
 const NSI={h:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>',u:'<svg viewBox="0 0 24 24"><path d="M12 4v10M12 19v.5"/></svg>',n:'<svg viewBox="0 0 24 24"><path d="M20 4c-6 0-11 4-12.5 10.5L6 20"/><path d="M20 4c0 6-4 10.5-10 11.5"/><path d="M9 15l4-4"/></svg>',r:'<svg viewBox="0 0 24 24"><path d="M4 12a8 8 0 0 1 14-5l2 2M20 12a8 8 0 0 1-14 5l-2-2"/><path d="M20 4v5h-5M4 20v-5h5"/></svg>'};
-function nsOpen(){Object.assign(NS,{m:S.dr.m==="h"?"h":"t",t:"",e:null,h:"",u:false,n:"",rec:0,sec:null});let el=$("#nsheet");if(!el){el=document.createElement("div");el.id="nsheet";document.body.appendChild(el)}nsDraw();requestAnimationFrame(()=>el.classList.add("on"));setTimeout(()=>{const i=$("#nst");i&&i.focus()},350)}
+function nsOpen(){Object.assign(NS,{m:S.dr.m==="h"?"h":"t",t:"",e:null,h:"",u:false,n:"",rec:0,sec:null});let el=$("#nsheet");if(!el){el=document.createElement("div");el.id="nsheet";document.body.appendChild(el)}el.classList.remove("on");nsDraw();void el.offsetHeight;requestAnimationFrame(()=>requestAnimationFrame(()=>el.classList.add("on")));setTimeout(()=>{const i=$("#nst");i&&i.focus()},350)}
 function nsClose(){const el=$("#nsheet");if(el)el.classList.remove("on")}
 function nsDraw(){const el=$("#nsheet");if(!el)return;const T0=TD.getDate(),ed=NS.e!=null?dOf(NS.e):null,o=k=>NS.sec===k?"op":"";
  const row=(k,ic,lab,val,on,body)=>`<div class="nsc ${o(k)}"><button class="nsr" data-nss="${k}">${ic}<span class="nsl">${lab}</span><span class="nsv ${on?"w":""}">${val}</span></button>${NS.sec===k?`<div class="nsb">${body}</div>`:""}</div>`;
  let strip=`<label class="dsd dsc" aria-label="Calendrier">${IC_C}<input type="date" id="nsdat" value="${ed?ed.getFullYear()+"-"+String(ed.getMonth()+1).padStart(2,"0")+"-"+String(ed.getDate()).padStart(2,"0"):""}"></label>`;for(let n=T0;n<T0+60;n++){const d=dOf(n);strip+=`<button class="dsd ${NS.e===n?"on":""}" data-nsd="${n}"><small>${n===T0?"Auj.":DNF[d.getDay()].slice(0,3)}</small>${d.getDate()}</button>`}
  const dic=ed?`<span class="nsi nspas"><i>${DNF[ed.getDay()].slice(0,3).toUpperCase()}</i><b>${ed.getDate()}</b></span>`:`<span class="nsi ${NS.sec==="d"?"w":""}">${IC_C}</span>`,ic=k=>`<span class="nsi ${NS.sec===k||(k==="h"&&NS.h)||(k==="u"&&NS.u)||(k==="n"&&NS.n)||(k==="r"&&NS.sec==="r")?"w":""}">${NSI[k]}</span>`;
- const rows=NS.m==="h"?row("r",ic("r"),"Fréquence",REC[NS.rec],true,`<div class="nsrec">${REC.map((x,k)=>`<button class="${NS.rec===k?"on":""}" data-nsrec="${k}">${x}</button>`).join("")}</div>`)
+ const rows=NS.m==="h"?`<div class="nsc"><label class="nsr nsov">${ic("r").replace('class="nsi ','class="nsi w ')}<span class="nsl">Fréquence</span><span class="nsv w">${REC[NS.rec]} ⌄</span><select id="nsrec">${REC.map((x,k)=>`<option value="${k}" ${NS.rec===k?"selected":""}>${x}</option>`).join("")}</select></label></div>`
   +row("n",ic("n"),"Note",NS.n?"":"›",!!NS.n,`<textarea id="nsn" rows="3" placeholder="Écris une note">${esc(NS.n)}</textarea>`)
   :row("d",dic,"Date",ed?DNF[ed.getDay()]+" "+ed.getDate()+" "+MOIS[ed.getMonth()]:"Aucune",!!ed,`<div class="dstrip">${strip}</div>`)
-  +row("h",ic("h"),"Heure",NS.h||"Aucune",!!NS.h,`<input type="time" id="nsh" value="${NS.h}">`)
-  +row("u",ic("u"),"Urgent",NS.u?"Oui":"Non",NS.u,`<div class="nsrec"><button class="${NS.u?"":"on"}" data-nsu="0">Non</button><button class="${NS.u?"on":""}" data-nsu="1">Oui</button></div>`)
+  +`<div class="nsc"><label class="nsr nsov">${ic("h")}<span class="nsl">Heure</span><span class="nsv ${NS.h?"w":""}">${NS.h||"Aucune"}</span><input type="time" id="nsh" value="${NS.h}"></label></div>`
+  +`<div class="nsc"><button class="nsr" data-nsu="1"><span class="nsi nsbox ${NS.u?"on":""}">${NSI.u}</span><span class="nsl">Urgent</span><span class="nsv ${NS.u?"w":""}">${NS.u?"Oui":"Non"}</span></button></div>`
   +row("n",ic("n"),"Note",NS.n?"":"›",!!NS.n,`<textarea id="nsn" rows="3" placeholder="Écris une note">${esc(NS.n)}</textarea>`);
  el.innerHTML=`<div class="nsin"><div class="nstop"><button class="nsx" data-nsx="1" aria-label="Annuler"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button><span class="pseg ${NS.m==="h"?"h":""}"><i class="pind"></i><button class="${NS.m==="t"?"on":""}" data-nsm="t">Tâche</button><button class="${NS.m==="h"?"on":""}" data-nsm="h">Habitude</button></span><button class="nsok" data-nsok="1" aria-label="Créer"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button></div><div class="nsc nstx"><input id="nst" placeholder="${NS.m==="h"?"Nouvelle habitude":"Nouvelle tâche"}" maxlength="80" autocomplete="off" value="${esc(NS.t)}"></div>${rows}</div>`;
  const sg=el.querySelector(".pseg"),pi=sg.querySelector(".pind"),on=sg.querySelector("button.on");if(pi&&on){pi.style.left=on.offsetLeft+"px";pi.style.width=on.offsetWidth+"px"}
@@ -1141,11 +1143,11 @@ function nsSave(){const v=NS.t.trim();if(!v){$("#nst")&&$("#nst").focus();return
  else{const e=NS.e;S.tasks.push({t:v,p:"Perso",d:e==null?"Un jour":e===TD.getDate()?"Aujourd'hui":dLabel(e),done:false,i:NS.u?1:0,c:NOW,e,...(NS.h?{h:NS.h}:{}),...(NS.n?{n:NS.n}:{})})}
  nsClose();const st=$("#scr").scrollTop;render();$("#scr").scrollTop=st}
 document.addEventListener("input",e=>{if(e.target.id==="nst")NS.t=e.target.value;else if(e.target.id==="nsn")NS.n=e.target.value});
-document.addEventListener("change",e=>{if(e.target.id==="nsh"){NS.h=e.target.value;nsDraw()}else if(e.target.id==="nsdat"&&e.target.value){const [y,m,d]=e.target.value.split("-").map(Number),n=Math.round((new Date(y,m-1,d)-new Date(TD.getFullYear(),TD.getMonth(),TD.getDate()))/864e5)+TD.getDate();NS.e=n;NS.sec=null;nsDraw()}});
+document.addEventListener("change",e=>{if(e.target.id==="nsrec"){NS.rec=+e.target.value;nsDraw()}else if(e.target.id==="nsh"){NS.h=e.target.value;nsDraw()}else if(e.target.id==="nsdat"&&e.target.value){const [y,m,d]=e.target.value.split("-").map(Number),n=Math.round((new Date(y,m-1,d)-new Date(TD.getFullYear(),TD.getMonth(),TD.getDate()))/864e5)+TD.getDate();NS.e=n;NS.sec=null;nsDraw()}});
 document.addEventListener("click",e=>{const b=e.target.closest("#nsheet [data-nsx],#nsheet [data-nsok],#nsheet [data-nsm],#nsheet [data-nss],#nsheet [data-nsd],#nsheet [data-nsu],#nsheet [data-nsrec]");if(!b)return;const d=b.dataset;e.stopPropagation();
  if(d.nsx){nsClose();return}if(d.nsok){nsSave();return}
- if(d.nsm){NS.m=d.nsm;NS.sec=null}else if(d.nss){NS.sec=NS.sec===d.nss?null:d.nss}else if(d.nsd){NS.e=NS.e===+d.nsd?null:+d.nsd;NS.sec=null}else if(d.nsu){NS.u=d.nsu==="1";NS.sec=null}else if(d.nsrec){NS.rec=+d.nsrec;NS.sec=null}
- nsDraw();if(NS.sec==="n"){const t=$("#nsn");t&&t.focus()}if(NS.sec==="h"){const t=$("#nsh");t&&t.showPicker&&setTimeout(()=>{try{t.showPicker()}catch(_){}},50)}},true);
+ if(d.nsm){NS.m=d.nsm;NS.sec=null}else if(d.nss){NS.sec=NS.sec===d.nss?null:d.nss}else if(d.nsd){NS.e=NS.e===+d.nsd?null:+d.nsd;NS.sec=null}else if(d.nsu){NS.u=!NS.u;NS.sec=null}else if(d.nsrec){NS.rec=+d.nsrec;NS.sec=null}
+ nsDraw();if(NS.sec==="n"){const t=$("#nsn");t&&t.focus()}},true);
 const TSW={};
 document.addEventListener("pointerdown",e=>{const r=e.target.closest(".dayc .vrow[data-ti]");if(!r)return;TSW.el=r;TSW.x=e.clientX;TSW.y=e.clientY;TSW.dx=0},true);
 document.addEventListener("pointermove",e=>{const r=TSW.el;if(!r)return;const dx=e.clientX-TSW.x;if(Math.abs(e.clientY-TSW.y)>14&&!TSW.dx){TSW.el=null;return}if(dx<8&&!TSW.dx)return;TSW.dx=Math.max(0,dx);r.classList.add("tsw");r.style.setProperty("--sx",Math.min(100,TSW.dx/1.4)+"%")},true);
