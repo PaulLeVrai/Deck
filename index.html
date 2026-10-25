@@ -980,6 +980,7 @@ transition:transform .55s cubic-bezier(.3,1.35,.45,1),width .55s cubic-bezier(.3
 .dvc{all:unset;box-sizing:border-box;flex:none;width:96px;height:120px;border-radius:18px;background:var(--card);padding:11px;display:flex;flex-direction:column;font-size:12px;line-height:1.3;color:#fff;cursor:pointer}
 .dvj{justify-content:space-between}.dvj b{font-size:11px;color:#8a8a8a;font-weight:500}.dvj span{display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
 .dvb{justify-content:flex-end;gap:8px}.dvb span{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}.dvbar{display:block;height:3px;border-radius:2px;background:#333}.dvbar i{display:block;height:100%;border-radius:2px;background:#86b892}
+.dvgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.dvgrid .dvc{width:auto;height:auto;aspect-ratio:4/5;font-size:11px;padding:9px;border-radius:16px}
 .dvmore{display:flex;gap:16px;justify-content:center;margin:26px 0 8px}.dvmore button{all:unset;font-size:13px;color:#6a6a6a;cursor:pointer}
 </style>
 </head><body>
@@ -1179,14 +1180,15 @@ document.addEventListener("change",e=>{const t=e.target,d=t.dataset;if(d.txd!=nu
 document.addEventListener("input",e=>{const d=e.target.dataset;if(d.txn!=null){S.tasks[+d.txn].n=e.target.value;persist()}});
 document.addEventListener("click",e=>{if(!e.target.closest(".tmod .tgo"))return;e.stopPropagation();e.preventDefault();S.dr.m=S.hmode==="h"?"h":"t";S.ed=null;go("tasks")},true);
 // Développement landing: one page with the finance recap, the Journal row and the books row.
-function devOverview(){const f=S.fin,inn=Math.max(f.inn||0,(f.out||0)+(f.inv||0),1),C=2*Math.PI*28,a=(f.out||0)/inn*C,b=(f.inv||0)/inn*C;
+const BK8=[["Atomic Habits","James Clear",182,320,"lecture"],["Deep Work","Cal Newport",64,296,"lecture"],["Sapiens","Yuval Noah Harari",0,512,"pal"],["L'Étranger","Albert Camus",184,184,"fini"],["Zero to One","Peter Thiel",0,224,"pal"],["Le Comte de Monte-Cristo","Alexandre Dumas",1248,1248,"fini"],["Dune","Frank Herbert",120,890,"lecture"],["Le Petit Prince","Antoine de Saint-Exupéry",96,96,"fini"]];
+function devOverview(){if(!S.set.bk8){S.set.bk8=1;let id=Math.max(0,...S.books.map(b=>+b.id||0));for(const [t,a,cur,tot,st] of BK8){if(S.books.length>=8)break;if(!S.books.some(b=>b.t===t))S.books.push({id:++id,t,a,cur,tot,st,notes:"",cover:null})}persist()}const f=S.fin,inn=Math.max(f.inn||0,(f.out||0)+(f.inv||0),1),C=2*Math.PI*28,a=(f.out||0)/inn*C,b=(f.inv||0)/inn*C;
  const ring=`<svg class="dvring" viewBox="0 0 70 70"><circle cx="35" cy="35" r="28" class="t"/>${a?`<circle cx="35" cy="35" r="28" style="stroke:#86b892;stroke-dasharray:${Math.max(0,a-6)} ${C}"/>`:""}${b?`<circle cx="35" cy="35" r="28" style="stroke:#7a4dff;stroke-dasharray:${Math.max(0,b-6)} ${C};stroke-dashoffset:${-a}"/>`:""}</svg>`;
  const tile=(l,v,c)=>`<div class="dvt"><i style="background:${c}"></i><span>${l}</span><b>${eur(v||0)}</b></div>`;
  const BK=[...S.books.filter(x=>x.st==="lecture"),...S.books.filter(x=>x.st!=="lecture"&&x.fav),...S.books.filter(x=>x.st!=="lecture"&&!x.fav)];
  return `<div class="eyebrow">${MOIS[TD.getMonth()]} ${TD.getFullYear()}</div><div class="title">Développement</div>
  <div class="card dvfin" data-dev="fin" role="button"><div class="dvtop"><div><div class="vs">Solde</div><div class="dvbig">${eur(f.bal||0)}</div></div>${ring}</div><div class="dvts">${tile("Revenus",f.inn,"#fff")}${tile("Dépenses",f.out,"#86b892")}${tile("Investi",f.inv,"#7a4dff")}</div></div>
  ${JRN.length?`<div class="dvsl" data-go="journal" role="button"><span>Journal</span><span>›</span></div><div class="dvrow">${JRN.map((D,k)=>`<button class="dvc dvj" data-jday="${k}"><b>${k===0?"Auj.":k===1?"Hier":D[0].split(" ")[0].slice(0,3)+"."}</b><span>${esc(D[1][0]?D[1][0][0]:"")}</span></button>`).join("")}</div>`:""}
- <div class="dvsl" data-dev="lib" role="button"><span>Bibliothèque</span><span>›</span></div><div class="dvrow">${BK.map(x=>{const p=x.st==="fini"?100:x.tot?Math.round(x.cur*100/x.tot):0;return `<button class="dvc dvb" data-book="${x.id}"><span>${esc(x.t)}</span><i class="dvbar"><i style="width:${p}%"></i></i></button>`}).join("")||'<span class="vs">Aucun livre</span>'}</div>
+ <div class="dvsl" data-dev="lib" role="button"><span>Bibliothèque</span><span>${BK.length} livres ›</span></div><div class="dvgrid">${BK.map(x=>{const p=x.st==="fini"?100:x.tot?Math.round(x.cur*100/x.tot):0;return `<button class="dvc dvb" data-book="${x.id}"><span>${esc(x.t)}</span><i class="dvbar"><i style="width:${p}%"></i></i></button>`}).join("")||'<span class="vs">Aucun livre</span>'}</div>
  <div class="dvmore"><button data-dev="sem">Suivi de la semaine</button><button data-dev="obj">Objectifs</button></div>`}
 const TSW={};
 document.addEventListener("pointerdown",e=>{const r=e.target.closest(".dayc .vrow[data-ti]");if(!r)return;TSW.el=r;TSW.x=e.clientX;TSW.y=e.clientY;TSW.dx=0},true);
