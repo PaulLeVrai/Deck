@@ -923,6 +923,19 @@ transition:transform .55s cubic-bezier(.3,1.35,.45,1),width .55s cubic-bezier(.3
 .sp2 .s2r{display:flex;gap:8px}.s2t{border-radius:18px;padding:12px;display:flex;flex-direction:column;min-width:0}.s2a{flex:1.6}.s2b{flex:1;background:#2a2a2c}.s2d{font-size:12px;color:#8a8a8a}.s2h{font-size:24px;font-weight:600;color:#fff;font-variant-numeric:tabular-nums}.s2b .s2h{font-size:16px}.s2n{color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.s2b .s2n{color:#bbb;font-size:13px}
 .sp2-2 .s2a{background:linear-gradient(160deg,#5a2bea,#3a12b8)}.sp2-2 .s2a .s2d{color:#d6ccff}
 .sp2-3 .s2a{background:#f2f2f2}.sp2-3 .s2a .s2d{color:#666}.sp2-3 .s2a .s2h,.sp2-3 .s2a .s2n{color:#000}
+.dayc{display:flex;gap:12px;align-items:flex-start;background:var(--card);border-radius:22px;padding:12px 14px;margin:0 0 8px}
+.dpas{flex:none;width:40px;text-align:center;background:#2c2c2e;border-radius:12px;padding:5px 0;line-height:1.15}.dpas i{display:block;font-style:normal;font-size:10px;color:#8a8a8a;letter-spacing:.3px}.dpas b{font-size:18px;font-weight:600;color:#fff}
+.dlist{flex:1;min-width:0}
+.dayc .vrow[data-ti]{position:relative;background:none!important;box-shadow:none!important;border-radius:0;padding:10px 0!important;margin:0!important;border-bottom:.5px solid #333!important;touch-action:pan-y;user-select:none;-webkit-user-select:none}
+.dayc .vrow[data-ti]:last-of-type{border-bottom:0!important}.dayc .dlist>.vrow[data-ti]:first-child{padding-top:4px!important}
+.dayc .vrow[data-ti] .vwrap{display:none}
+.dayc .vrow[data-ti] .t>div:first-child{position:relative;display:inline-block;max-width:100%}
+.dayc .vrow[data-ti] .t>div:first-child::after{content:"";position:absolute;left:0;top:52%;height:1.5px;background:#fff;width:var(--sx,0);transition:width .2s}
+.dayc .vrow.tsw .t>div:first-child::after{transition:none}
+.dayc .vrow[data-ti].done .t>div:first-child::after{display:none}
+.dayc .vrow[data-ti].done{background:none!important;box-shadow:none!important}
+.dayc .vrow[data-ti] .vs{display:none}
+.dayc .vrow[data-ti]:not(.done) .t>div:first-child{color:#fff}
 </style>
 </head><body>
 
@@ -1073,6 +1086,16 @@ function bookRow(b){const p=b.tot?Math.round(b.cur*100/b.tot):0;return `<button 
 let bid=10;function elapsed(x){if(x.e==null)return null;return Math.max(0,Math.min(1,(NOW-x.c)/(x.e+1-x.c)))}
 function dlColor(f){return f>=1?"#d9776b":f>=.85?"#e0a26a":f>=.5?"#d8c67a":"#86b892"}
 function dlRing(x){const f=elapsed(x);if(f==null||x.done||S.dl==="N")return"";const c=S.dl==="C"?dlColor(f):"#8c8c8c";return `<svg class="dlr" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="11" class="dlt"/><circle cx="12" cy="12" r="11" pathLength="100" style="stroke:${c};stroke-dasharray:${Math.max(1,Math.round(f*100))} 100"/></svg>`}
+// Tasks grouped into one card per day, date in a pastille; swipe right on a task to strike it.
+function dayCards(l){const t=TD.getDate(),G=new Map();qsort(l).forEach(p=>{const x=p[0],k=x.late||x.d==="Aujourd'hui"?t:x.e??"x";if(!G.has(k))G.set(k,[]);G.get(k).push(p)});
+ const K=[...G.keys()].sort((a,b)=>a==="x"?1:b==="x"?-1:(a<t?a+100:a)-(b<t?b+100:b));
+ return K.map(k=>{const d=k==="x"?null:dOf(k),top=k===t?"AUJ.":d?DNF[d.getDay()].slice(0,3).toUpperCase():"SANS",num=d?d.getDate():"—";
+  return `<div class="dayc"><div class="dpas"><i>${top}</i><b>${num}</b></div><div class="dlist">${G.get(k).map(([x,i])=>taskRow(x,i)).join("")}</div></div>`}).join("")||'<div class="vs" style="padding:0 6px">Rien à faire.</div>'}
+const TSW={};
+document.addEventListener("pointerdown",e=>{const r=e.target.closest(".dayc .vrow[data-ti]");if(!r)return;TSW.el=r;TSW.x=e.clientX;TSW.y=e.clientY;TSW.dx=0},true);
+document.addEventListener("pointermove",e=>{const r=TSW.el;if(!r)return;const dx=e.clientX-TSW.x;if(Math.abs(e.clientY-TSW.y)>14&&!TSW.dx){TSW.el=null;return}if(dx<8&&!TSW.dx)return;TSW.dx=Math.max(0,dx);r.classList.add("tsw");r.style.setProperty("--sx",Math.min(100,TSW.dx/1.4)+"%")},true);
+document.addEventListener("pointerup",()=>{const r=TSW.el;if(!r)return;TSW.el=null;r.classList.remove("tsw");if(TSW.dx>8)TSW.eat=true;if(TSW.dx>70){r.style.setProperty("--sx","100%");const c=r.querySelector(".vcheck");setTimeout(()=>c&&c.click(),150)}else r.style.removeProperty("--sx")},true);
+document.addEventListener("click",e=>{if(TSW.eat&&e.isTrusted){TSW.eat=false;e.stopPropagation();e.preventDefault()}},true);
 function taskRow(x,i){return `<div class="vrow ${x.done?"done":""} ${S.eisv==="A"&&!x.i&&!x.done?"low":""} ${S.eisv==="V"&&x.i&&!x.done?"imp":""}" data-ti="${i}"><span class="vwrap ${dlRing(x)?"has":""}"><button class="vcheck check ${x.done?"on":""}" data-i="${i}" aria-label="Terminer"></button>${dlRing(x)}</span><div class="t"><div>${x.i&&!x.done?`<i class="imk"></i>`:""}${esc(x.t)}</div><div class="vs">${x.d}</div></div>${x.late&&!x.done?'<span class="vlate">En retard</span>':""}${x.n?`<span class="tfeat" aria-label="Note">${IC_FEA}</span>`:""}</div>${x.n&&S.hn===i&&S.view!=="tasks"?`<div class="tnview">${esc(x.n)}</div>`:""}${qpick(i)}${edPanel("t",i)}`}
 const IC_FEA='<svg viewBox="0 0 24 24"><path d="M20 4c-6 0-11 4-12.5 10.5L6 20"/><path d="M20 4c0 6-4 10.5-10 11.5"/><path d="M9 15l4-4"/></svg>';
 const DN=["lun","mar","mer","jeu","ven","sam","dim"],DL=["lundi","mardi","mercredi","jeudi","vendredi","samedi","dimanche"],MN=["janvier","février","mars","avril","mai","juin","juillet","août","septembre","octobre","novembre","décembre"];
@@ -1298,7 +1321,7 @@ const V={
   const rows=a=>a.map(([x,i])=>taskRow(x,i)).join("");
   const m=S.dr.m,card=(t,n,body,id)=>`<div class="card tcard" ${id?`id="${id}"`:""}><div class="label"><span>${t}</span><span class="mono">${n}</span></div>${body}</div>`,lt=S.tlo?later:later.slice(0,3);
   return `<div class="card hero heroP heroT">${v1page(m==="h"?S.habits.filter(h=>h.done).length+" / "+S.habits.length+" habitudes aujourd'hui":todo().length+" tâches en cours","Productivité",compHTML())}</div>`
-   +'<div class="v1 tv1">'+(m!=="h"?`${today.length?card("À faire aujourd'hui",today.length,rows(today)):""}${later.length?card("Plus tard",later.length,rows(lt)+(later.length>3?`<i class="sphandle tlh" data-tlo="1" role="button" aria-label="${S.tlo?"Réduire":"Tout afficher"}"></i>`:"")):""}`:"")
+   +'<div class="v1 tv1">'+(m!=="h"?dayCards(l):"")
    +(m!=="t"?card("Habitudes",S.habits.filter(h=>h.done).length+" / "+S.habits.length,habitRows(),"hsec"):"")+'</div>'},
  goals(){const DI={sem:['Semaine','<path d="M4 6h16M4 10h16M4 14h16M4 18h16"/>'],lib:['Bibliothèque','<path d="M5 5.5A1.5 1.5 0 0 1 6.5 4H18v14H6.5A1.5 1.5 0 0 0 5 19.5z"/><path d="M5 19.5A1.5 1.5 0 0 0 6.5 21H18v-3"/>'],fin:['Finance','<rect x="3" y="6.5" width="18" height="11" rx="2"/><circle cx="12" cy="12" r="2.4"/><path d="M6.5 12h.01M17.5 12h.01"/>'],obj:['Objectifs','<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r=".6" fill="currentColor"/>']};
   const ico=k=>`<svg viewBox="0 0 24 24">${DI[k][1]}</svg>`,K=["sem","lib","fin","obj"],o=S.dvo;let seg="";
