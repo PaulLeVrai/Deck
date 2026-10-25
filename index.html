@@ -971,7 +971,7 @@ transition:transform .55s cubic-bezier(.3,1.35,.45,1),width .55s cubic-bezier(.3
 .txc input{position:absolute;inset:0;width:100%;height:100%;opacity:0;border:0;-webkit-appearance:none;appearance:none;font-size:16px}
 .txdel{margin-left:auto;width:36px;height:36px;border-radius:50%;border:0;background:#2a2a2c;display:grid;place-items:center;cursor:pointer}.txdel svg{width:18px;height:18px;fill:none;stroke:#d9776b;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .txn{margin-top:10px;background:#2a2a2c;border-radius:14px;color:#ddd;font-size:14px;padding:9px 12px;white-space:pre-wrap}
-.txw{background:#1c1c1e;border-radius:20px;padding:0 8px;margin:4px -8px;animation:nsb .25s ease}.txw .vrow[data-ti]{border-bottom:0!important}.txw .txp{border-bottom:0;padding-left:38px}.txed svg{stroke:#fff!important}.txdel+.txed{margin-left:0}
+.txw{background:#1c1c1e;border-radius:20px;padding:0 8px;margin:4px -8px;animation:nsb .25s ease}.txw .vrow[data-ti]{border-bottom:0!important}.txw .txp{border-bottom:0;padding-left:38px}.txed svg{stroke:#fff!important}.txed+.txdel{margin-left:0}
 </style>
 </head><body>
 
@@ -1149,7 +1149,7 @@ function nsSave(){const v=NS.t.trim();if(!v){$("#nst")&&$("#nst").focus();return
  if(NS.m==="h")S.habits.push({t:v,w:[0,0,0,0,0,0],done:false,s:0,r:REC[NS.rec],...(NS.n?{n:NS.n}:{})});
  else if(NS.ix!=null){const x=S.tasks[NS.ix];x.t=v;setDue(x,NS.e);x.i=NS.u?1:0;if(NS.h)x.h=NS.h;else delete x.h;if(NS.n)x.n=NS.n;else delete x.n}
  else{const e=NS.e;S.tasks.push({t:v,p:"Perso",d:e==null?"Un jour":e===TD.getDate()?"Aujourd'hui":dLabel(e),done:false,i:NS.u?1:0,c:NOW,e,...(NS.h?{h:NS.h}:{}),...(NS.n?{n:NS.n}:{})})}
- nsClose();const st=$("#scr").scrollTop;render();$("#scr").scrollTop=st}
+ nsClose();S.tx=null;const st=$("#scr").scrollTop;render();$("#scr").scrollTop=st}
 document.addEventListener("input",e=>{if(e.target.id==="nst")NS.t=e.target.value;else if(e.target.id==="nsn")NS.n=e.target.value});
 document.addEventListener("change",e=>{if(e.target.id==="nsrec"){NS.rec=+e.target.value;nsDraw()}else if(e.target.id==="nsh"){NS.h=e.target.value;nsDraw()}else if(e.target.id==="nsdat"&&e.target.value){const [y,m,d]=e.target.value.split("-").map(Number),n=Math.round((new Date(y,m-1,d)-new Date(TD.getFullYear(),TD.getMonth(),TD.getDate()))/864e5)+TD.getDate();NS.e=n;NS.sec=null;nsDraw()}});
 document.addEventListener("click",e=>{const b=e.target.closest("#nsheet [data-nsx],#nsheet [data-nsok],#nsheet [data-nsm],#nsheet [data-nss],#nsheet [data-nsd],#nsheet [data-nsu],#nsheet [data-nsrec]");if(!b)return;const d=b.dataset;e.stopPropagation();
@@ -1158,14 +1158,15 @@ document.addEventListener("click",e=>{const b=e.target.closest("#nsheet [data-ns
  nsDraw();if(NS.sec==="n"){const t=$("#nsn");t&&t.focus()}},true);
 // Tap a task in Productivité: it unfolds with date, time and note (each editable) and a delete button.
 function isoOf(n){const d=dOf(n);return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
+const _renderTx=render;render=function(){if(S._txv!==S.view){S.tx=null;S._txv=S.view}_renderTx()};
 function txPanel(x,i){if(S.view!=="tasks"||S.tx!==i)return"";const d=x.e!=null?dOf(x.e):null;
  return `<div class="txp" data-txp="${i}"><div class="txr"><label class="txc">${d?`<span class="nspas"><i>${DNF[d.getDay()].slice(0,3).toUpperCase()}</i><b>${d.getDate()}</b></span><span>${DNF[d.getDay()]} ${d.getDate()}</span>`:`<span class="nsi">${IC_C}</span><span class="m">Ajouter une date</span>`}<input type="date" data-txd="${i}" value="${d?isoOf(x.e):""}"></label>
  <label class="txc"><span class="nsi">${NSI.h}</span><span class="${x.h?"":"m"}">${x.h||"Heure"}</span><input type="time" data-txh="${i}" value="${x.h||""}"></label>
- <button class="txdel" data-txdel="${i}" aria-label="Supprimer"><svg viewBox="0 0 24 24"><path d="M5 7h14M10 7V5h4v2M7 7l1 12h8l1-12"/></svg></button><button class="txdel txed" data-txed="${i}" aria-label="Modifier"><svg viewBox="0 0 24 24"><path d="M5 19h4L19 9l-4-4L5 15z"/><path d="M13 7l4 4"/></svg></button></div>
+ <button class="txdel txed" data-txed="${i}" aria-label="Modifier"><svg viewBox="0 0 24 24"><path d="M5 19h4L19 9l-4-4L5 15z"/><path d="M13 7l4 4"/></svg></button><button class="txdel" data-txdel="${i}" aria-label="Supprimer"><svg viewBox="0 0 24 24"><path d="M5 7h14M10 7V5h4v2M7 7l1 12h8l1-12"/></svg></button></div>
  ${x.n?`<div class="txn">${esc(x.n)}</div>`:""}</div>`}
 document.addEventListener("click",e=>{if(S.view!=="tasks")return;const ed=e.target.closest("[data-txed]");if(ed){e.stopPropagation();e.preventDefault();nsOpen(+ed.dataset.txed);return}const del=e.target.closest("[data-txdel]");if(del){e.stopPropagation();e.preventDefault();const i=+del.dataset.txdel,old=S.tasks.slice();undo("Tâche supprimée",()=>{S.tasks=old});S.tasks.splice(i,1);S.tx=null;keepRender();return}
  if(e.target.closest(".txp"))return;const r=e.target.closest(".tlist .vrow[data-ti]");if(!r||e.target.closest(".vcheck"))return;const b=r.getBoundingClientRect();if(e.clientX-b.left<=48)return;e.stopPropagation();e.preventDefault();const i=+r.dataset.ti;S.ed=null;S.tx=S.tx===i?null:i;const st=$("#scr").scrollTop;render();$("#scr").scrollTop=st},true);
-document.addEventListener("change",e=>{const t=e.target,d=t.dataset;if(d.txd!=null){const x=S.tasks[+d.txd];if(t.value){const [y,m,dd]=t.value.split("-").map(Number);setDue(x,Math.round((new Date(y,m-1,dd)-new Date(TD.getFullYear(),TD.getMonth(),TD.getDate()))/864e5)+TD.getDate())}else setDue(x,null);keepRender()}else if(d.txh!=null){const x=S.tasks[+d.txh];if(t.value)x.h=t.value;else delete x.h;keepRender()}});
+document.addEventListener("change",e=>{const t=e.target,d=t.dataset;if(d.txd!=null){const x=S.tasks[+d.txd];if(t.value){const [y,m,dd]=t.value.split("-").map(Number);setDue(x,Math.round((new Date(y,m-1,dd)-new Date(TD.getFullYear(),TD.getMonth(),TD.getDate()))/864e5)+TD.getDate())}else setDue(x,null);S.tx=null;keepRender()}else if(d.txh!=null){const x=S.tasks[+d.txh];if(t.value)x.h=t.value;else delete x.h;S.tx=null;keepRender()}});
 document.addEventListener("input",e=>{const d=e.target.dataset;if(d.txn!=null){S.tasks[+d.txn].n=e.target.value;persist()}});
 const TSW={};
 document.addEventListener("pointerdown",e=>{const r=e.target.closest(".dayc .vrow[data-ti]");if(!r)return;TSW.el=r;TSW.x=e.clientX;TSW.y=e.clientY;TSW.dx=0},true);
