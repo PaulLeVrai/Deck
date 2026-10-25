@@ -1679,8 +1679,8 @@ function vel(h){if(h.length<2)return 0;const a=h[0],b=h[h.length-1],dt=(b[1]-a[1
 var HF={x:0,v:0,raf:0,face:null};
 function hSet(a){const w=$("#hswipe"),t=w&&w.closest(".tmod");if(!t)return;const n=Math.round(a/180),local=a-n*180,base=HF.face==="h"?1:0,f=(base+Math.abs(n))%2?"h":"t";
  if(w.dataset.f!==f){S.hmode=f;document.querySelectorAll(".hm3 button").forEach(i=>i.classList.toggle("on",i.dataset.hm===f));t.dataset.tf=f==="h"?"Habitudes":"Tâches";hFit()}
- t.style.transform=Math.abs(local)<.01?"":`perspective(1600px) rotateY(${local}deg)`}
-function hFlip(dir){const w=$("#hswipe");if(!w||w.dataset.f===S.hmode)return;if(HF.face==null||!HF.raf){HF.face=w.dataset.f;HF.x=0}const tgt=Math.round(HF.x/180)*180+dir*180;springTo(HF,tgt,{set:hSet,resp:.45,done:hNorm})}
+ t.style.transform=""}
+function hFlip(dir){const w=$("#hswipe");if(!w||w.dataset.f===S.hmode)return;if(HF.face==null||!HF.raf){HF.face=w.dataset.f;HF.x=0}hNorm();const p=w.querySelector(".hpane:not([hidden])")||w;p.animate&&p.animate([{opacity:0},{opacity:1}],{duration:200,easing:"ease-out"})}
 
 function hNorm(){HF.face=S.hmode;HF.x=0;HF.v=0;HF.raf=0;hSet(0)}
 let HFS=null;
