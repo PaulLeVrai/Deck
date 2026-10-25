@@ -937,6 +937,19 @@ transition:transform .55s cubic-bezier(.3,1.35,.45,1),width .55s cubic-bezier(.3
 .dayc .vrow[data-ti] .vs{display:none}
 .dayc .vrow[data-ti]:not(.done) .t>div:first-child{color:#fff}
 .hdc .dayc{background:#2a2a2c;padding:10px 12px}
+.tlist .vrow[data-ti]{display:flex!important;align-items:flex-start!important;gap:12px;background:none!important;box-shadow:none!important;border-radius:0!important;padding:11px 0!important;margin:0!important;border-bottom:.5px solid #2e2e30!important}
+.tlist .vrow[data-ti]:last-of-type{border-bottom:0!important}
+.tlist .vrow[data-ti] .vwrap{display:block!important;order:0!important;margin:1px 0 0!important}
+.tlist .vrow[data-ti] .vwrap>:not(.vcheck){display:none}
+.tlist .vrow[data-ti] .vcheck{width:26px!important;height:26px!important;border-radius:9px!important;border:2px solid #5a5a5c!important;background:none!important;box-shadow:none!important;box-sizing:border-box;position:relative}
+.tlist .vrow[data-ti] .vcheck.on{background:#fff!important;border-color:#fff!important}
+.tlist .vrow[data-ti] .vcheck.on::after{content:"";position:absolute;left:8px;top:4px;width:6px;height:11px;border:solid #000;border-width:0 2.4px 2.4px 0;transform:rotate(45deg);background:none!important;box-shadow:none!important}
+.tlist .vrow[data-ti] .t{flex:1;min-width:0;display:block!important}
+.tlist .vrow[data-ti] .t>div:first-child{font-size:16px;color:#fff;white-space:normal}
+.tlist .vrow[data-ti] .vs{display:block!important;font-size:12px;color:#8a8a8a!important;margin-top:2px}
+.tlist .vrow[data-ti].done .t>div:first-child{text-decoration:line-through;color:#6a6a6a}
+.ttm{flex:none;font-size:15px;font-weight:600;color:#fff;margin-top:1px}.done .ttm{color:#6a6a6a;font-weight:400}
+.hdc .tlist{padding:0 2px}
 </style>
 </head><body>
 
@@ -1088,16 +1101,14 @@ let bid=10;function elapsed(x){if(x.e==null)return null;return Math.max(0,Math.m
 function dlColor(f){return f>=1?"#d9776b":f>=.85?"#e0a26a":f>=.5?"#d8c67a":"#86b892"}
 function dlRing(x){const f=elapsed(x);if(f==null||x.done||S.dl==="N")return"";const c=S.dl==="C"?dlColor(f):"#8c8c8c";return `<svg class="dlr" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="11" class="dlt"/><circle cx="12" cy="12" r="11" pathLength="100" style="stroke:${c};stroke-dasharray:${Math.max(1,Math.round(f*100))} 100"/></svg>`}
 // Tasks grouped into one card per day, date in a pastille; swipe right on a task to strike it.
-function dayCards(l){const t=TD.getDate(),G=new Map();qsort(l).forEach(p=>{const x=p[0],k=x.late||x.d==="Aujourd'hui"?t:x.e??"x";if(!G.has(k))G.set(k,[]);G.get(k).push(p)});
- const K=[...G.keys()].sort((a,b)=>a==="x"?1:b==="x"?-1:(a<t?a+100:a)-(b<t?b+100:b));
- return K.map(k=>{const d=k==="x"?null:dOf(k),top=k===t?"AUJ.":d?DNF[d.getDay()].slice(0,3).toUpperCase():"SANS",num=d?d.getDate():"—";
-  return `<div class="dayc"><div class="dpas"><i>${top}</i><b>${num}</b></div><div class="dlist">${G.get(k).map(([x,i])=>taskRow(x,i)).join("")}</div></div>`}).join("")||'<div class="vs" style="padding:0 6px">Rien à faire.</div>'}
+function dayCards(l){const t=TD.getDate(),k=x=>x.late?-1:x.e==null?999:(x.e<t?x.e+100:x.e);const L=l.slice().sort((a,b)=>(a[0].done-b[0].done)||(k(a[0])-k(b[0])));
+ return L.length?`<div class="tlist">${L.map(([x,i])=>taskRow(x,i)).join("")}</div>`:'<div class="vs" style="padding:0 6px">Rien à faire.</div>'}
 const TSW={};
 document.addEventListener("pointerdown",e=>{const r=e.target.closest(".dayc .vrow[data-ti]");if(!r)return;TSW.el=r;TSW.x=e.clientX;TSW.y=e.clientY;TSW.dx=0},true);
 document.addEventListener("pointermove",e=>{const r=TSW.el;if(!r)return;const dx=e.clientX-TSW.x;if(Math.abs(e.clientY-TSW.y)>14&&!TSW.dx){TSW.el=null;return}if(dx<8&&!TSW.dx)return;TSW.dx=Math.max(0,dx);r.classList.add("tsw");r.style.setProperty("--sx",Math.min(100,TSW.dx/1.4)+"%")},true);
 document.addEventListener("pointerup",()=>{const r=TSW.el;if(!r)return;TSW.el=null;r.classList.remove("tsw");if(TSW.dx>8)TSW.eat=true;if(TSW.dx>70){r.style.setProperty("--sx","100%");const c=r.querySelector(".vcheck");setTimeout(()=>c&&c.click(),150)}else r.style.removeProperty("--sx")},true);
 document.addEventListener("click",e=>{if(TSW.eat&&e.isTrusted){TSW.eat=false;e.stopPropagation();e.preventDefault()}},true);
-function taskRow(x,i){return `<div class="vrow ${x.done?"done":""} ${S.eisv==="A"&&!x.i&&!x.done?"low":""} ${S.eisv==="V"&&x.i&&!x.done?"imp":""}" data-ti="${i}"><span class="vwrap ${dlRing(x)?"has":""}"><button class="vcheck check ${x.done?"on":""}" data-i="${i}" aria-label="Terminer"></button>${dlRing(x)}</span><div class="t"><div>${x.i&&!x.done?`<i class="imk"></i>`:""}${esc(x.t)}</div><div class="vs">${x.d}</div></div>${x.late&&!x.done?'<span class="vlate">En retard</span>':""}${x.n?`<span class="tfeat" aria-label="Note">${IC_FEA}</span>`:""}</div>${x.n&&S.hn===i&&S.view!=="tasks"?`<div class="tnview">${esc(x.n)}</div>`:""}${qpick(i)}${edPanel("t",i)}`}
+function taskRow(x,i){return `<div class="vrow ${x.done?"done":""} ${S.eisv==="A"&&!x.i&&!x.done?"low":""} ${S.eisv==="V"&&x.i&&!x.done?"imp":""}" data-ti="${i}"><span class="vwrap ${dlRing(x)?"has":""}"><button class="vcheck check ${x.done?"on":""}" data-i="${i}" aria-label="Terminer"></button>${dlRing(x)}</span><div class="t"><div>${x.i&&!x.done?`<i class="imk"></i>`:""}${esc(x.t)}</div><div class="vs">${x.d}</div></div>${x.h?`<span class="ttm">${x.h}</span>`:""}${x.late&&!x.done?'<span class="vlate">En retard</span>':""}${x.n?`<span class="tfeat" aria-label="Note">${IC_FEA}</span>`:""}</div>${x.n&&S.hn===i&&S.view!=="tasks"?`<div class="tnview">${esc(x.n)}</div>`:""}${qpick(i)}${edPanel("t",i)}`}
 const IC_FEA='<svg viewBox="0 0 24 24"><path d="M20 4c-6 0-11 4-12.5 10.5L6 20"/><path d="M20 4c0 6-4 10.5-10 11.5"/><path d="M9 15l4-4"/></svg>';
 const DN=["lun","mar","mer","jeu","ven","sam","dim"],DL=["lundi","mardi","mercredi","jeudi","vendredi","samedi","dimanche"],MN=["janvier","février","mars","avril","mai","juin","juillet","août","septembre","octobre","novembre","décembre"];
 function weekDays(wk){const m=new Date(TD.getFullYear(),TD.getMonth(),TD.getDate()-TDOW+wk*7);return [...Array(7)].map((_,i)=>new Date(m.getFullYear(),m.getMonth(),m.getDate()+i))}
