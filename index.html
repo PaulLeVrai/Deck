@@ -1072,6 +1072,17 @@ html.glass .scat{background:linear-gradient(160deg,rgba(255,255,255,.12),rgba(25
 html.glass .day.on{background:#f5f5f7!important}html.glass .day.on *{color:#111!important}
 html.glass .card.wone,html.glass .heroP.wone{background:rgba(30,30,34,.5)!important}html.glass .wfold,html.glass .wsave{background:rgba(255,255,255,.1)!important;color:#eee!important;border-color:rgba(255,255,255,.14)!important}
 html.glass .dock::before,html.glass .dock::after{border-color:rgba(255,255,255,.12)!important}
+/* lisibilité + relief */
+html.glass .spring text{fill:#f5f5f7!important}html.glass .spring circle{stroke:rgba(255,255,255,.1)}
+html.glass .gbig i{color:#7c7c84!important}
+html.glass .spk.dn{background:linear-gradient(160deg,rgba(80,200,120,.28),rgba(80,200,120,.1))!important;color:#8ff0b0!important;border:1px solid rgba(140,240,170,.25)!important}html.glass .spk.dn *,html.glass .spk.dn em{color:#8ff0b0!important}
+html.glass .spk.ms{background:linear-gradient(160deg,rgba(240,80,80,.3),rgba(240,80,80,.1))!important;color:#ff9a9a!important}html.glass .spk.ms *{color:#ff9a9a!important}
+html.glass .spk:not(.dn):not(.ms):not(.spfr) *{color:#c8c8ce}
+html.glass .seg i.y,html.glass .spseg i.d{background:#5ee08f!important}
+html.glass .vev:not(.free){position:relative;background:linear-gradient(160deg,color-mix(in srgb,var(--c) 34%,rgba(255,255,255,.08)),color-mix(in srgb,var(--c) 10%,rgba(255,255,255,.02)))!important;border:1px solid rgba(255,255,255,.16)!important;border-left:3px solid var(--c)!important;border-radius:14px!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.3),0 8px 18px -8px rgba(0,0,0,.6)!important;-webkit-backdrop-filter:blur(10px) saturate(160%);backdrop-filter:blur(10px) saturate(160%);color:#fff!important;transition:transform .18s cubic-bezier(.2,.8,.2,1)}
+html.glass .vev:not(.free):active{transform:scale(.98)}
+html.glass .hsck,html.glass .mck{transition:transform .25s cubic-bezier(.3,1.6,.5,1),background .2s}html.glass .hsck:active,html.glass .mck:active{transform:scale(.82)}
+html.glass .card{animation:gin .4s cubic-bezier(.2,.8,.2,1) both}html.glass .card:nth-child(2){animation-delay:.03s}html.glass .card:nth-child(3){animation-delay:.06s}html.glass .card:nth-child(4){animation-delay:.09s}html.glass .card:nth-child(5){animation-delay:.12s}
 </style>
 </head><body>
 
