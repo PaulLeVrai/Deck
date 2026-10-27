@@ -1103,6 +1103,17 @@ html.glass .hm3,html.glass .pseg,html.glass .spsl,html.glass .cta,html.glass .ct
 html.glass .dock,html.glass #tabs{background:rgba(255,255,255,.05)!important;-webkit-backdrop-filter:blur(6px) saturate(180%)!important;backdrop-filter:blur(6px) saturate(180%)!important}
 html.glass .card.wone,html.glass .heroP.wone{background:rgba(255,255,255,.03)!important}
 html.glass .card *{text-shadow:0 1px 2px rgba(0,0,0,.35)}
+/* curseur verre */
+html.glass{--ga:.15}
+html.glass .card,html.glass .spk,html.glass .spt,html.glass .scat,html.glass .srow,html.glass .nsc,html.glass .spfr,html.glass .s2t.s2t.s2a,html.glass .dvt,html.glass .spA>*:first-child{background:linear-gradient(150deg,rgba(255,255,255,calc(.04 + var(--ga)*.3)),rgba(40,40,46,calc(var(--ga)*.75)) 55%,rgba(255,255,255,calc(.02 + var(--ga)*.15)))!important;-webkit-backdrop-filter:blur(calc(3px + var(--ga)*26px)) saturate(180%)!important;backdrop-filter:blur(calc(3px + var(--ga)*26px)) saturate(180%)!important}
+html.glass .dock,html.glass #tabs{background:rgba(40,40,46,calc(.05 + var(--ga)*.7))!important}
+html.glass .card,html.glass .scat,html.glass .spA{border-radius:34px!important}html.glass .spk,html.glass .spt,html.glass .dvt,html.glass .spA>*:first-child,html.glass .s2t{border-radius:26px!important}
+html.glass body{-webkit-font-smoothing:antialiased}
+html.glass .card *{text-shadow:0 1px 3px rgba(0,0,0,.45)}
+html.glass .vs,html.glass .label,html.glass .small,html.glass .slabel,html.glass .mut,html.glass .gdate,html.glass .eyebrow,html.glass .sps,html.glass .spk:not(.dn):not(.ms) *{color:#c2c2ca!important}
+html.glass .vev.free{color:#b8b8c0!important}
+.garange{width:100%;margin:14px 0 4px;accent-color:#34c759}.galab{display:flex;justify-content:space-between;font-size:12px;color:#aaa}
+.garange{-webkit-appearance:none;appearance:none;height:4px!important;padding:0!important;border:0!important;border-radius:4px;background:linear-gradient(90deg,rgba(255,255,255,.12),rgba(255,255,255,.6))!important}.garange::-webkit-slider-thumb{-webkit-appearance:none;width:26px;height:26px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#8ff0a8,#2fbf5e 60%,#1f9a48);box-shadow:0 0 12px rgba(60,210,110,.5)}
 </style>
 </head><body>
 
@@ -2025,12 +2036,13 @@ const _render2=render;render=function(){_render2();persist()};
 const SCAT=[["New","Nouveautés et choix à faire",[]],["Compte","Prénom, synchronisation, Claude, notifications",["Compte"]],["Calendriers","Liens de tes calendriers Apple",["Calendriers"]],["Personnalisation","Les choix que tu peux encore changer",["Évènements du calendrier","À ne pas oublier","Prochaines séances"]],["Apparence","Fond par défaut ou fond d'écran",["Fond"]]];
 function ckPop(sel){requestAnimationFrame(()=>document.querySelectorAll(sel).forEach(el=>{if(!el.classList.contains("on"))return;el.classList.remove("pop");void el.offsetWidth;el.classList.add("pop");const r=el.closest(".vrow,.hrow");if(r){r.classList.remove("jdone");void r.offsetWidth;r.classList.add("jdone")}try{navigator.vibrate&&navigator.vibrate(12)}catch(x){}}))}
 function wpApply(){let u=null;try{u=localStorage.getItem("deckWP")}catch(e){}let st=document.getElementById("wpst");if(!st){st=document.createElement("style");st.id="wpst";document.head.appendChild(st)}st.textContent=u?`html.glass body::before{background:linear-gradient(rgba(0,0,0,.25),rgba(0,0,0,.35)),url(${u}) center/cover no-repeat!important}`:""}
-wpApply();
+wpApply();(function(){let g=null;try{g=localStorage.getItem("deckGA")}catch(e){}if(g!=null)document.documentElement.style.setProperty("--ga",g)})();
 const _renderWP=render;render=function(){_renderWP();if(S.view!=="settings")return;const sc=document.querySelector("#scr");if(!sc||sc.querySelector("#wpbox"))return;let has=false;try{has=!!localStorage.getItem("deckWP")}catch(e){}
  const l=document.createElement("div");l.className="slabel";l.textContent="Fond";const c=document.createElement("div");c.className="card";c.id="wpbox";
- c.innerHTML=`<div class="wpopt"><button class="${has?"":"on"}" data-wp="def">Par défaut</button><button class="${has?"on":""}" data-wp="img">Fond d'écran</button></div><input type="file" accept="image/*" id="wpfile" hidden>`;
+ c.innerHTML=`<div class="wpopt"><button class="${has?"":"on"}" data-wp="def">Par défaut</button><button class="${has?"on":""}" data-wp="img">Fond d'écran</button></div><input type="file" accept="image/*" id="wpfile" hidden><div class="vs" style="margin-top:16px">Effet verre</div><input type="range" class="garange" id="garange" min="0" max="1" step="0.05" value="${getComputedStyle(document.documentElement).getPropertyValue("--ga").trim()||.15}"><div class="galab"><span>Transparent</span><span>Opaque</span></div>`;
  const ls=sc.querySelectorAll(".slabel");const last=ls[ls.length-1];(last?last.parentElement:sc).appendChild(l);l.after(c)};
 document.addEventListener("click",e=>{const b=e.target.closest("[data-wp]");if(!b)return;if(b.dataset.wp==="def"){try{localStorage.removeItem("deckWP")}catch(x){}wpApply();render()}else document.getElementById("wpfile").click()},true);
+document.addEventListener("input",e=>{if(e.target.id!=="garange")return;document.documentElement.style.setProperty("--ga",e.target.value);try{localStorage.setItem("deckGA",e.target.value)}catch(x){}},true);
 document.addEventListener("change",e=>{if(e.target.id!=="wpfile"||!e.target.files[0])return;const r=new FileReader();r.onload=()=>{const im=new Image();im.onload=()=>{const k=Math.min(1,1400/Math.max(im.width,im.height)),cv=document.createElement("canvas");cv.width=im.width*k;cv.height=im.height*k;cv.getContext("2d").drawImage(im,0,0,cv.width,cv.height);try{localStorage.setItem("deckWP",cv.toDataURL("image/jpeg",.82))}catch(x){}wpApply();render()};im.src=r.result};r.readAsDataURL(e.target.files[0])},true);
 const _render15=render;render=function(){_render15();if(S.view!=="settings")return;const ls=[...document.querySelectorAll("#scr .slabel")];if(!ls.length)return;const op=S.sopen||(S.sopen=["New"]),anchor=ls[0];
  const box=document.createElement("div");box.className="scats";anchor.before(box);
