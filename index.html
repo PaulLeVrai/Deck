@@ -2317,4 +2317,8 @@ if("serviceWorker" in navigator){navigator.serviceWorker.register("sw.js",{updat
   let had=!!navigator.serviceWorker.controller;navigator.serviceWorker.addEventListener("controllerchange",()=>{if(had)location.reload();had=true})}
 addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"&&new Date().toDateString()!==TD.toDateString())location.reload()});
 </script>
+<script>
+const _renderWX=render;render=function(){_renderWX();if(S.view!=="settings")return;const sc=document.querySelector("#scr");if(!sc||sc.querySelector("#wipe"))return;const b=document.createElement("button");b.id="wipe";b.textContent="Effacer les données de cet appareil";b.style.cssText="all:unset;display:block;margin:24px auto 8px;font-size:13px;color:#ef6b6b;cursor:pointer;text-align:center";sc.appendChild(b)};
+document.addEventListener("click",e=>{const b=e.target.closest("#wipe");if(!b)return;if(!b.dataset.ok){b.dataset.ok=1;b.textContent="Toucher encore pour tout effacer";return}try{localStorage.clear();sessionStorage.clear()}catch(_){}location.reload()});
+</script>
 </body></html>
