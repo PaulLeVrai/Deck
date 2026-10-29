@@ -1188,6 +1188,18 @@ html.glass .dring{display:none!important}
 /* encore plus translucide */
 html.glass .card,html.glass .scat,html.glass .hcard2,html.glass .dock{background:linear-gradient(155deg,rgba(255,255,255,.2),rgba(255,255,255,.05))!important;-webkit-backdrop-filter:blur(16px) saturate(180%)!important;backdrop-filter:blur(16px) saturate(180%)!important}
 html.glass .card .card,html.glass .card .s2t,html.glass .card .spt,html.glass .s2t,html.glass .spt{background:rgba(255,255,255,.12)!important}
+/* carte séance façon réf. (lavande, slide vert) */
+html.glass .spfr{background:linear-gradient(170deg,rgba(255,255,255,.92) 0%,rgba(246,242,252,.88) 45%,rgba(232,222,246,.85) 100%)!important;border:0!important;border-radius:44px!important;padding:28px 22px 22px!important;box-shadow:inset 0 1px 0 #fff,inset 0 -18px 30px -18px rgba(190,160,230,.35),0 30px 60px -24px rgba(120,90,170,.35)!important;-webkit-backdrop-filter:blur(24px) saturate(160%)!important;backdrop-filter:blur(24px) saturate(160%)!important}
+html.glass #scr .spfr .spfh{color:#8a8a92!important;font-size:14px!important;font-weight:400!important;letter-spacing:-.01em}
+html.glass .spfr .spft{color:#111!important;font-weight:400!important;font-size:30px!important;letter-spacing:-.03em;margin:8px 0 18px!important;padding-bottom:18px;border-bottom:1px solid rgba(0,0,0,.08)}
+html.glass .spfr .spsl{background:linear-gradient(180deg,rgba(225,225,230,.75),rgba(240,240,244,.85))!important;height:68px!important;border-radius:99px!important;box-shadow:inset 0 2px 6px rgba(0,0,0,.08),inset 0 -1px 0 rgba(255,255,255,.9)!important}
+html.glass .spfr .spsl::after{content:"";position:absolute;right:26px;top:50%;width:7px;height:7px;margin-top:-3.5px;border-radius:50%;background:#34c759;box-shadow:0 0 8px rgba(52,199,89,.6)}
+html.glass #scr .spfr .spsl em{color:#a0a0a8!important;font-size:17px!important;font-weight:400!important}
+html.glass .spfr .spkn{width:60px!important;height:60px!important;top:4px!important;left:4px!important;background:radial-gradient(circle at 40% 30%,#8fe39b,#4cbb5c 55%,#38a24a)!important;box-shadow:inset 0 2px 3px rgba(255,255,255,.55),inset 0 -3px 6px rgba(0,0,0,.12),8px 0 22px rgba(60,180,80,.45)!important}
+html.glass .spfr .spkn svg{stroke:#fff!important;width:20px!important;height:20px!important;stroke-width:2.2!important}
+html.glass .spfr.ms{background:linear-gradient(170deg,rgba(255,255,255,.92),rgba(252,236,238,.88) 50%,rgba(246,214,220,.85))!important}
+html.glass #scr .spfr.ms .spfh{color:#e0484d!important}
+html.glass .spfr.dn{background:linear-gradient(170deg,rgba(255,255,255,.92),rgba(236,248,238,.88) 50%,rgba(214,240,220,.85))!important}
 </style>
 </head><body>
 
@@ -1636,7 +1648,7 @@ function spPile(){const W0=spWeek(),W=W0.filter(([x])=>x.done).concat(W0.filter(
  const lab=x=>{const d=dLong(x.dd);return d.split(" ")[0].slice(0,3)+"."},[fx,fi]=W[f],ck='<svg viewBox="0 0 24 24"><path d="m5 12 5 5 9-10"/></svg>';
  const top=W.slice(0,f).map(([x,i],k)=>`<button class="spk spku ${x.done?"dn":spMiss(x)?"ms":""}" data-spf="${i}" style="margin:0 0 -18px;z-index:${k+1}">${x.done?ck:spMiss(x)?XI:""}<span>${lab(x)} · ${esc(x.t)}${spMiss(x)?" · manquée":""}</span><em>${x.h}</em></button>`).join("");
  const bot=W.slice(f+1).map(([x,i],k)=>`<button class="spk spkd ${x.done?"dn":""}" data-spf="${i}" style="margin:-18px 0 0;z-index:${10-k};background:${x.done?"#1a2a1f":["#1a1a1a","#151515","#111"][Math.min(k,2)]};">${x.done?ck:""}<span>${esc(x.t)}</span><em>${lab(x)} ${x.h}</em></button>`).join("");
- const front=`<div class="spfr ${fx.done?"dn":spMiss(fx)?"ms":""}" data-sd="${fi}"><div class="spfh">${fx.done?"Faite":spMiss(fx)?"Manquée":fi===(W.find(([x])=>!x.done&&!spMiss(x))||[])[1]?"Prochaine":"À venir"} · ${dLong(fx.dd)} ${fx.h}</div><b class="spft">${esc(fx.t)}</b><div class="spsl ${fx.done?"ok":""}" data-spsl="${fi}" style="--p:${fx.done?1:0}"><span class="spkn" ${fx.done?'style="transform:translateX(var(--mx))"':""}>${fx.done?ck:'<svg viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg>'}</span><em>${fx.done?"Glisser pour annuler":"Glisser pour valider"}</em></div></div>`;
+ const front=`<div class="spfr ${fx.done?"dn":spMiss(fx)?"ms":""}" data-sd="${fi}"><div class="spfh">${fx.done?"Faite":spMiss(fx)?"Manquée":fi===(W.find(([x])=>!x.done&&!spMiss(x))||[])[1]?"Prochaine":"À venir"} · ${dLong(fx.dd)} ${fx.h}</div><b class="spft">${esc(fx.t)}</b><div class="spsl ${fx.done?"ok":""}" data-spsl="${fi}" style="--p:${fx.done?1:0}"><span class="spkn" ${fx.done?'style="transform:translateX(var(--mx))"':""}>${fx.done?ck:'<svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>'}</span><em>${fx.done?"Glisser pour annuler":"Glisser pour valider"}</em></div></div>`;
  return `<div class="sppile">${top}${front}${bot}</div>`}
 function spDone(i,v){const se=S.sess[i];if(!se||se.done===v)return;se.done=v;if(v){se.man=true;S.spt.n++;S.sport.unshift([se.t,se.wo!=null&&S.wos[se.wo]?woSub(S.wos[se.wo]):"Fait","Aujourd'hui"])}else{S.spt.n=Math.max(0,S.spt.n-1);const k=S.sport.findIndex(a=>a[0]===se.t);if(k>=0)S.sport.splice(k,1)}persist();keepRender()}
 document.addEventListener("click",e=>{if(S.view==="sport"&&S.spF!=null&&!e.target.closest(".sppile")){S.spF=null;keepRender()}
