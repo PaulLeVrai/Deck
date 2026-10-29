@@ -1200,6 +1200,15 @@ html.glass .spfr .spkn svg{stroke:#fff!important;width:20px!important;height:20p
 html.glass .spfr.ms{background:linear-gradient(170deg,rgba(255,255,255,.92),rgba(252,236,238,.88) 50%,rgba(246,214,220,.85))!important}
 html.glass #scr .spfr.spfr.ms .spfh.spfh.spfh{color:#e0484d!important}
 html.glass .spfr.dn{background:linear-gradient(170deg,rgba(255,255,255,.92),rgba(236,248,238,.88) 50%,rgba(214,240,220,.85))!important}
+/* fond façon référence : blanc tramé, lavande, pêche */
+html.glass body::before{background:
+radial-gradient(circle,rgba(0,0,0,.07) .8px,transparent 1.2px) 0 0/6px 6px,
+radial-gradient(70% 30% at 100% 52%,rgba(170,140,220,.75),transparent 70%),
+radial-gradient(60% 28% at 0% 60%,rgba(190,160,230,.55),transparent 70%),
+radial-gradient(80% 30% at 30% 88%,rgba(240,190,150,.7),transparent 70%),
+radial-gradient(70% 28% at 85% 100%,rgba(215,215,140,.6),transparent 70%),
+linear-gradient(180deg,#fbfbfc 0%,#f4f4f6 35%,#e9e2f2 55%,#efdcd0 80%,#e6e2bf 100%)!important}
+html.glass body::after{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;background:linear-gradient(180deg,rgba(255,255,255,.55),transparent 38%)}
 </style>
 </head><body>
 
