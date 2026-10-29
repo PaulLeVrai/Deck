@@ -20,6 +20,8 @@ async function generate(day){const key=process.env.ANTHROPIC_API_KEY;if(!key)thr
   throw new Error("Recherche trop longue")}
 module.exports=async(req,res)=>{const q=req.query||{},day=/^\d{4}-\d{2}-\d{2}$/.test(q.d||"")?q.d:paris().toISOString().slice(0,10);
   // Cron call (no date): request today's URL through the CDN so the generated note gets cached.
+  // The daily cron also queries Supabase so the free project never pauses for inactivity.
+  if(!q.d){try{await fetch("https://dzsdzwoabgswnqruarhe.supabase.co/rest/v1/app_state?select=user_id&limit=1",{headers:{apikey:"sb_publishable_w4HmYMGX1dySixUPJMoBzw_uTh38b2N"}})}catch(e){}}
   if(!q.d){try{const r=await fetch(`https://${req.headers.host}/api/veille?d=${day}`);return res.status(r.status).json({warmed:day})}catch(e){return res.status(500).json({error:e.message})}}
   try{const v=await generate(day);res.setHeader("Cache-Control","s-maxage=86400, stale-while-revalidate=600");res.json(v)}
   catch(e){res.setHeader("Cache-Control","no-store");res.status(e.code||500).json({error:e.message})}};
