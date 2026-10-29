@@ -8,6 +8,8 @@ const KEY="cockpit",STAMP="deck-stamp";
 // A data key (Réglages) also gives access to the saved data, without signing in.
 const DK="deck-key";const dk=()=>localStorage.getItem(DK);
 // A Deck name ("deck.paul") finds the same data on any device, no e-mail needed.
+// Before remote data replaces this device's data, keep a copy (Réglages can restore it).
+const bak=()=>{const l=localStorage.getItem("cockpit");if(l&&l.length>200)try{localStorage.setItem("cockpit-bak",l);localStorage.setItem("cockpit-bak-at",Date.now())}catch(e){}};
 const SP="deck-space";const sp=()=>localStorage.getItem(SP);let claude=localStorage.getItem("deck-claude");
 let user=null,t=null;
 async function remote(){if(sp()){const {data,error}=await sb.rpc("space_get",{p_name:sp()});if(error)throw error;if(data&&data.claude){claude=data.claude;localStorage.setItem("deck-claude",claude)}return data&&data.data&&data.data.v?data:null}
@@ -16,7 +18,7 @@ async function remote(){if(sp()){const {data,error}=await sb.rpc("space_get",{p_
 async function pull(){if(!user&&!dk()&&!sp())return;let data;try{data=await remote()}catch(e){return}
   const local=localStorage.getItem(KEY),ls=+localStorage.getItem(STAMP)||0;
   if(data&&data.data&&data.data.v===2&&new Date(data.updated_at).getTime()>ls){
-    const txt=JSON.stringify(data.data);if(txt!==local){localStorage.setItem(KEY,txt);localStorage.setItem(STAMP,new Date(data.updated_at).getTime());location.reload();return}}
+    const txt=JSON.stringify(data.data);if(txt!==local){bak();localStorage.setItem(KEY,txt);localStorage.setItem(STAMP,new Date(data.updated_at).getTime());location.reload();return}}
   else if(local)push()}
 async function push(){if(!user&&!dk()&&!sp())return;const d=localStorage.getItem(KEY);if(!d)return;const now=new Date();
   if(sp()){const {data,error}=await sb.rpc("space_set",{p_name:sp(),p_data:JSON.parse(d)});if(!error){localStorage.setItem(STAMP,now.getTime());if(data&&data!==claude){claude=data;localStorage.setItem("deck-claude",data);window.deckRender&&window.deckRender()}}return}
@@ -43,8 +45,11 @@ window.deckSync={
   async useSpace(n){n=n.trim().toLowerCase();if(!/^deck\.[a-z0-9._-]{3,}$/.test(n))return "Le nom doit commencer par deck. puis au moins 3 caractères";
     const {data,error}=await sb.rpc("space_get",{p_name:n});if(error)return /space_get/.test(error.message)?"Relance d'abord le script SQL dans Supabase":error.message;
     localStorage.setItem(SP,n);if(data&&data.claude){claude=data.claude;localStorage.setItem("deck-claude",claude)}
-    if(data&&data.data&&data.data.v===2){localStorage.setItem(KEY,JSON.stringify(data.data));localStorage.setItem(STAMP,new Date(data.updated_at).getTime());location.reload();return "ok"}
+    if(data&&data.data&&data.data.v===2){bak();localStorage.setItem(KEY,JSON.stringify(data.data));localStorage.setItem(STAMP,new Date(data.updated_at).getTime());location.reload();return "ok"}
     localStorage.removeItem(STAMP);await push();window.deckRender&&window.deckRender();return "ok"},
+  get backupAt(){return +localStorage.getItem("cockpit-bak-at")||null},
+  // Puts back the data this device had before the last download, and sends it to the space.
+  async restore(){const b=localStorage.getItem("cockpit-bak");if(!b)return;localStorage.setItem(KEY,b);localStorage.removeItem("cockpit-bak");localStorage.removeItem("cockpit-bak-at");await push();location.reload()},
   leaveSpace(){localStorage.removeItem(SP);localStorage.removeItem("deck-claude");claude=null;window.deckRender&&window.deckRender()},
   changed(){if(!user&&!dk()&&!sp())return;clearTimeout(t);t=setTimeout(push,1500)},
   // Password sign-in works inside the installed iPhone app (a magic link would open Safari instead).
