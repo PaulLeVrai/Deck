@@ -1268,8 +1268,33 @@ html.glass.bgb .card,html.glass.bgb .scat,html.glass.bgb .hcard2,html.glass.bgb 
 html.glass #nsheet .nsx.nsx,html.glass #nsheet button.nsx{background:radial-gradient(circle at 40% 30%,#ff8a80,#e53935 60%,#c62828)!important;box-shadow:none!important;border:0!important}html.glass #nsheet .nsx svg{stroke:#fff!important}
 html.glass #scr#scr .gdate,html.glass #scr#scr .gdate *{font-weight:500!important}html.glass #scr#scr .gdate{font-size:20px!important;letter-spacing:-.02em!important}html.glass #scr#scr .gwheel{margin:0 1px!important;padding:0!important}
 html.glass #scr#scr .gwheel{display:inline-block!important;position:relative;vertical-align:baseline!important;line-height:inherit!important}html.glass #scr#scr .gwheel b{font-size:inherit!important;color:inherit!important}html.glass #scr#scr .gwheel small{position:absolute;left:50%;transform:translateX(-50%);height:auto;line-height:1}html.glass #scr#scr .gwheel small:first-child{bottom:100%}html.glass #scr#scr .gwheel small:last-child{top:100%}
+/* Test : ardoise #06141B #11212D #253745 #4A5C6A #9BA8AB #CCD0CF */
+html.glass.bga body::before{background:radial-gradient(60% 25% at 50% 0%,rgba(255,255,255,.9),transparent 70%),linear-gradient(180deg,#e9edf1 0%,#CCD0CF 22%,#9BA8AB 42%,#4A5C6A 62%,#253745 78%,#11212D 90%,#06141B 100%)!important}
+html.glass.bga body::after{display:none}
+html.glass.bga .card,html.glass.bga .scat,html.glass.bga .hcard2,html.glass.bga #scr .tlist{background:linear-gradient(180deg,rgba(255,255,255,calc(.35 + var(--gl)*.4)),rgba(255,255,255,calc(.2 + var(--gl)*.4)))!important;-webkit-backdrop-filter:blur(24px) saturate(120%)!important;backdrop-filter:blur(24px) saturate(120%)!important}
+html.glass.bga .card .card,html.glass.bga .card .s2t,html.glass.bga .card .spt,html.glass.bga .s2t,html.glass.bga .spt,html.glass.bga #scr .tlist .vrow{background:rgba(255,255,255,.92)!important;border-radius:28px!important}
+html.glass.bga .dock{background:rgba(255,255,255,.7)!important;-webkit-backdrop-filter:blur(24px)!important;backdrop-filter:blur(24px)!important}
+html.glass.bga #scr .cta,html.glass.bga #scr button.cta,html.glass.bga .day.on{background:#11212D!important}html.glass.bga #scr .day.on *{color:#fff!important}
+html.glass.bga .spfr{background:linear-gradient(180deg,rgba(255,255,255,.95),rgba(204,208,207,.9))!important}
+html.glass.bga .spfr .spkn,html.glass.bga .pplus,html.glass.bga .nsok,html.glass.bga .lvfab{background:radial-gradient(circle at 40% 30%,#4A5C6A,#253745 55%,#11212D)!important;box-shadow:inset 0 2px 3px rgba(255,255,255,.3)!important}
+html.glass.bga .spfr .spsl::after{background:#4A5C6A;box-shadow:none}
+html.glass.bga .seg i.y,html.glass.bga .spseg i.d,html.glass.bga .spsg .d i{background:#253745!important}
+html.glass.bga .check.on,html.glass.bga .vcheck.on,html.glass.bga .hcheck.on{background:#253745!important;border-color:#253745!important}
+html.glass.bga .gset{background:rgba(255,255,255,.8)!important}
+html.glass.bga #scr .tlist{padding:10px!important}html.glass.bga #scr .tlist .vrow{margin:6px 0;padding:14px 16px}
 /* évènements : verre teinté à la couleur du calendrier */
 html.glass #scr .vev:not(.free){background:linear-gradient(160deg,color-mix(in srgb,var(--c) 78%,rgba(255,255,255,.5)),color-mix(in srgb,var(--c) 52%,transparent))!important;-webkit-backdrop-filter:blur(14px) saturate(170%)!important;backdrop-filter:blur(14px) saturate(170%)!important;border:0!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.55),inset 0 0 0 .5px rgba(255,255,255,.25)!important;border-radius:16px!important}
+/* premium : ombres en couches, bord lumineux, fondus */
+html.glass .card,html.glass .scat,html.glass .hcard2,html.glass #scr .tlist{position:relative;box-shadow:0 1px 1px rgba(10,20,30,.03),0 2px 4px rgba(10,20,30,.03),0 8px 16px -4px rgba(10,20,30,.05),0 24px 48px -12px rgba(10,20,30,.10)!important}
+html.glass .card::after,html.glass .scat::after,html.glass #scr .tlist::after{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;background:linear-gradient(180deg,rgba(255,255,255,.85),rgba(255,255,255,.15) 40%,rgba(255,255,255,0) 70%,rgba(255,255,255,.25));-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none}
+html.glass .card .card,html.glass .card .s2t,html.glass .card .spt,html.glass #scr .tlist .vrow{box-shadow:0 1px 2px rgba(10,20,30,.04),0 6px 14px -6px rgba(10,20,30,.10)!important}
+html.glass .card .card::after{display:none}
+html.glass .dock{box-shadow:0 2px 4px rgba(10,20,30,.04),0 12px 32px -8px rgba(10,20,30,.22),inset 0 1px 0 rgba(255,255,255,.8)!important}
+html.glass .spfr{box-shadow:0 1px 2px rgba(10,20,30,.04),0 12px 28px -10px rgba(10,20,30,.18),inset 0 1px 0 #fff!important}
+html.glass .spfr .spkn{box-shadow:inset 0 1px 2px rgba(255,255,255,.4),0 4px 12px -2px rgba(10,20,30,.35)!important}
+/* transitions douces */
+html.glass .card,html.glass .spfr,html.glass .dock{transition:transform .35s cubic-bezier(.2,.8,.2,1),box-shadow .35s}
+html.glass .card[data-go]:active,html.glass .spfr:active{transform:scale(.985)}
 </style>
 </head><body>
 
