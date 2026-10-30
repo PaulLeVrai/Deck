@@ -6,6 +6,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Deck">
+<script>try{const g=localStorage.getItem("deckGL");if(g!=null)document.documentElement.style.setProperty("--gl",g)}catch(e){}</script>
 <script>try{if((localStorage.getItem("deckBG")||"l")==="l")document.documentElement.classList.add("bgl")}catch(e){document.documentElement.classList.add("bgl")}</script>
 <script>
 // Installed iPhone app: the status bar is drawn over the page, so reserve its height ourselves.
@@ -1226,6 +1227,22 @@ html.glass #scr button.cta,html.glass #scr .cta{background:#1c1c1e!important;col
 html.glass #scr .cta.cta *{color:#fff!important}
 html.glass #scr .spA .spsb.spsb{box-shadow:none!important;border:0!important;background:rgba(255,255,255,.3)!important;border-radius:30px!important}
 html.glass #scr #wipe#wipe{color:#e0484d!important}
+/* curseur verre : --gl de 0 à 1, milieu = actuel */
+html.glass{--gl:.5}
+html.glass .card,html.glass .scat,html.glass .hcard2,html.glass .dock{background:linear-gradient(155deg,rgba(255,255,255,calc(var(--gl)*.4)),rgba(255,255,255,calc(var(--gl)*.1)))!important;-webkit-backdrop-filter:blur(calc(6px + var(--gl)*20px)) saturate(180%)!important;backdrop-filter:blur(calc(6px + var(--gl)*20px)) saturate(180%)!important}
+html.glass .card .card,html.glass .card .s2t,html.glass .card .spt,html.glass .s2t,html.glass .spt{background:rgba(255,255,255,calc(var(--gl)*.24))!important}
+/* tâches dans un module */
+html.glass #scr .tlist{background:linear-gradient(155deg,rgba(255,255,255,calc(var(--gl)*.4)),rgba(255,255,255,calc(var(--gl)*.1)));-webkit-backdrop-filter:blur(calc(6px + var(--gl)*20px)) saturate(180%);backdrop-filter:blur(calc(6px + var(--gl)*20px)) saturate(180%);border-radius:40px;padding:8px 18px;margin:0 0 12px}
+html.glass #scr .tlist{background:linear-gradient(155deg,rgba(255,255,255,calc(var(--gl)*.4)),rgba(255,255,255,calc(var(--gl)*.1)))!important;border-radius:40px!important;padding:8px 18px!important}
+html.glass #scr .tlist .vrow{border:0!important}
+html.glass .dvt,html.glass .dvts>*{box-shadow:none!important;border:0!important;background:rgba(255,255,255,calc(var(--gl)*.24))!important;border-radius:24px!important}
+html.glass .bkall .bcvall{background:rgba(255,255,255,.4)!important}html.glass .bkall .bcvall *{background:rgba(255,255,255,.5)!important;box-shadow:none!important}
+html.glass #nsheet{background:linear-gradient(170deg,rgba(255,255,255,.9),rgba(244,240,250,.88) 50%,rgba(232,222,246,.86))!important;color:#1c1c1e!important;border:0!important;box-shadow:none!important;border-radius:40px 40px 0 0!important}
+html.glass #nsheet *:not(.nsok):not(.nsok *):not(.sw):not(.sw *){color:#1c1c1e!important}
+html.glass #nsheet input::placeholder{color:#9a9aa2!important}
+html.glass #nsheet .nsc,html.glass #nsheet .ntask,html.glass #nsheet input,html.glass #nsheet .nsrow,html.glass #nsheet button:not(.nsok){background:rgba(255,255,255,.55)!important;border:0!important;box-shadow:none!important}
+html.glass #scr .tlist{background:rgba(255,255,255,calc(var(--gl)*.9))!important}
+html.glass #nsheet .nsx,html.glass #nsheet [data-nsx],html.glass #nsheet .nscl{background:rgba(0,0,0,.08)!important}
 </style>
 </head><body>
 
@@ -2158,10 +2175,10 @@ function wpApply(){let u=null;try{u=localStorage.getItem("deckWP")}catch(e){}let
 wpApply();(function(){let g=null;try{g=localStorage.getItem("deckGA")}catch(e){}if(g!=null)document.documentElement.style.setProperty("--ga",g)})();
 const _renderWP=render;render=function(){_renderWP();if(S.view!=="settings")return;const sc=document.querySelector("#scr");if(!sc||sc.querySelector("#wpbox"))return;if(window.deckSync&&deckSync.backupAt&&!sc.querySelector("#bakbox")){const bx=document.createElement("div");bx.className="card";bx.id="bakbox";bx.innerHTML=`<div style="font-size:15px">Données d'avant la synchronisation</div><div class="vs" style="margin:4px 0 12px">Copie de cet appareil du ${new Date(deckSync.backupAt).toLocaleString("fr-FR",{day:"numeric",month:"long",hour:"2-digit",minute:"2-digit"})}, avant d'être remplacée.</div><button class="cta" data-restore style="background:#f5f5f7!important;color:#111!important;margin:0">Restaurer ces données</button>`;const fst=sc.querySelector(".slabel,.scats");fst?fst.before(bx):sc.appendChild(bx)}let has=false;try{has=!!localStorage.getItem("deckWP")}catch(e){}
  const l=document.createElement("div");l.className="slabel";l.textContent="Fond";const c=document.createElement("div");c.className="card";c.id="wpbox";
- const bg=(()=>{try{return localStorage.getItem("deckBG")||"l"}catch(e){return "l"}})();c.innerHTML=`<div class="wpopt"><button class="${!has&&bg==="l"?"on":""}" data-wp="l">Lavande</button><button class="${!has&&bg==="g"?"on":""}" data-wp="g">Gris</button><button class="${has?"on":""}" data-wp="img">Photo</button></div><input type="file" accept="image/*" id="wpfile" hidden><div class="vs" style="margin-top:16px">Effet verre</div><input type="range" class="garange" id="garange" min="0" max="1" step="0.05" value="${getComputedStyle(document.documentElement).getPropertyValue("--ga").trim()||.15}"><div class="galab"><span>Transparent</span><span>Opaque</span></div>`;
+ const bg=(()=>{try{return localStorage.getItem("deckBG")||"l"}catch(e){return "l"}})();c.innerHTML=`<div class="wpopt"><button class="${!has&&bg==="l"?"on":""}" data-wp="l">Lavande</button><button class="${!has&&bg==="g"?"on":""}" data-wp="g">Gris</button><button class="${has?"on":""}" data-wp="img">Photo</button></div><input type="file" accept="image/*" id="wpfile" hidden><div class="vs" style="margin-top:16px">Effet verre</div><input type="range" class="garange" id="garange" min="0" max="1" step="0.05" value="${getComputedStyle(document.documentElement).getPropertyValue("--gl").trim()||.5}"><div class="galab"><span>Transparent</span><span>Opaque</span></div>`;
  const ls=sc.querySelectorAll(".slabel");const last=ls[ls.length-1];(last?last.parentElement:sc).appendChild(l);l.after(c)};
 document.addEventListener("click",e=>{const b=e.target.closest("[data-wp]");if(!b)return;if(b.dataset.wp!=="img"){try{localStorage.removeItem("deckWP");localStorage.setItem("deckBG",b.dataset.wp)}catch(x){}document.documentElement.classList.toggle("bgl",b.dataset.wp==="l");wpApply();render()}else document.getElementById("wpfile").click()},true);
-document.addEventListener("input",e=>{if(e.target.id!=="garange")return;document.documentElement.style.setProperty("--ga",e.target.value);try{localStorage.setItem("deckGA",e.target.value)}catch(x){}},true);
+document.addEventListener("input",e=>{if(e.target.id!=="garange")return;document.documentElement.style.setProperty("--gl",e.target.value);try{localStorage.setItem("deckGL",e.target.value)}catch(x){}},true);
 document.addEventListener("change",e=>{if(e.target.id!=="wpfile"||!e.target.files[0])return;const r=new FileReader();r.onload=()=>{const im=new Image();im.onload=()=>{const k=Math.min(1,1400/Math.max(im.width,im.height)),cv=document.createElement("canvas");cv.width=im.width*k;cv.height=im.height*k;cv.getContext("2d").drawImage(im,0,0,cv.width,cv.height);try{localStorage.setItem("deckWP",cv.toDataURL("image/jpeg",.82))}catch(x){}wpApply();render()};im.src=r.result};r.readAsDataURL(e.target.files[0])},true);
 const _renderHist=render;render=function(){_renderHist();if(S.view!=="tasks")return;const sc=document.querySelector("#scr");if(!sc||sc.querySelector("#thist"))return;const H=S.tasks.map((x,i)=>[x,i]).filter(([x])=>oldDone(x)).sort((a,b)=>(b[0].dn||0)-(a[0].dn||0));if(!H.length)return;
  const op=!!S.histOpen,c=document.createElement("div");c.className="card tcard";c.id="thist";c.innerHTML=`<button class="histh" data-hist><span>Historique</span><span class="vs">${H.length} ›</span></button>${op?`<div class="tlist">${H.slice(0,50).map(([x,i])=>`<div class="hrowx"><span>${esc(x.t)}</span><span class="vs">${x.dn?new Date(x.dn).toLocaleDateString("fr-FR",{day:"numeric",month:"short"}):""}</span></div>`).join("")}</div>`:""}`;sc.appendChild(c)};
