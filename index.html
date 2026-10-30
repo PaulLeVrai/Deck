@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Deck">
 <script>try{const g=localStorage.getItem("deckGL");if(g!=null)document.documentElement.style.setProperty("--gl",g)}catch(e){}</script>
-<script>try{if((localStorage.getItem("deckBG")||"l")==="l")document.documentElement.classList.add("bgl")}catch(e){document.documentElement.classList.add("bgl")}</script>
+<script>try{{const b=localStorage.getItem("deckBG")||"b";if(b==="l")document.documentElement.classList.add("bgl");if(b==="b")document.documentElement.classList.add("bgb")}}catch(e){document.documentElement.classList.add("bgl")}</script>
 <script>
 // Installed iPhone app: the status bar is drawn over the page, so reserve its height ourselves.
 (function(){var st=navigator.standalone||matchMedia("(display-mode: standalone)").matches;if(!st)return;var d=document.documentElement;d.classList.add("ios-app");
@@ -1243,6 +1243,28 @@ html.glass #nsheet input::placeholder{color:#9a9aa2!important}
 html.glass #nsheet .nsc,html.glass #nsheet .ntask,html.glass #nsheet input,html.glass #nsheet .nsrow,html.glass #nsheet button:not(.nsok){background:rgba(255,255,255,.55)!important;border:0!important;box-shadow:none!important}
 html.glass #scr .tlist{background:rgba(255,255,255,calc(var(--gl)*.9))!important}
 html.glass #nsheet .nsx,html.glass #nsheet [data-nsx],html.glass #nsheet .nscl{background:rgba(0,0,0,.08)!important}
+/* Test : palette bleu profond / blanc / rose bubblegum */
+html.glass.bgb{--blu:#09318D;--pnk:#FD91CC}
+html.glass.bgb body::before{background:radial-gradient(circle,rgba(255,255,255,.18) .8px,transparent 1.2px) 0 0/7px 7px,radial-gradient(60% 30% at 80% 8%,rgba(80,130,255,.55),transparent 70%),radial-gradient(50% 25% at 10% 35%,rgba(253,145,204,.18),transparent 70%),linear-gradient(180deg,#09318D 0%,#1546c4 38%,#6f93e6 62%,#dfe6f7 82%,#ffffff 100%)!important}
+html.glass.bgb body::after{display:none}
+html.glass.bgb .card,html.glass.bgb .scat,html.glass.bgb .hcard2,html.glass.bgb #scr .tlist{background:rgba(255,255,255,calc(.55 + var(--gl)*.4))!important}
+html.glass.bgb .dock{background:rgba(255,255,255,calc(.5 + var(--gl)*.4))!important}
+html.glass.bgb .card .card,html.glass.bgb .s2t,html.glass.bgb .spt,html.glass.bgb .card .spt{background:rgba(9,49,141,.05)!important}
+/* titres posés sur le bleu */
+html.glass.bgb #scr>.screen>h1,html.glass.bgb #scr .ptitle,html.glass.bgb #scr .eyebrow,html.glass.bgb #scr .ph1,html.glass.bgb #scr>div>.slabel{color:#fff!important}
+/* accents roses */
+html.glass.bgb .spfr .spkn,html.glass.bgb .pplus,html.glass.bgb .nsok,html.glass.bgb .lvfab{background:radial-gradient(circle at 40% 30%,#ffc2e3,#FD91CC 55%,#f06fb4)!important;box-shadow:inset 0 2px 3px rgba(255,255,255,.6)!important}
+html.glass.bgb .spfr .spsl::after{background:#FD91CC;box-shadow:0 0 8px rgba(253,145,204,.8)}
+html.glass.bgb .spfr{background:linear-gradient(170deg,#fff,#fdf3f9 55%,#fbe3f1)!important}
+html.glass.bgb #scr .cta,html.glass.bgb #scr button.cta{background:#09318D!important}
+html.glass.bgb .seg i.y,html.glass.bgb .spseg i.d,html.glass.bgb .spsg .d i{background:#FD91CC!important}
+html.glass.bgb .check.on,html.glass.bgb .vcheck.on,html.glass.bgb .hcheck.on{background:#FD91CC!important;border-color:#FD91CC!important}
+html.glass.bgb .day.on{background:#09318D!important}html.glass.bgb #scr .day.on *{color:#fff!important}
+html.glass.bgb .gset{background:rgba(9,49,141,.08)!important}
+html.glass.bgb .card,html.glass.bgb .scat,html.glass.bgb .hcard2,html.glass.bgb #scr .tlist{background:rgba(255,255,255,calc(.72 + var(--gl)*.28))!important}
+html.glass.bgb .card .card,html.glass.bgb .card .s2t,html.glass.bgb .card .spt{background:rgba(9,49,141,.05)!important}
+html.glass.bgb #scr#scr .title:not(.card .title),html.glass.bgb #scr#scr .eyebrow:not(.card .eyebrow),html.glass.bgb #scr#scr .slabel:not(.card .slabel),html.glass.bgb #scr#scr .slabel:not(.card .slabel) *{color:#fff!important}
+html.glass.bgb .card,html.glass.bgb .scat,html.glass.bgb .hcard2,html.glass.bgb .dock,html.glass.bgb #scr .tlist{-webkit-backdrop-filter:blur(20px) saturate(100%)!important;backdrop-filter:blur(20px) saturate(100%)!important}
 </style>
 </head><body>
 
@@ -1474,7 +1496,7 @@ function weekDays(wk){const m=new Date(TD.getFullYear(),TD.getMonth(),TD.getDate
 function isoWeek(d){const x=new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate()));const n=x.getUTCDay()||7;x.setUTCDate(x.getUTCDate()+4-n);const y=new Date(Date.UTC(x.getUTCFullYear(),0,1));return Math.ceil(((x-y)/864e5+1)/7)}
 function evRows(d,wk=0){const ae=S.apple.err&&S.view==="plan"?`<div class="vs" style="color:#e8a25b">${esc(S.apple.err)}</div>`:"";return ae+evRows0(d,wk)}
 function evRows0(d,wk=0){let e=((wk===0?S.events[d]:S.evx[wk+":"+d])||[]).slice();if(S.apple.on||S.apple.cals.some(c=>c[4]))(S.apple.ev[wk+":"+d]||[]).forEach(([h,t,c,du])=>{const k=S.apple.cals[c];if(k&&k[2])e.push([h,t,k[0],k[1],du])});{const dt=weekDays(wk)[d],off=Math.round((new Date(dt.getFullYear(),dt.getMonth(),dt.getDate())-new Date(TD.getFullYear(),TD.getMonth(),TD.getDate()))/864e5);
- (S.sess||[]).forEach((x,si)=>{if(x.dd===off){(window.SESSMAP=window.SESSMAP||{})[(x.done?"✓ ":"")+x.t+"|"+(x.h||"18:00")]=si;const w=(S.wo||[]).find(o=>o.n===x.t||o.t===x.t);let du=45;try{du=w&&typeof woMin==="function"?woMin(w)||45:45}catch(_){}e.push([x.h||"18:00",(x.done?"✓ ":"")+x.t,"Sport",x.done?"#34c759":"#7c4dff",du])}});
+ (S.sess||[]).forEach((x,si)=>{if(x.dd===off){(window.SESSMAP=window.SESSMAP||{})[(x.done?"✓ ":"")+x.t+"|"+(x.h||"18:00")]=si;const w=(S.wo||[]).find(o=>o.n===x.t||o.t===x.t);let du=45;try{du=w&&typeof woMin==="function"?woMin(w)||45:45}catch(_){}e.push([x.h||"18:00",(x.done?"✓ ":"")+x.t,"Sport",x.done?"#34c759":(document.documentElement.classList.contains("bgb")?"#09318D":"#7c4dff"),du])}});
  if(off>=0&&off<31)(S.tasks||[]).forEach(x=>{if(!x.i||x.done)return;const ok=x.e!=null?x.e===dt.getDate():(x.d==="Aujourd'hui"&&off===0);if(ok)e.push([x.h||"09:00","★ "+x.t,"Tâche importante","#bf5af2",30])})}e.sort((a,b)=>a[0].localeCompare(b[0]));
  // Free slot between two events at least 2 h apart (events count as 1 h when no end is known).
  const m=h=>/^\d\d:\d\d$/.test(h)?+h.slice(0,2)*60+ +h.slice(3):null,hh=n=>String(Math.floor(n/60)).padStart(2,"0")+":"+String(n%60).padStart(2,"0"),f=[];
@@ -2175,9 +2197,9 @@ function wpApply(){let u=null;try{u=localStorage.getItem("deckWP")}catch(e){}let
 wpApply();(function(){let g=null;try{g=localStorage.getItem("deckGA")}catch(e){}if(g!=null)document.documentElement.style.setProperty("--ga",g)})();
 const _renderWP=render;render=function(){_renderWP();if(S.view!=="settings")return;const sc=document.querySelector("#scr");if(!sc||sc.querySelector("#wpbox"))return;if(false){const bx=document.createElement("div");bx.className="card";bx.id="bakbox";bx.innerHTML=`<div style="font-size:15px">Données d'avant la synchronisation</div><div class="vs" style="margin:4px 0 12px">Copie de cet appareil du ${new Date(deckSync.backupAt).toLocaleString("fr-FR",{day:"numeric",month:"long",hour:"2-digit",minute:"2-digit"})}, avant d'être remplacée.</div><button class="cta" data-restore style="background:#f5f5f7!important;color:#111!important;margin:0">Restaurer ces données</button>`;const fst=sc.querySelector(".slabel,.scats");fst?fst.before(bx):sc.appendChild(bx)}let has=false;try{has=!!localStorage.getItem("deckWP")}catch(e){}
  const l=document.createElement("div");l.className="slabel";l.textContent="Fond";const c=document.createElement("div");c.className="card";c.id="wpbox";
- const bg=(()=>{try{return localStorage.getItem("deckBG")||"l"}catch(e){return "l"}})();c.innerHTML=`<div class="wpopt"><button class="${!has&&bg==="l"?"on":""}" data-wp="l">Lavande</button><button class="${!has&&bg==="g"?"on":""}" data-wp="g">Gris</button><button class="${has?"on":""}" data-wp="img">Photo</button></div><input type="file" accept="image/*" id="wpfile" hidden><div class="vs" style="margin-top:16px">Effet verre</div><input type="range" class="garange" id="garange" min="0" max="1" step="0.05" value="${getComputedStyle(document.documentElement).getPropertyValue("--gl").trim()||.5}"><div class="galab"><span>Transparent</span><span>Opaque</span></div>`;
+ const bg=(()=>{try{return localStorage.getItem("deckBG")||"b"}catch(e){return "b"}})();c.innerHTML=`<div class="wpopt"><button class="${!has&&bg==="b"?"on":""}" data-wp="b">Bleu</button><button class="${!has&&bg==="l"?"on":""}" data-wp="l">Lavande</button><button class="${!has&&bg==="g"?"on":""}" data-wp="g">Gris</button><button class="${has?"on":""}" data-wp="img">Photo</button></div><input type="file" accept="image/*" id="wpfile" hidden><div class="vs" style="margin-top:16px">Effet verre</div><input type="range" class="garange" id="garange" min="0" max="1" step="0.05" value="${getComputedStyle(document.documentElement).getPropertyValue("--gl").trim()||.5}"><div class="galab"><span>Transparent</span><span>Opaque</span></div>`;
  const ls=sc.querySelectorAll(".slabel");const last=ls[ls.length-1];(last?last.parentElement:sc).appendChild(l);l.after(c)};
-document.addEventListener("click",e=>{const b=e.target.closest("[data-wp]");if(!b)return;if(b.dataset.wp!=="img"){try{localStorage.removeItem("deckWP");localStorage.setItem("deckBG",b.dataset.wp)}catch(x){}document.documentElement.classList.toggle("bgl",b.dataset.wp==="l");wpApply();render()}else document.getElementById("wpfile").click()},true);
+document.addEventListener("click",e=>{const b=e.target.closest("[data-wp]");if(!b)return;if(b.dataset.wp!=="img"){try{localStorage.removeItem("deckWP");localStorage.setItem("deckBG",b.dataset.wp)}catch(x){}document.documentElement.classList.toggle("bgl",b.dataset.wp==="l");document.documentElement.classList.toggle("bgb",b.dataset.wp==="b");wpApply();render()}else document.getElementById("wpfile").click()},true);
 document.addEventListener("input",e=>{if(e.target.id!=="garange")return;document.documentElement.style.setProperty("--gl",e.target.value);try{localStorage.setItem("deckGL",e.target.value)}catch(x){}},true);
 document.addEventListener("change",e=>{if(e.target.id!=="wpfile"||!e.target.files[0])return;const r=new FileReader();r.onload=()=>{const im=new Image();im.onload=()=>{const k=Math.min(1,1400/Math.max(im.width,im.height)),cv=document.createElement("canvas");cv.width=im.width*k;cv.height=im.height*k;cv.getContext("2d").drawImage(im,0,0,cv.width,cv.height);try{localStorage.setItem("deckWP",cv.toDataURL("image/jpeg",.82))}catch(x){}wpApply();render()};im.src=r.result};r.readAsDataURL(e.target.files[0])},true);
 const _renderHist=render;render=function(){_renderHist();if(S.view!=="tasks")return;const sc=document.querySelector("#scr");if(!sc||sc.querySelector("#thist"))return;const H=S.tasks.map((x,i)=>[x,i]).filter(([x])=>oldDone(x)).sort((a,b)=>(b[0].dn||0)-(a[0].dn||0));if(!H.length)return;
