@@ -2689,11 +2689,23 @@ html.ios .spsl em{font-size:15px!important;color:transparent!important;backgroun
 html.ios #scr .vev:not(.free){background:color-mix(in srgb,var(--c) 45%,transparent)!important;text-shadow:none!important}
 html.ios #scr .day.on small,html.ios #scr .day.on b{color:#fff!important;opacity:1!important}
 html.ios #scr .day.on small{opacity:.8!important}
+/* Sport : 1er module compact, séances de la semaine plus grandes, bouton Programmer dessous */
+.on-sport #scr .spA{padding:14px 16px!important}
+.on-sport #scr .spA .sptg{grid-template-columns:repeat(3,1fr)!important;margin-top:4px!important;gap:6px!important}
+.on-sport #scr .spA .spt{grid-row:auto!important;grid-column:auto!important;height:auto!important;min-height:0!important;padding:8px 4px!important;gap:4px!important;align-items:flex-start}
+.on-sport #scr .spA .spt>svg{width:46px!important;height:46px!important;max-height:46px}
+.on-sport #scr .spA .spt>svg:not(:has(circle)){width:100%!important;height:18px!important}
+.on-sport #scr .spA .spsb{padding:4px 6px 8px!important;min-height:0!important}.on-sport #scr .spA .sps{font-size:12px!important;white-space:nowrap}
+.on-sport #scr .spfr{padding:24px 20px 20px!important;min-height:210px;display:flex;flex-direction:column;justify-content:space-between}
+.on-sport #scr .spfr .spft{font-size:32px!important;line-height:1.1}
+.on-sport #scr .sppile{margin-bottom:14px}
 @keyframes spShine{from{background-position:100% 0}to{background-position:-150% 0}}
 html.ios .spsl.ok{background:rgba(142,92,247,.28)!important}
 html.ios .spsl.ok em{animation:none;color:#fff!important;background:none}
 @media (prefers-reduced-motion:reduce){html.ios .spsl em{animation:none;color:#8e8e93!important;background:none}}
 </style>
+<script>/* Programmer une séance sous les séances de la semaine */
+(function(){const _r=render;render=function(){_r.apply(this,arguments);try{if(S.view!=="sport")return;const c=document.querySelector("#scr>.cta[data-prog]"),p=document.querySelector("#scr>.sppile");if(c&&p)p.after(c)}catch(e){}}})();</script>
 <script type="module" src="sync.js"></script>
 <script>
 if("serviceWorker" in navigator){navigator.serviceWorker.register("sw.js",{updateViaCache:"none"}).then(r=>{r.update();addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")r.update()})});
