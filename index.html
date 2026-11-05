@@ -1536,7 +1536,7 @@ function evRows0(d,wk=0){let e=((wk===0?S.events[d]:S.evx[wk+":"+d])||[]).slice(
  const px=n=>Math.round(Math.min(120,Math.max(0,n-60)*.4));let last=480;
  e.forEach((x,i)=>{const a=m(x[0]),du=x[4]>0?x[4]:60;const b=a==null?null:Math.min(a,1140);if(b!=null&&b-last>=60)f.push([hh(last),null,hh(b),null,b-last]);f.push(a==null?x:[x[0],x[1],x[2],x[3],du,hh(Math.min(1439,a+du))]);if(a!=null)last=Math.max(last,a+du)});if(1140-last>=60)f.push([hh(last),null,"19:00",null,1140-last]);e=f;
  return e.map(([h,t,p,col,du,end])=>`<div class="vslot"><span class="vtime">${h}${end?`<small>${end}</small>`:""}</span>${t?`<div class="vev" style="--c:${col||"#7a5cff"};${col?`border-left-color:${col};`:""}min-height:${px(du)}px"><div>${esc(t)}</div></div>`:`<div class="vev free" style="min-height:${px(du)}px">Créneau libre jusqu'à ${p}</div>`}</div>`).join("")}
-function habitRows(){const D=[0,1,2,3,4,5,6].map(k=>"DLMMJVS"[(TD.getDay()+k+1)%7]);return S.habits.map((h,i)=>`<div class="vrow hrow ${h.done?"done":""}" data-hi="${i}"><button class="vcheck hcheck ${h.done?"on":""}" data-h="${i}" aria-label="Fait aujourd'hui"></button><div class="t"><div>${esc(h.t)}</div><div class="vs">${h.r&&h.r!=="Tous les jours"?h.r+" · ":""}${h.done?h.s+1:h.s} jours d'affilée</div></div><div class="hweek" aria-hidden="true">${[0,0,0,0,0,0,...(h.w||[]),h.done?1:0].slice(-7).map((x,k)=>`<span class="${x?"y":""} ${k===6?"td":""}">${D[k]}</span>`).join("")}</div></div>${edPanel("h",i)}`).join("")}
+function habitRows(){const D=[0,1,2,3,4,5,6].map(k=>"DLMMJVS"[(TD.getDay()+k+1)%7]);return S.habits.map((h,i)=>`<div class="vrow hrow ${h.done?"done":""}" data-hi="${i}"><button class="vcheck hcheck ${h.done?"on":""}" data-h="${i}" aria-label="Fait aujourd'hui"></button><div class="t"><div>${esc(h.t)}</div><div class="vs">${h.r&&h.r!=="Tous les jours"?h.r+" · ":""}${(+h.s||0)+(h.done?1:0)} jour${((+h.s||0)+(h.done?1:0))>1?"s":""} d'affilée</div></div><div class="hweek" aria-hidden="true">${[0,0,0,0,0,0,...(h.w||[]),h.done?1:0].slice(-7).map((x,k)=>`<span class="${x?"y":""} ${k===6?"td":""}">${D[k]}</span>`).join("")}</div></div>${edPanel("h",i)}`).join("")}
 function dayProg(){const items=[...S.tasks.filter(x=>x.d==="Aujourd'hui"||(S.set.late&&x.late)).map(x=>x.done),...(S.set.habits?S.habits.map(h=>h.done):[])],d=items.filter(Boolean).length,n=items.length;return{items,d,n,p:n?Math.round(d*100/n):0}}
 function progA(){const g=dayProg();return `<div class="dprog"><div class="dph"><span>Ta journée</span><span>${g.p} %</span></div><div class="dbar"><i style="width:${g.p}%"></i></div><div class="vs">${g.d} sur ${g.n} validés · tâches et habitudes du jour</div></div>`}
 function progC(){const g=dayProg();return `<div class="segh"><b>${g.p}<small> %</small></b><span>${g.d} sur ${g.n} validés aujourd'hui</span></div><div class="seg">${g.items.map(x=>`<i class="${x?"y":""}"></i>`).join("")}</div>`}
@@ -1666,7 +1666,7 @@ function spDay(x){return x.dd===0?"Auj.":x.dd===1?"Dem.":dLong(x.dd).slice(0,3)+
 function spSub(x){return x.wo!=null&&S.wos[x.wo]?woSub(S.wos[x.wo]):x.k}
 function spIn(x){if(x.dd>0)return x.dd===1?"demain":"dans "+x.dd+" jours";const [h,mn]=x.h.split(":").map(Number),n=new Date(),d=h*60+mn-(n.getHours()*60+n.getMinutes());return d<=0?"maintenant":d<60?"dans "+d+" min":"dans "+Math.floor(d/60)+" h"+(d%60?" "+String(d%60).padStart(2,"0"):"")}
 function sp2Mod(){const N=spNext().slice(0,2),v=S.set.sp2==="3"?"3":"2";
- const t=([x,j],k)=>`<div class="s2t ${k?"s2b":"s2a"}" data-s2o="${j}"><span class="s2d">${k?spDay(x):x.dd===0?"Aujourd'hui":x.dd===1?"Demain":dLong(x.dd)}</span><b class="s2h">${x.h}</b><span class="s2n">${esc(k?x.t.split(" ")[0]:x.t)}</span></div>`;
+ const t=([x,j],k)=>`<div class="s2t ${k?"s2b":"s2a"}" data-s2o="${j}"><span class="s2d">${k?(x.dd===0?"Auj.":x.dd===1?"Dem.":dLong(x.dd).slice(0,3)+"."):x.dd===0?"Aujourd'hui":x.dd===1?"Demain":dLong(x.dd)}</span><b class="s2h">${x.h}</b><span class="s2n">${esc(k?x.t.split(" ")[0]:x.t)}</span></div>`;
  return `<div class="card sp2 sp2-${v}" role="button" tabindex="0" style="cursor:pointer" data-go="sport"><div class="label"><span>Prochaines séances</span><span>›</span></div><div class="s2r">${N.length?N.map(t).join(""):(()=>{const L=S.sess.map((x,i)=>[x,i]).filter(([x])=>x.done||x.dd<0).sort((p,q)=>q[0].dd-p[0].dd||q[0].h.localeCompare(p[0].h))[0];if(!L)return `<div class="s2t s2a"><span class="s2d">Aucune séance prévue</span><b class="s2h">—</b><span class="s2n">Programmer</span></div>`;const [x,j]=L;return `<div class="s2t s2a" data-s2o="${j}" style="${x.done?"":"color:#ef6b6b"}"><span class="s2d" style="${x.done?"":"color:#ef6b6b"}">Dernière séance · ${x.done?"faite":"manquée"}</span><b class="s2h" style="${x.done?"":"color:#ef6b6b"}">${x.dd===0?"Auj.":x.dd===-1?"Hier":dLong(x.dd)}</b><span class="s2n">${esc(x.t)}</span></div>`})()}</div></div>`}
 document.addEventListener("click",e=>{const b=e.target.closest("[data-s2o]");if(!b)return;e.stopPropagation();e.preventDefault();const se=S.sess[+b.dataset.s2o];if(se&&se.wo!=null&&S.wos[se.wo]){S.wo=se.wo;S.wx=null;go("workout")}else go("sport")},true);
 document.addEventListener("click",e=>{const b=e.target.closest("[data-salon]");if(!b)return;e.stopPropagation();e.preventDefault();S.set.alon=!S.set.alon;persist();keepRender()},true);
@@ -2595,7 +2595,7 @@ html.ios .card.sp2 .s2t.s2a .s2d{color:rgba(255,255,255,.75)!important}
 html.ios .spsb,html.ios .spt,html.ios .spk.spkd,html.ios .dvt{background:var(--p0)!important;border:0!important}
 html.ios .day.on{background:var(--ios-blue)!important}
 html.ios .day.on *{color:#fff!important}
-html.ios .spfr,html.ios .spfr *{background-color:var(--ios-2)!important}
+html.ios .spfr{background-color:var(--ios-2)!important}
 html.ios .spkn{background:var(--ios-blue)!important}
 html.ios .spfr{background:var(--ios-2)!important}
 /* Barre du bas : capsule en verre sombre, actif en rond gris */
@@ -2604,7 +2604,52 @@ html.ios #dock .dglass{background:#636366!important}
 html.ios #dock button,html.ios #dock button *{color:#fff!important}
 html.ios #dock .on,html.ios #dock .on *{color:#fff!important;stroke:#fff}
 html.ios #dock .menubtn i,html.ios .on-home #dock .menubtn i{background:#fff!important}
+
+/* Audit P1 : contraste, cibles tactiles, titres */
+html.salt:not(.ios) .small,html.salt:not(.ios) .vs,html.salt:not(.ios) .label span:last-child,html.salt:not(.ios) .s2d,html.salt:not(.ios) #scr small,html.salt:not(.ios) .vrow .vs,html.salt:not(.ios) .vev.free,html.salt:not(.ios) #scr .vev.free *{color:var(--p3)!important;opacity:.62}
+html.salt .wkc{min-width:44px!important;min-height:44px!important;display:inline-grid;place-items:center}
+html.salt .bplus{min-height:44px!important;padding-left:16px!important;padding-right:16px!important}
+html.salt .vcheck{position:relative}
+html.salt .vcheck::before{content:"";position:absolute;inset:-9px}
+html.salt .day.on b,html.salt .day.on small{color:var(--p0)!important}
+/* Audit P2 : titre de Réglages au même niveau que les autres pages */
+html.salt .on-settings .title,html.salt #scr .stitle{font-size:32px!important;font-weight:700!important;letter-spacing:-.02em}
+/* Audit P3 : menu du bas en verre clair (Salt) */
+html.salt:not(.ios) #dock{background:rgba(255,255,255,.72)!important;-webkit-backdrop-filter:blur(24px) saturate(160%)!important;backdrop-filter:blur(24px) saturate(160%)!important;box-shadow:inset 0 1px 0 #fff,0 10px 30px rgba(43,43,43,.10)!important}
+/* Audit P3 : transitions */
+@keyframes pgIn{from{opacity:0;transform:translateX(12px)}to{opacity:1;transform:none}}
+html.salt #scr.pgin{animation:pgIn 220ms cubic-bezier(.2,.8,.2,1)}
+@keyframes ckPopS{0%{transform:scale(.8)}60%{transform:scale(1.08)}100%{transform:scale(1)}}
+html.salt .vcheck.on{animation:ckPopS 260ms cubic-bezier(.34,1.4,.64,1)}
+@media (prefers-reduced-motion:reduce){html.salt #scr.pgin,html.salt .vcheck.on{animation:none}}
+
+html.salt .spsl{background:var(--p1)!important;box-shadow:none!important}
+html.ios .spsl{background:var(--ios-2)!important}
+html.salt .spt svg circle:first-of-type{stroke:var(--p1)!important}
+html.salt .spt svg circle:last-of-type{stroke:var(--p3)!important}
+html.ios .spt svg circle:last-of-type{stroke:var(--ios-blue)!important}
+html.ios.salt .day.on b,html.ios.salt .day.on small{color:#fff!important}
+html.ios.salt .spkn,html.ios.salt .spkn *{color:#fff!important;stroke:#fff!important}
+/* Audit P2 : livres vides en gris clair (état vide) */
+html.salt .on-goals #scr i:not([style*="width"]){background-color:var(--p1)!important}
+html.ios .on-goals #scr i:not([style*="width"]){background-color:var(--ios-2)!important}
+/* Audit P2 : titre de Réglages */
+html.salt .on-settings #scr .eyebrow{font-size:32px!important;font-weight:700!important;letter-spacing:-.02em;color:var(--p3)!important;opacity:1!important}
 </style>
+<script>
+/* Audit : échelle typo et rayons unifiés, transition de page, compteur animé */
+(function(){
+const FS=[12,13,15,17,20,24,32],snap=v=>v>=40?v:FS.reduce((a,b)=>Math.abs(b-v)<Math.abs(a-v)?b:a);
+const RS=[8,14,22];
+function tidy(){const r=document.getElementById("scr");if(!r)return;
+ r.querySelectorAll("*").forEach(e=>{const s=getComputedStyle(e);const f=parseFloat(s.fontSize);if(f&&f<40){const n=snap(f);if(n!==f)e.style.setProperty("font-size",n+"px","important")}
+  const rr=parseFloat(s.borderTopLeftRadius);if(rr>0&&!e.classList.contains("card")){const h=e.offsetHeight;if(h&&rr<h/2-1&&rr<30){const n=RS.reduce((a,b)=>Math.abs(b-rr)<Math.abs(a-rr)?b:a);if(n!==rr)e.style.setProperty("border-radius",n+"px","important")}}})}
+let last=null,lastPct=null;
+const _r=render;render=function(){_r();try{const sc=document.getElementById("scr");const w=document.querySelector(".wrap");if(w)w.classList.toggle("on-settings",S.view==="settings");if(last!==null&&last!==S.view){sc.classList.remove("pgin");void sc.offsetWidth;sc.classList.add("pgin")}last=S.view;
+ const g=document.querySelector(".gbig");if(g&&S.view==="home"&&typeof dayProg==="function"){const p=dayProg().p;if(lastPct!==null&&lastPct!==p&&!matchMedia("(prefers-reduced-motion: reduce)").matches){const a=lastPct,t0=performance.now(),D=500;const step=t=>{const k=Math.min(1,(t-t0)/D),e=1-Math.pow(1-k,3),v=Math.round(a+(p-a)*e)+"",el=document.querySelector(".gbig");if(el&&!el.classList.contains("gday"))el.innerHTML=v.slice(0,-1)+"<i>"+v.slice(-1)+"</i> %";if(k<1)requestAnimationFrame(step)};requestAnimationFrame(step)}lastPct=p}
+ tidy()}catch(e){}};
+})();
+</script>
 <script type="module" src="sync.js"></script>
 <script>
 if("serviceWorker" in navigator){navigator.serviceWorker.register("sw.js",{updateViaCache:"none"}).then(r=>{r.update();addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")r.update()})});
