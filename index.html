@@ -2679,7 +2679,17 @@ const _r=render;render=function(){_r();try{const sc=document.getElementById("scr
 })();
 </script>
 <style id="deck-fix">/* Menu toujours au premier plan : la pile de séances reste dans son propre plan */
-#scr .spfr{z-index:3!important}#scr .spk{z-index:2!important}</style>
+#scr .spfr{z-index:3!important}#scr .spk{z-index:2!important}
+/* Curseur de séance : capsule iOS (prop 1) */
+html.ios .spsl{height:56px!important;overflow:hidden;isolation:isolate;background:rgba(0,0,0,.38)!important}
+html.ios .spsl::before{content:"";position:absolute;left:0;top:0;bottom:0;z-index:-1;border-radius:99px;width:calc(54px + var(--p) * var(--mx,0px));background:linear-gradient(90deg,rgba(142,92,247,.12),rgba(142,92,247,.55));opacity:calc(var(--p) * 5)}
+html.ios .spsl .spkn{width:46px!important;height:46px!important;top:5px!important;left:4px!important;box-shadow:0 4px 14px rgba(142,92,247,.5)!important}
+html.ios .spsl em{font-size:15px!important;color:transparent!important;background:linear-gradient(90deg,#636366 0%,#636366 35%,#fff 50%,#636366 65%,#636366 100%);background-size:250% 100%;-webkit-background-clip:text;background-clip:text;animation:spShine 2.6s linear infinite}
+@keyframes spShine{from{background-position:100% 0}to{background-position:-150% 0}}
+html.ios .spsl.ok{background:rgba(142,92,247,.28)!important}
+html.ios .spsl.ok em{animation:none;color:#fff!important;background:none}
+@media (prefers-reduced-motion:reduce){html.ios .spsl em{animation:none;color:#8e8e93!important;background:none}}
+</style>
 <script type="module" src="sync.js"></script>
 <script>
 if("serviceWorker" in navigator){navigator.serviceWorker.register("sw.js",{updateViaCache:"none"}).then(r=>{r.update();addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")r.update()})});
