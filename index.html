@@ -2327,7 +2327,8 @@ const jvPut=(k,v)=>{const i=JRV.findIndex(x=>x[2]===k);if(i>=0)JRV[i]=[jLabel(k)
 const jvGet=async k=>{try{const r=await fetch("veille/"+k+".json",{cache:"no-store"});if(!r.ok)return null;const v=await r.json();return v&&v.sections?v:null}catch(e){return null}};
 async function jvFetch(){const k=jvKey();let days=null;
   try{const r=await fetch("veille/index.json",{cache:"no-store"});if(r.ok)days=(await r.json()).days}catch(e){}
-  if(!Array.isArray(days))days=[...Array(7)].map((_,i)=>new Date(TD.getTime()-TD.getTimezoneOffset()*6e4-i*864e5).toISOString().slice(0,10));
+  // The last 7 days are always probed too, so a new note shows even if the index was not updated.
+  days=[...new Set([...[...Array(7)].map((_,i)=>new Date(TD.getTime()-TD.getTimezoneOffset()*6e4-i*864e5).toISOString().slice(0,10)),...(Array.isArray(days)?days:[])])].sort().reverse();
   // Today is always re-read (a note can be republished during the day); older days only when missing.
   const want=days.filter(d=>/^\d{4}-\d{2}-\d{2}$/.test(d)&&d<=k&&(d===k||!JRV.some(x=>x[2]===d))).slice(0,60);
   const got=await Promise.all(want.map(async d=>[d,await jvGet(d)]));got.forEach(([d,v])=>{if(v)jvPut(d,v)});
