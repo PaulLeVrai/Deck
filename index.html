@@ -1747,7 +1747,7 @@ function spWeek(){if(false){S.set.sx=1;const b=-TDOW;S.sess=[{dd:b,h:"18:30",t:"
 function spMiss(x){if(x.done)return false;const [hh,mm]=(x.h||"18:00").split(":").map(Number),d=new Date(TD.getFullYear(),TD.getMonth(),TD.getDate()+x.dd,hh,mm||0),w=x.wo!=null&&S.wos[x.wo]&&S.wos[x.wo].ex.length?woMin(S.wos[x.wo]):45;return Date.now()>d.getTime()+(w+30)*6e4}
 function spPile(){const W0=spWeek(),W=W0.filter(([x])=>x.done).concat(W0.filter(([x])=>spMiss(x)),W0.filter(([x])=>!x.done&&!spMiss(x)));if(!W.length)return"";let f=W.findIndex(([x,i])=>i===S.spF);if(f<0)f=W.findIndex(([x])=>!x.done&&!spMiss(x));if(f<0)f=W.length-1;const XI='<svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg>';
  const lab=x=>{const d=dLong(x.dd);return d.split(" ")[0].slice(0,3)+"."},[fx,fi]=W[f],ck='<svg viewBox="0 0 24 24"><path d="m5 12 5 5 9-10"/></svg>';
- const top=W.slice(0,f).map(([x,i],k)=>`<button class="spk spku ${x.done?"dn":spMiss(x)?"ms":""}" data-spf="${i}" style="margin:0 0 -18px;z-index:${k+1}">${x.done?ck:spMiss(x)?XI:""}<span>${lab(x)} · ${esc(x.t)}${spMiss(x)?" · manquée":""}</span><em>${x.h}</em></button>`).join("");
+ const top=W.slice(0,f).map(([x,i],k)=>`<button class="spk spku ${x.done?"dn":spMiss(x)?"ms":""}" data-spf="${i}" style="margin:0 0 -18px;z-index:${k+1}">${x.done?ck:spMiss(x)?XI:""}<span>${lab(x)} · ${esc(x.t)}</span><em>${x.h}</em></button>`).join("");
  const bot=W.slice(f+1).map(([x,i],k)=>`<button class="spk spkd ${x.done?"dn":""}" data-spf="${i}" style="margin:-18px 0 0;z-index:${10-k};background:${x.done?"#1a2a1f":["#1a1a1a","#151515","#111"][Math.min(k,2)]};">${x.done?ck:""}<span>${esc(x.t)}</span><em>${lab(x)} ${x.h}</em></button>`).join("");
  const front=`<div class="spfr ${fx.done?"dn":spMiss(fx)?"ms":""}" data-sd="${fi}"><div class="spfh">${fx.done?"Faite":spMiss(fx)?"Manquée":fi===(W.find(([x])=>!x.done&&!spMiss(x))||[])[1]?"Prochaine":"À venir"} · ${dLong(fx.dd)} ${fx.h}</div><b class="spft">${esc(fx.t)}</b><div class="spsl ${fx.done?"ok":""}" data-spsl="${fi}" style="--p:${fx.done?1:0}"><span class="spkn" ${fx.done?'style="transform:translateX(var(--mx))"':""}>${fx.done?ck:'<svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>'}</span><em>${fx.done?"Glisser pour annuler":"Glisser pour valider"}</em></div></div>`;
  return `<div class="sppile">${top}${front}${bot}</div>`}
@@ -2849,4 +2849,12 @@ addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"
 const _renderWX=render;render=function(){_renderWX();if(S.view!=="settings")return;const sc=document.querySelector("#scr");if(!sc||sc.querySelector("#wipe"))return;const b=document.createElement("button");b.id="wipe";b.textContent="Effacer les données de cet appareil";b.style.cssText="all:unset;display:block;margin:24px auto 8px;font-size:13px;color:#ef6b6b;cursor:pointer;text-align:center";sc.appendChild(b)};
 document.addEventListener("click",e=>{const b=e.target.closest("#wipe");if(!b)return;if(!b.dataset.ok){b.dataset.ok=1;b.textContent="Toucher encore pour tout effacer";return}try{localStorage.clear();sessionStorage.clear()}catch(_){}location.reload()});
 </script>
+<style id="sp-13b">/* Séances (13b) : faite = dégradé vert, loupée = dégradé rouge, texte blanc. */
+html:root body .spk.spku.dn.dn,html:root body .spk.spku.ms.ms{background:linear-gradient(90deg,rgba(52,199,89,.32),rgba(52,199,89,.05)),#2c2c2e!important;border:0!important;color:#fff!important}
+html:root body .spk.spku.ms.ms{background:linear-gradient(90deg,rgba(255,69,58,.32),rgba(255,69,58,.05)),#2c2c2e!important}
+html:root body .spk.spku.dn.dn *,html:root body .spk.spku.ms.ms *{color:#fff!important}
+html:root body .spk.spku.dn.dn em,html:root body .spk.spku.ms.ms em{color:#8e8e93!important}
+html:root body .spk.spku.dn.dn svg,html:root body .spk.spku.dn.dn svg *{stroke:#34c759!important;color:#34c759!important}
+html:root body .spk.spku.ms.ms svg,html:root body .spk.spku.ms.ms svg *{stroke:#ff453a!important;color:#ff453a!important}
+</style>
 </body></html>
