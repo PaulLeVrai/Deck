@@ -14,6 +14,7 @@
   var t=document.createElement("div");t.style.cssText="position:fixed;top:0;height:env(safe-area-inset-top);visibility:hidden";document.addEventListener("DOMContentLoaded",function(){document.body.appendChild(t);var h=t.getBoundingClientRect().height;d.style.setProperty("--sbar",Math.max(h,54)+"px");t.remove()});d.style.setProperty("--sbar","54px")})();
 </script>
 <script>(function(){try{if(localStorage.getItem("deckGlass")!=="0")document.documentElement.classList.add("glass")}catch(e){}})()</script>
+<script>(function(){var h=document.documentElement;h.classList.remove("glass","bgl","bgb","bga");h.classList.add("dafi")})()</script>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icon-180.png">
@@ -2462,6 +2463,55 @@ document.addEventListener("click",async e=>{if(e.target.closest("[data-spcopy]")
  if(e.target.closest("[data-spuse]")){e.stopPropagation();const v=(($("#spin")||{}).value||"").trim();S.spIn=v;S.spMsg="Connexion…";keepRender();const r=await deckSync.useSpace(v);S.spMsg=r==="ok"?"":r;keepRender()}},true);
 document.addEventListener("click",e=>{if(e.target.closest("[data-cact]")){e.stopPropagation();deckClaude.load(true)}if(e.target.closest("[data-ccopy]")){e.stopPropagation();navigator.clipboard&&navigator.clipboard.writeText(deckSync.claudeUrl||S.claude.url);S.claude=S.claude||{};S.claude.copied=true;render()}},true);
 </script>
+<style id="dafi-css">
+/* ===== Deck · DA "Dafi" : noir pur, lumière, pilules ===== */
+html.dafi{--d-bg:#000;--d-s1:#0d0d0f;--d-s2:#161618;--d-s3:#1f1f22;--d-line:rgba(255,255,255,.09);--d-line2:rgba(255,255,255,.16);--d-t1:#f5f5f7;--d-t2:#8e8e93;--d-t3:#55555a;--d-pearl:linear-gradient(180deg,#fff 0%,#e9e9ec 55%,#cfcfd4 100%);
+ --card:var(--d-s1);--muted:var(--d-t2);--hi:#fff;--violet:#f5f5f7;--ink:#f5f5f7}
+html.dafi,html.dafi body{background:var(--d-bg)!important;color:var(--d-t1)!important}
+html.dafi body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Inter",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+
+/* Cartes : gris très foncé, filet clair, sans ombre */
+html.dafi .card{background:var(--d-s1)!important;border:1px solid var(--d-line)!important;box-shadow:none!important;border-radius:28px!important}
+html.dafi .card::before,html.dafi .card::after{display:none!important}
+html.dafi .label{text-transform:none;letter-spacing:0;font-size:16px;font-weight:600;color:var(--d-t1)!important}
+html.dafi .label span:last-child{color:var(--d-t2)!important;font-weight:400}
+html.dafi .small,html.dafi .vs{color:var(--d-t2)!important}
+
+/* Boutons : pilules. Principal = pilule nacrée blanche, texte noir */
+html.dafi button.cta,html.dafi .cta,html.dafi .bplus.hdone,html.dafi .spgo{background:var(--d-pearl)!important;color:#000!important;border:0!important;border-radius:999px!important;box-shadow:inset 0 1px 0 #fff,0 0 0 1px rgba(255,255,255,.2),0 6px 20px rgba(255,255,255,.06)!important}
+html.dafi .cta *{color:#000!important}
+html.dafi .bplus{background:var(--d-s2)!important;color:var(--d-t1)!important;border:1px solid var(--d-line)!important;border-radius:999px!important}
+html.dafi .seg,html.dafi .hm3{background:var(--d-s2)!important;border-radius:999px!important}
+html.dafi .seg button.on,html.dafi .hm3 button.on{background:var(--d-s3)!important;color:var(--d-t1)!important;border:1px solid var(--d-line2)!important;border-radius:999px!important;box-shadow:none!important}
+
+/* Barre du bas : ronds, l'actif en blanc */
+html.dafi #dock{background:rgba(13,13,15,.86)!important;border:1px solid var(--d-line)!important;box-shadow:0 10px 30px rgba(0,0,0,.6)!important;-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px)}
+html.dafi .dglass{background:var(--d-pearl)!important;border:0!important;box-shadow:inset 0 1px 0 #fff!important}
+html.dafi #dock .on,html.dafi #dock .on *{color:#000!important;stroke:#000}
+html.dafi #dock .dpct{display:none}
+
+/* Correctifs v2 */
+html.dafi #dock .dring{display:none!important}
+html.dafi .vcheck,html.dafi .tlist .vrow[data-ti] .vcheck{border-radius:50%!important;border:1.5px solid var(--d-line2)!important;background:none!important}
+html.dafi .vcheck.on,html.dafi .tlist .vrow[data-ti] .vcheck.on{background:#fff!important;border-color:#fff!important}
+html.dafi .s2t{background:var(--d-s2)!important;border:1px solid var(--d-line)!important;color:var(--d-t1)!important;box-shadow:none!important}
+html.dafi .s2t.s2a{background:linear-gradient(180deg,#232326,#141416)!important;border-color:var(--d-line2)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.22)!important}
+html.dafi .s2t *{color:inherit}
+html.dafi .s2d{color:var(--d-t2)!important}
+html.dafi .gwheel small{color:var(--d-t3)}
+html.dafi .dz-plan{padding:18px}
+
+html.dafi .gtop{display:block;position:relative;margin:4px 0 14px}
+html.dafi .greet,html.dafi .hero .eb,html.dafi .hero .mini,html.dafi .hero .vring{display:none!important}
+html.dafi .gdate{font-size:20px;font-weight:500;letter-spacing:-.02em;color:#fff}
+html.dafi .gdate b{color:#fff;font-weight:500}
+html.dafi .gbig{font-size:84px;font-weight:300;letter-spacing:-.04em;line-height:1;margin-top:16px;color:#fff;font-variant-numeric:tabular-nums}
+html.dafi .gbig i{font-style:normal;color:var(--d-t3)}
+html.dafi .gset{display:grid;place-items:center;position:absolute;right:-4px;top:-6px;width:42px;height:42px;padding:0;border-radius:50%;background:transparent!important;border:1px solid var(--d-line2)!important;color:#fff!important;cursor:pointer}
+/* Calendrier de l'accueil : plus de cadre, posé sur le fond */
+html.dafi .card.hero{background:transparent!important;border:0!important;box-shadow:none!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+html.dafi .card.hero::before,html.dafi .card.hero::after{display:none!important}
+</style>
 <script type="module" src="sync.js"></script>
 <script>
 if("serviceWorker" in navigator){navigator.serviceWorker.register("sw.js",{updateViaCache:"none"}).then(r=>{r.update();addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")r.update()})});
