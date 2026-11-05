@@ -2779,6 +2779,11 @@ html.ios #scr .heroT .pplus svg{stroke:#fff}
 #scr .jvall{display:block;margin:4px 0 18px}
 #scr .jkrow>.jkiosk{scroll-padding-left:166px}
 #scr .jvf{flex:none;position:sticky!important;left:0;z-index:3;box-shadow:10px 0 14px -4px #000!important}#scr .jvf .jthumb{flex:1;width:auto!important;height:auto!important;min-height:110px;margin:4px 0 0;border-radius:14px!important;padding:16px 18px!important;justify-content:center;gap:9px!important}#scr .jvf .jthumb i{height:3px!important}#scr .jvf .jthumb i:first-child{height:7px!important}#scr .jvf .jfd{color:#b9a6ff;font-weight:600}
+#scr .jvu{background:#e9e6df!important;color:#1c1c1e!important;padding:12px!important;gap:5px!important}
+#scr .jvu .jvm{font-family:Georgia,"Times New Roman",serif!important;font-size:20px;font-weight:700;text-align:center;border-bottom:1.5px solid #1c1c1e;padding-bottom:4px;color:#1c1c1e}
+#scr .jvu .jvdt{font-size:12px;text-align:center;color:#6b6b6b;letter-spacing:.04em}
+#scr .jvu .jvl{flex:1;display:grid;grid-template-columns:1fr 1fr;gap:6px 8px;align-content:start;margin-top:4px}#scr .jvu .jvl b{display:block;height:3px;background:#c4bfb3;border-radius:2px}
+#scr .jvu .jvk{font-size:12px;color:#8E5CF7;font-weight:700;text-align:center}
 </style>
 <script>/* Programmer une séance sous les séances de la semaine */
 (function(){const _r=render;render=function(){_r.apply(this,arguments);try{if(S.view!=="sport")return;const c=document.querySelector("#scr>.cta[data-prog]"),p=document.querySelector("#scr>.sppile");if(c&&p)p.after(c)}catch(e){}}})();</script>
@@ -2818,7 +2823,7 @@ function jRank(A){if(!A||A.length<2)return A;const W=A.map(a=>jWords(a[0]+" "+a[
 function jLink(a){return a[4]?`<a class="jlink" href="${esc(a[4])}" target="_blank" rel="noopener">Lire l'article original · ${esc(a[1])} ↗</a>`:`<div class="jsrc">${esc(a[1])}</div>`}
 function jVeil(k){const E=JRV.find(x=>x[2]===k);if(!E)return"";const v=E[1],L=(v.essentiel||[]).slice(0,3);if(!L.length)return"";return `<div class="jsec">Veille commerciale</div>${L.map(e=>`<div class="jart"><h3>${esc(e.text)}</h3>${e.impact?`<p>${esc(e.impact)}</p>`:""}</div>`).join("")}<button class="jlink jvall" data-go="veille" onclick="S.vd=${JRV.indexOf(E)}">Lire la veille complète ›</button>`}
 // Bibliothèque : la veille du jour, fixe à gauche de la bande des journaux, ouvre la veille.
-function jvFront(){const E=JRV[0];if(!E)return"";const v=E[1],h=(v.essentiel&&v.essentiel[0]||{}).text||v.title||"";return `<button class="card jfront jvf" data-go="veille" onclick="S.vd=0"><span class="jfd">${E[2]===jvKey()?"Veille du jour":"Veille · "+esc(E[0].split(" ").slice(0,2).join(" "))}</span><span class="bthumb jthumb"><i></i><i></i><i></i><i></i></span></button>`}
+function jvFront(){const E=JRV[0];if(!E)return"";const v=E[1],h=(v.essentiel&&v.essentiel[0]||{}).text||v.title||"";const d=new Date(E[2]+"T12:00:00");return `<button class="card jfront jvf jvu" data-go="veille" onclick="S.vd=0"><span class="jvm">La Veille</span><span class="jvdt">${DNF[d.getDay()].slice(0,3).toUpperCase()}. ${d.getDate()} ${["JANV.","FÉVR.","MARS","AVR.","MAI","JUIN","JUIL.","AOÛT","SEPT.","OCT.","NOV.","DÉC."][d.getMonth()]}</span><span class="jvl">${"<b></b>".repeat(12)}</span><span class="jvk">${E[2]===jvKey()?"Veille du jour":"Veille"}</span></button>`}
 // Tap : coche à droite, le reste ouvre le détail.
 let BSWX=0;window.addEventListener("click",e=>{const r=e.target.closest(".tlist .vrow.bc");if(!r)return;if(e.target.closest(".txp"))return;if(Date.now()-BSWX<400){e.stopPropagation();e.preventDefault();return}if(e.target.closest(".vcheck"))return;e.stopPropagation();e.preventDefault();const b=r.getBoundingClientRect();if(b.right-e.clientX<64){r.querySelector(".vcheck").click();return}const i=+r.dataset.ti;S.ed=null;S.tx=S.tx===i?null:i;const st=$("#scr").scrollTop;render();$("#scr").scrollTop=st},true);
 // Glisser vers la droite = supprimer, vers la gauche = reporter à demain.
