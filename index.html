@@ -2778,7 +2778,7 @@ html.ios #scr .heroT .pplus svg{stroke:#fff}
 #scr .jlink{all:unset;display:inline-block;margin:8px 0 2px;font-size:13px;color:#b9a6ff!important;cursor:pointer}
 #scr .jvall{display:block;margin:4px 0 18px}
 #scr .jkrow{display:flex;gap:10px;align-items:stretch}#scr .jkrow>.jkiosk{flex:1;min-width:0}
-#scr .jvf{flex:none}#scr .jvf .jthumb{width:34px;height:42px;margin-bottom:2px}#scr .jvf .jfd{color:#b9a6ff}#scr .jvf .jfh{-webkit-line-clamp:5}
+#scr .jvf{flex:none}#scr .jvf .jthumb{flex:1;width:auto!important;height:auto!important;min-height:110px;margin:4px 0 0;border-radius:14px!important;padding:16px 18px!important;justify-content:center;gap:9px!important}#scr .jvf .jthumb i{height:3px!important}#scr .jvf .jthumb i:first-child{height:7px!important}#scr .jvf .jfd{color:#b9a6ff;font-weight:600}
 </style>
 <script>/* Programmer une séance sous les séances de la semaine */
 (function(){const _r=render;render=function(){_r.apply(this,arguments);try{if(S.view!=="sport")return;const c=document.querySelector("#scr>.cta[data-prog]"),p=document.querySelector("#scr>.sppile");if(c&&p)p.after(c)}catch(e){}}})();</script>
@@ -2818,7 +2818,7 @@ function jRank(A){if(!A||A.length<2)return A;const W=A.map(a=>jWords(a[0]+" "+a[
 function jLink(a){return a[4]?`<a class="jlink" href="${esc(a[4])}" target="_blank" rel="noopener">Lire l'article original · ${esc(a[1])} ↗</a>`:`<div class="jsrc">${esc(a[1])}</div>`}
 function jVeil(k){const E=JRV.find(x=>x[2]===k);if(!E)return"";const v=E[1],L=(v.essentiel||[]).slice(0,3);if(!L.length)return"";return `<div class="jsec">Veille commerciale</div>${L.map(e=>`<div class="jart"><h3>${esc(e.text)}</h3>${e.impact?`<p>${esc(e.impact)}</p>`:""}</div>`).join("")}<button class="jlink jvall" data-go="veille" onclick="S.vd=${JRV.indexOf(E)}">Lire la veille complète ›</button>`}
 // Bibliothèque : la veille du jour, fixe à gauche de la bande des journaux, ouvre la veille.
-function jvFront(){const E=JRV[0];if(!E)return"";const v=E[1],h=(v.essentiel&&v.essentiel[0]||{}).text||v.title||"";return `<button class="card jfront jvf" data-go="veille" onclick="S.vd=0"><span class="bthumb jthumb"><i></i><i></i><i></i><i></i></span><span class="jfd">${E[2]===jvKey()?"Veille du jour":"Veille · "+esc(E[0].split(" ").slice(0,2).join(" "))}</span><span class="jfh">${esc(h)}</span></button>`}
+function jvFront(){const E=JRV[0];if(!E)return"";const v=E[1],h=(v.essentiel&&v.essentiel[0]||{}).text||v.title||"";return `<button class="card jfront jvf" data-go="veille" onclick="S.vd=0"><span class="jfd">${E[2]===jvKey()?"Veille du jour":"Veille · "+esc(E[0].split(" ").slice(0,2).join(" "))}</span><span class="bthumb jthumb"><i></i><i></i><i></i><i></i></span></button>`}
 // Tap : coche à droite, le reste ouvre le détail.
 let BSWX=0;window.addEventListener("click",e=>{const r=e.target.closest(".tlist .vrow.bc");if(!r)return;if(e.target.closest(".txp"))return;if(Date.now()-BSWX<400){e.stopPropagation();e.preventDefault();return}if(e.target.closest(".vcheck"))return;e.stopPropagation();e.preventDefault();const b=r.getBoundingClientRect();if(b.right-e.clientX<64){r.querySelector(".vcheck").click();return}const i=+r.dataset.ti;S.ed=null;S.tx=S.tx===i?null:i;const st=$("#scr").scrollTop;render();$("#scr").scrollTop=st},true);
 // Glisser vers la droite = supprimer, vers la gauche = reporter à demain.
