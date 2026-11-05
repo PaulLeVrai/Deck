@@ -2464,104 +2464,131 @@ document.addEventListener("click",async e=>{if(e.target.closest("[data-spcopy]")
 document.addEventListener("click",e=>{if(e.target.closest("[data-cact]")){e.stopPropagation();deckClaude.load(true)}if(e.target.closest("[data-ccopy]")){e.stopPropagation();navigator.clipboard&&navigator.clipboard.writeText(deckSync.claudeUrl||S.claude.url);S.claude=S.claude||{};S.claude.copied=true;render()}},true);
 </script>
 <style id="dafi-css">
-/* ===== Deck · DA "Dafi" : noir pur, lumière, pilules ===== */
-html.dafi{--d-bg:#000;--d-s1:#0d0d0f;--d-s2:#161618;--d-s3:#1f1f22;--d-line:rgba(255,255,255,.09);--d-line2:rgba(255,255,255,.16);--d-t1:#f5f5f7;--d-t2:#8e8e93;--d-t3:#55555a;--d-pearl:linear-gradient(180deg,#fff 0%,#e9e9ec 55%,#cfcfd4 100%);
- --card:var(--d-s1);--muted:var(--d-t2);--hi:#fff;--violet:#f5f5f7;--ink:#f5f5f7}
-html.dafi,html.dafi body{background:var(--d-bg)!important;color:var(--d-t1)!important}
+/* ===== Deck · règles Dafi ===== */
+html.dafi{--d-bg:#000;--d-s1:#0f0f10;--d-s2:#18181a;--d-line:rgba(255,255,255,.10);--d-line2:rgba(255,255,255,.18);--d-t1:#fff;--d-t2:#8d8d92;--d-t3:#57575c;--d-acc:#ff6a1a;
+ --card:#0f0f10;--muted:#8d8d92;--hi:#fff;--violet:#fff;--ink:#fff}
+html.dafi,html.dafi body{background:#000!important;color:#fff!important}
 html.dafi body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Inter",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
 
-/* Cartes : gris très foncé, filet clair, sans ombre */
-html.dafi .card{background:var(--d-s1)!important;border:1px solid var(--d-line)!important;box-shadow:none!important;border-radius:28px!important}
-html.dafi .card::before,html.dafi .card::after{display:none!important}
-html.dafi .label{text-transform:none;letter-spacing:0;font-size:16px;font-weight:600;color:var(--d-t1)!important}
-html.dafi .label span:last-child{color:var(--d-t2)!important;font-weight:400}
-html.dafi .small,html.dafi .vs{color:var(--d-t2)!important}
-
-/* Boutons : pilules. Principal = pilule nacrée blanche, texte noir */
-html.dafi button.cta,html.dafi .cta,html.dafi .bplus.hdone,html.dafi .spgo{background:var(--d-pearl)!important;color:#000!important;border:0!important;border-radius:999px!important;box-shadow:inset 0 1px 0 #fff,0 0 0 1px rgba(255,255,255,.2),0 6px 20px rgba(255,255,255,.06)!important}
-html.dafi .cta *{color:#000!important}
-html.dafi .bplus{background:var(--d-s2)!important;color:var(--d-t1)!important;border:1px solid var(--d-line)!important;border-radius:999px!important}
-html.dafi .seg,html.dafi .hm3{background:var(--d-s2)!important;border-radius:999px!important}
-html.dafi .seg button.on,html.dafi .hm3 button.on{background:var(--d-s3)!important;color:var(--d-t1)!important;border:1px solid var(--d-line2)!important;border-radius:999px!important;box-shadow:none!important}
-
-/* Barre du bas : ronds, l'actif en blanc */
-html.dafi #dock{background:rgba(13,13,15,.86)!important;border:1px solid var(--d-line)!important;box-shadow:0 10px 30px rgba(0,0,0,.6)!important;-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px)}
-html.dafi .dglass{background:var(--d-pearl)!important;border:0!important;box-shadow:inset 0 1px 0 #fff!important}
-html.dafi #dock .on,html.dafi #dock .on *{color:#000!important;stroke:#000}
-html.dafi #dock .dpct{display:none}
+/* Barre du bas : ronds séparés, blancs, l'actif en orange */
+html.dafi #dock{background:transparent!important;border:0!important;box-shadow:none!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+html.dafi #dock .dglass,html.dafi #dock .dring,html.dafi #dock .dpct{display:none!important}
+html.dafi #dock .drawer{gap:6px!important}
+html.dafi #dock .menubtn,html.dafi #dock .drawer .it{width:48px!important;height:48px!important;border-radius:50%!important;background:#fff!important;color:#000!important;display:grid!important;place-items:center!important;padding:0!important;box-shadow:0 6px 18px rgba(0,0,0,.5)!important}
+html.dafi #dock .drawer .it .ic,html.dafi #dock .drawer .it .ic *{color:#000!important;background:none!important}
+html.dafi #dock .menubtn i{background:#000!important}
+html.dafi #dock .drawer .it.on,html.dafi .on-home #dock .menubtn{background:var(--d-acc)!important}
+html.dafi #dock .drawer .it.on .ic,html.dafi #dock .drawer .it.on .ic *{color:#fff!important}
+html.dafi .on-home #dock .menubtn i{background:#fff!important}
 
 /* ===== Accueil ===== */
-html.dafi .dz{display:flex;flex-direction:column;gap:22px;padding-bottom:12px}
-.dz-top{display:flex;align-items:flex-start;justify-content:space-between;padding:6px 4px 0}
-.dz-date{display:flex;flex-direction:column;gap:2px}
-.dz-dow{font-size:14px;color:var(--d-t2)}
-.dz-dm{font-size:22px;font-weight:600;letter-spacing:-.02em;color:var(--d-t1)}
-.dz-dm .gwheel{margin:0;padding:0 2px 0 0}
-.dz-ib{width:44px;height:44px;border-radius:50%;background:var(--d-s1);border:1px solid var(--d-line2);color:var(--d-t1);display:grid;place-items:center;cursor:pointer;padding:0}
-.dz-ib svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round}
+.dz{display:flex;flex-direction:column;gap:26px;padding:4px 0 24px;color:#fff}
+.dz *{box-sizing:border-box}
+.dz-top{display:flex;align-items:center;gap:12px}
+.dz-av{width:44px;height:44px;border-radius:50%;flex:none;display:grid;place-items:center;font-size:18px;font-weight:600;color:#000;background:radial-gradient(circle at 35% 30%,#fff,#bdbdc2 70%,#8e8e93)}
+.dz-who{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
+.dz-who small{font-size:12.5px;color:var(--d-t2)}
+.dz-who b{font-size:16px;font-weight:500;color:#fff;letter-spacing:-.01em;white-space:nowrap}
+.dz-who .gwheel{margin:0;padding:0 1px}
+.dz-who .gwheel i{font-style:normal}
+.dz-who .gwheel small{display:none}
+.dz-ibs{display:flex;gap:8px}
+.dz-ib{width:42px;height:42px;border-radius:50%;background:transparent;border:1px solid var(--d-line2);color:#fff;display:grid;place-items:center;padding:0;cursor:pointer}
+.dz-ib svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
 
-/* L'arc lumineux : un horizon de planète, lumière blanche sur le bord */
-.dz-arc{position:relative;margin:4px -22px 0;padding:58px 22px 6px;text-align:center;isolation:isolate}
-.dz-arc::before{content:"";position:absolute;z-index:-1;left:-25%;right:-25%;top:0;height:520px;border-radius:50%;
- background:radial-gradient(ellipse 60% 45% at 50% 0%,rgba(255,255,255,.10),rgba(255,255,255,0) 70%),linear-gradient(180deg,#1b1b1e 0%,#0a0a0b 38%,#000 70%);
- border-top:1.5px solid rgba(255,255,255,.95);
- box-shadow:0 -1px 10px rgba(255,255,255,.55),0 -6px 40px rgba(255,255,255,.18),inset 0 10px 30px rgba(255,255,255,.08);
- -webkit-mask-image:linear-gradient(90deg,transparent 4%,#000 32%,#000 68%,transparent 96%),linear-gradient(180deg,#000 55%,transparent 100%);
- -webkit-mask-composite:source-in;mask-image:linear-gradient(90deg,transparent 4%,#000 32%,#000 68%,transparent 96%),linear-gradient(180deg,#000 55%,transparent 100%);mask-composite:intersect}
-.dz-lbl{font-size:14px;color:var(--d-t2);letter-spacing:.01em}
-.dz-score{font-size:76px;font-weight:600;letter-spacing:-.045em;line-height:1;margin-top:6px;color:var(--d-t1);font-variant-numeric:tabular-nums;background:none;border:0;padding:0;font-family:inherit}
-.dz-score span{font-size:30px;font-weight:500;letter-spacing:-.02em;color:var(--d-t2);margin-left:4px}
-.dz-reset{cursor:pointer}
-.dz-br{display:block;width:72%;height:22px;margin:14px auto 0;fill:none;stroke:var(--d-line2);stroke-width:1.2;vector-effect:non-scaling-stroke}
-.dz-pills{display:flex;justify-content:space-between;gap:8px;margin-top:2px}
-.dzp{flex:1;display:flex;flex-direction:column;align-items:center;gap:7px;background:none;border:0;padding:0;color:inherit;font:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}
-.dzp-r{position:relative;width:96px;height:44px;display:flex;align-items:center;justify-content:center;gap:6px;border-radius:22px;background:var(--d-s1)}
-.dzp-o{position:absolute;inset:0;width:96px;height:44px;overflow:visible}
-.dzp-o rect{fill:none;stroke-width:1.6}
-.dzp-o .b{stroke:var(--d-line2)}
-.dzp-o .f{stroke:#fff;stroke-linecap:round;filter:drop-shadow(0 0 3px rgba(255,255,255,.55));transition:stroke-dasharray .6s cubic-bezier(.2,.8,.2,1)}
-.dzp-r svg:not(.dzp-o){width:16px;height:16px;fill:none;stroke:var(--d-t1);stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
-.dzp-r b{font-size:17px;font-weight:600;color:var(--d-t1);font-variant-numeric:tabular-nums;letter-spacing:-.01em}
-.dzp-r small{font-size:12px;color:var(--d-t2);font-weight:500}
-.dzp-l{font-size:12.5px;color:var(--d-t2)}
-.dzp:active .dzp-r{transform:scale(.96);transition:transform .12s}
+/* L'arc : horizon lumineux */
+.dz-arc{position:relative;isolation:isolate;margin:0 -20px;padding:60px 20px 4px;text-align:center}
+.dz-arc::before{content:"";position:absolute;z-index:-1;left:-30%;right:-30%;top:0;height:560px;border-radius:50%;
+ background:radial-gradient(ellipse 50% 30% at 50% 0%,rgba(255,255,255,.16),rgba(255,255,255,0) 75%),linear-gradient(180deg,#232325 0%,#0d0d0e 30%,#000 62%);
+ border-top:2px solid #fff;
+ box-shadow:0 -2px 14px rgba(255,255,255,.75),0 -10px 50px rgba(255,255,255,.22);
+ -webkit-mask-image:linear-gradient(90deg,transparent 6%,#000 34%,#000 66%,transparent 94%);mask-image:linear-gradient(90deg,transparent 6%,#000 34%,#000 66%,transparent 94%)}
+.dz-title{margin:0;font-size:25px;line-height:1.25;font-weight:600;letter-spacing:-.02em;color:#fff}
+.dz-title em{font-style:normal}
+.dz-acts{position:relative;z-index:1;display:flex;gap:10px;margin-top:22px}
+.dz-pill{flex:1;height:56px;border-radius:999px;display:flex;align-items:center;gap:10px;padding:0 16px 0 7px;background:linear-gradient(180deg,#1d1d1f,#111112);border:1px solid var(--d-line);box-shadow:inset 0 1px 0 rgba(255,255,255,.08);color:#fff;font:inherit;font-size:14.5px;font-weight:500;cursor:pointer}
+.dz-pi{width:42px;height:42px;border-radius:50%;border:1px solid var(--d-line2);display:grid;place-items:center;flex:none}
+.dz-pi svg{width:18px;height:18px;fill:none;stroke:#fff;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.dz-pill:active,.dz-note:active,.dz-fold:active{transform:scale(.97);transition:transform .12s}
 
-/* Sections "Titre · Voir tout" */
-.dz-sec{display:flex;flex-direction:column;gap:12px}
-.dz-h{display:flex;align-items:baseline;justify-content:space-between;padding:0 4px}
-.dz-h h2{margin:0;font-size:18px;font-weight:600;letter-spacing:-.01em;color:var(--d-t1)}
-.dz-all{background:none;border:0;padding:6px 0;color:var(--d-t2);font:inherit;font-size:14px;cursor:pointer}
-.dz-card{background:var(--d-s1);border:1px solid var(--d-line);border-radius:28px;padding:18px}
-html.dafi .dz .hgrid{gap:14px}
-html.dafi .dz .hm .card{padding:18px}
+/* Sections « Titre · Voir tout » */
+.dz-sec{position:relative;z-index:1;display:flex;flex-direction:column;gap:12px}
+.dz-h{display:flex;align-items:baseline;justify-content:space-between}
+.dz-h h2{margin:0;font-size:16px;font-weight:600;letter-spacing:-.01em;color:#fff}
+.dz-all{background:none;border:0;padding:4px 0;color:var(--d-t2);font:inherit;font-size:13px;cursor:pointer}
 
-/* Correctifs v2 */
-html.dafi #dock .dring{display:none!important}
-html.dafi .vcheck,html.dafi .tlist .vrow[data-ti] .vcheck{border-radius:50%!important;border:1.5px solid var(--d-line2)!important;background:none!important}
-html.dafi .vcheck.on,html.dafi .tlist .vrow[data-ti] .vcheck.on{background:#fff!important;border-color:#fff!important}
-html.dafi .s2t{background:var(--d-s2)!important;border:1px solid var(--d-line)!important;color:var(--d-t1)!important;box-shadow:none!important}
-html.dafi .s2t.s2a{background:linear-gradient(180deg,#232326,#141416)!important;border-color:var(--d-line2)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.22)!important}
-html.dafi .s2t *{color:inherit}
-html.dafi .s2d{color:var(--d-t2)!important}
-html.dafi .gwheel small{color:var(--d-t3)}
-html.dafi .dz-plan{padding:18px}
+/* Planning : tuiles « dossiers » */
+.dz-folders{display:flex;gap:10px;overflow-x:auto;margin:0 -20px;padding:0 20px 4px;scrollbar-width:none;scroll-snap-type:x mandatory}
+.dz-folders::-webkit-scrollbar{display:none}
+.dz-fold{flex:none;width:104px;height:96px;position:relative;border-radius:14px;background:linear-gradient(180deg,#2a2a2d,#141415 55%);border:1px solid var(--d-line);padding:0;overflow:hidden;cursor:pointer;scroll-snap-align:start;text-align:left;font:inherit;color:#fff}
+.dz-paper{position:absolute;left:8px;right:8px;top:8px;height:26px;border-radius:5px 5px 0 0;background:#f2f2f4;box-shadow:0 -3px 0 -1px #d8d8dc}
+.dz-paper i{display:block;height:2px;margin:7px 8px 0;background:#c9c9ce;border-radius:2px}
+.dz-paper i+i{width:55%;margin-top:4px}
+.dz-fold::after{content:"";position:absolute;left:0;right:0;top:28px;bottom:0;background:linear-gradient(180deg,#262628,#121213);border-top:1px solid rgba(255,255,255,.12);border-radius:10px 10px 0 0}
+.dz-fl{position:absolute;z-index:1;left:10px;right:8px;bottom:9px;display:flex;flex-direction:column;gap:2px}
+.dz-fl b{font-size:12.5px;font-weight:500;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dz-fl small{font-size:11px;color:var(--d-t2)}
+
+/* Cartes « notes » */
+.dz-note{display:flex;flex-direction:column;gap:12px;padding:14px 16px 16px;border-radius:20px;background:var(--d-s1);border:1px solid var(--d-line);cursor:pointer}
+.dz-note+.dz-note{margin-top:-2px}
+.dz-nt{display:flex;align-items:center;justify-content:space-between}
+.dz-tag{height:26px;padding:0 12px;border-radius:999px;border:1px solid var(--d-line2);font-size:11.5px;color:var(--d-t2);display:inline-flex;align-items:center}
+.dz-nd{font-size:12px;color:#fff}
+.dz-nb{display:flex;align-items:flex-end;gap:14px}
+.dz-ntx{flex:1;min-width:0}
+.dz-ntx b{display:block;font-size:15px;font-weight:600;line-height:1.3;color:#fff;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.dz-ntx p{margin:4px 0 0;font-size:12.5px;line-height:1.4;color:var(--d-t2);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.dz-go svg{width:18px;height:18px;fill:none;stroke:#fff;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;display:block}
+.dz-ck{width:26px;height:26px;border-radius:50%;border:1.5px solid var(--d-line2)!important;background:none!important;padding:0;flex:none;cursor:pointer}
+.dz-empty{display:block;width:100%;padding:16px;border-radius:20px;border:1px dashed var(--d-line2);color:var(--d-t2);font:inherit;font-size:13px;text-align:left;background:none}
+.dz-emb{cursor:pointer}
+
+/* Mouvement (skill animations-premium) */
+html.dafi{--ease-out:cubic-bezier(.2,.8,.2,1);--ease-spring:cubic-bezier(.34,1.4,.64,1);--d-fast:120ms;--d-base:220ms;--d-slow:380ms}
+.dz button,.dz [role=button]{-webkit-tap-highlight-color:transparent}
+.dz-pill,.dz-note,.dz-fold,.dz-ib{transition:transform var(--d-base) var(--ease-spring)}
+.dz-pill:active,.dz-note:active,.dz-fold:active,.dz-ib:active{transform:scale(.97);transition:transform var(--d-fast) var(--ease-out)}
+@keyframes dzUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes dzArc{from{opacity:0;transform:translateY(24px) scaleX(.94)}to{opacity:1;transform:none}}
+.dz.in>*{animation:dzUp var(--d-slow) var(--ease-out) both}
+.dz.in>*:nth-child(2){animation-delay:40ms}.dz.in>*:nth-child(3){animation-delay:80ms}.dz.in>*:nth-child(4){animation-delay:120ms}.dz.in>*:nth-child(5){animation-delay:160ms}.dz.in>*:nth-child(6){animation-delay:200ms}
+.dz.in .dz-arc::before{animation:dzArc 600ms var(--ease-out) both}
+.dz-ck{transition:transform var(--d-fast) var(--ease-spring),background var(--d-fast)}
+.dz-ck:active{transform:scale(.85)}
+@media (prefers-reduced-motion:reduce){.dz *,.dz *::before,.dz *::after{animation-duration:1ms!important;transition-duration:1ms!important}}
 </style>
-<script>/* Deck · DA "Dafi" : accueil */
+<script>/* Deck · accueil calqué sur les règles de Dafi */
 (function(){
-const ICP={plan:'<path d="M4 7h16M4 12h10M4 17h7"/>',task:'<path d="m5 12 4 4 10-10"/>',hab:'<circle cx="12" cy="12" r="7.5"/><path d="M12 8v4l2.5 2"/>',sport:'<path d="M6 8v8M18 8v8M3 10v4M21 10v4M6 12h12"/>',gear:'<circle cx="12" cy="12" r="3"/><path d="M12 3v2.5M12 18.5V21M3 12h2.5M18.5 12H21M5.6 5.6l1.8 1.8M16.6 16.6l1.8 1.8M5.6 18.4l1.8-1.8M16.6 7.4l1.8-1.8"/>'};
-const ic=k=>`<svg viewBox="0 0 24 24" aria-hidden="true">${ICP[k]}</svg>`;
-function pill(k,lbl,d,n,go){const p=n?Math.round(d*100/n):0;return `<button class="dzp" data-go="${go}" aria-label="${lbl} ${d} sur ${n}"><span class="dzp-r"><svg class="dzp-o" viewBox="0 0 96 44" aria-hidden="true"><rect class="b" x="1" y="1" width="94" height="42" rx="21" pathLength="100"/><rect class="f" x="1" y="1" width="94" height="42" rx="21" pathLength="100" style="stroke-dasharray:${p} 100"/></svg>${ic(k)}<b>${d}<small>/${n}</small></b></span><span class="dzp-l">${lbl}</span></button>`}
-function hero(){const g=dayProg(),o=S.hoff||0,d=hoffDate(),f=k=>new Date(d.getFullYear(),d.getMonth(),d.getDate()+k).getDate();
- const tk=S.tasks.filter(x=>x.d==="Aujourd'hui"||(S.set.late&&x.late)),hb=S.habits,W=(typeof spWeek==="function"?spWeek():[]);
- const top=`<div class="dz-top"><div class="dz-date"><span class="dz-dow">${JOURS[(d.getDay()+6)%7]}</span><span class="dz-dm"><span class="gwheel" data-gwheel aria-label="Changer de jour"><small>${o>0?f(-1):""}</small><b>${d.getDate()}</b><small>${f(1)}</small></span> ${MOIS[d.getMonth()]}</span></div><button class="dz-ib" data-go="settings" aria-label="Réglages">${ic("gear")}</button></div>`;
- const score=o>0?`<div class="dz-lbl">${o===1?"Demain":"Dans "+o+" jours"}</div><button class="dz-score dz-reset" data-gwheel-reset aria-label="Revenir à aujourd'hui">${d.getDate()}<span> ${MOIS[d.getMonth()].slice(0,4)}.</span></button>`
-  :`<div class="dz-lbl">Journée</div><div class="dz-score" aria-label="Journée validée à ${g.p} %">${g.p}<span>%</span></div>`;
- return top+`<div class="dz-arc">${score}<svg class="dz-br" viewBox="0 0 300 26" preserveAspectRatio="none" aria-hidden="true"><path d="M2 25 V14 Q2 6 10 6 H138 Q150 6 150 1 Q150 6 162 6 H290 Q298 6 298 14 V25"/></svg><div class="dz-pills">${pill("task","Tâches",tk.filter(x=>x.done).length,tk.length,"tasks")}${pill("hab","Habitudes",hb.filter(h=>h.done).length,hb.length,"tasks")}${pill("sport","Sport",W.filter(([x])=>x.done).length,W.length,"sport")}</div></div>`}
-function sec(t,go,body){return `<section class="dz-sec"><div class="dz-h"><h2>${t}</h2>${go?`<button class="dz-all" data-go="${go}">Voir tout</button>`:""}</div>${body}</section>`}
-const ORDER=["today","journal","sp2"];
-V.home=function(){const nd=homeDay();
- if(Array.isArray(S.hm)){const a=ORDER.filter(k=>S.hm.includes(k)),r=S.hm.filter(k=>!ORDER.includes(k));const n=a.concat(r);if(n.join()!==S.hm.join())S.hm.splice(0,S.hm.length,...n)}
- return `<div class="dz">${hero()}<div class="card dz-plan" role="button" tabindex="0" data-go="plan"><div class="label"><span>${nd.tm?"Demain":"Planning"}</span><span>›</span></div><div class="v1" style="padding:0">${evRows(nd.d,nd.wk)}</div></div>${alertMod()}${homeMods()}</div>`};
+const P={gear:'<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/>',
+ bell:'<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.9 1.9 0 0 0 3.4 0"/>',
+ list:'<rect x="5" y="3.5" width="14" height="17" rx="3"/><path d="M9 8.5h6M9 12h6M9 15.5h3.5"/>',
+ mic:'<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21"/>',
+ arrow:'<path d="M7 17 17 7M8 7h9v9"/>'};
+const ic=k=>`<svg viewBox="0 0 24 24" aria-hidden="true">${P[k]}</svg>`;
+const E=s=>esc(String(s==null?"":s));
+function evList(d,wk){let e=((wk===0?S.events[d]:S.evx[wk+":"+d])||[]).slice();
+ if(S.apple.on||S.apple.cals.some(c=>c[4]))(S.apple.ev[wk+":"+d]||[]).forEach(([h,t,c,du])=>{const k=S.apple.cals[c];if(k&&k[2])e.push([h,t,k[0],k[1],du])});
+ const dt=weekDays(wk)[d],off=Math.round((new Date(dt.getFullYear(),dt.getMonth(),dt.getDate())-new Date(TD.getFullYear(),TD.getMonth(),TD.getDate()))/864e5);
+ (S.sess||[]).forEach(x=>{if(x.dd===off)e.push([x.h||"18:00",x.t,"Sport","",45,x.done])});
+ return e.filter(x=>x&&x[1]).sort((a,b)=>String(a[0]).localeCompare(String(b[0])))}
+const sec=(t,go,body)=>`<section class="dz-sec"><div class="dz-h"><h2>${t}</h2><button class="dz-all" data-go="${go}">Voir tout</button></div>${body}</section>`;
+const note=(o)=>`<div class="dz-note" role="button" tabindex="0" ${o.attr||""}><div class="dz-nt"><span class="dz-tag">${E(o.tag)}</span><span class="dz-nd">${E(o.right)}</span></div><div class="dz-nb"><div class="dz-ntx"><b>${E(o.title)}</b>${o.sub?`<p>${E(o.sub)}</p>`:""}</div>${o.end||`<span class="dz-go">${ic("arrow")}</span>`}</div></div>`;
+V.home=function(){const g=dayProg(),nd=homeDay(),o=S.hoff||0,d=hoffDate(),f=k=>new Date(d.getFullYear(),d.getMonth(),d.getDate()+k).getDate();
+ const hr=TD.getHours(),hi=(hr<18?"Bonjour":"Bonsoir")+(S.name?" "+E(S.name):"");
+ const head=`<header class="dz-top"><div class="dz-av" aria-hidden="true">${E((S.name||"D")[0]).toUpperCase()}</div><div class="dz-who"><small>${hi}</small><b>${JOURS[(d.getDay()+6)%7]} <span class="gwheel" data-gwheel aria-label="Changer de jour"><small>${o>0?f(-1):""}</small><i>${d.getDate()}</i><small>${f(1)}</small></span> ${MOIS[d.getMonth()]}</b></div><div class="dz-ibs"><button class="dz-ib" data-go="settings" aria-label="Réglages">${ic("gear")}</button><button class="dz-ib" data-go="journal" aria-label="Veille">${ic("bell")}</button></div></header>`;
+ const arc=`<div class="dz-arc"><h1 class="dz-title">${o>0?`<span ${'data-gwheel-reset'} role="button">${o===1?"Demain":"Dans "+o+" jours"}</span>`:`Ta journée<br>validée à <em>${g.p} %</em>`}</h1><div class="dz-acts"><button class="dz-pill" data-go="tasks"><span class="dz-pi">${ic("list")}</span>Mes tâches</button><button class="dz-pill" data-dzask><span class="dz-pi">${ic("mic")}</span>Claude</button></div></div>`;
+ const ev=evList(nd.d,nd.wk);
+ const plan=`<div class="dz-folders">${(ev.length?ev:[["","Journée libre"]]).map(x=>`<button class="dz-fold" data-go="plan"><span class="dz-paper"><i></i><i></i></span><span class="dz-fl"><b>${E(x[1])}</b><small>${x[0]?E(x[0])+(x[5]?" · fait":""):"Rien de prévu"}</small></span></button>`).join("")}</div>`;
+ const TT=qsort(S.tasks.map((x,i)=>[x,i]).filter(([x])=>!x.done&&(x.d==="Aujourd'hui"||x.late||x.d==="Bientôt"))).slice(0,3);
+ const tasks=TT.length?TT.map(([x,i])=>note({tag:x.late?"En retard":x.i?"Important":x.d,right:x.h||"",title:x.t,sub:x.n||"",end:`<button class="dz-ck check" data-i="${i}" aria-label="Terminer"></button>`})).join(""):`<div class="dz-empty">Rien à faire aujourd'hui.</div>`;
+ const J=(typeof jrHome==="function"?jrHome():[]).slice(0,2);
+ const jr=J.length?J.map(a=>note({tag:a[1]||"Actualité",right:a[2]||"",title:a[0],attr:'data-go="journal"'})).join(""):`<div class="dz-empty">Ta veille arrivera ici chaque matin.</div>`;
+ const N=spNext().slice(0,1);
+ const sp=N.length?N.map(([x,j])=>note({tag:x.k||"Séance",right:x.dd===0?"Aujourd'hui":x.dd===1?"Demain":dLong(x.dd),title:x.t,sub:x.h,attr:`data-s2o="${j}"`})).join(""):`<button class="dz-empty dz-emb" data-go="sport">Aucune séance prévue · Programmer</button>`;
+ const IN=window._dzPrev!=="home";return `<div class="dz${IN?" in":""}">${head}${arc}${sec(nd.tm?"Demain":"Planning","plan",plan)}${sec("Tâches","tasks",tasks)}${sec("Journal","journal",jr)}${sec("Sport","sport",sp)}</div>`};
+const _rDz=render;render=function(){_rDz();window._dzPrev=S.view};
+document.addEventListener("click",e=>{if(!e.target.closest("[data-dzask]"))return;e.preventDefault();e.stopPropagation();const ph=document.querySelector(".phone");if(ph){ph.classList.add("chat-mode");setTimeout(()=>{const a=document.getElementById("ask");if(a)a.focus()},60)}},true);
 })();
 </script>
 <script type="module" src="sync.js"></script>
