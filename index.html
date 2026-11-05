@@ -2518,7 +2518,7 @@ html.dafi .on-home #dock .menubtn i{background:#fff!important}
 .dz-all{background:none;border:0;padding:4px 0;color:var(--d-t2);font:inherit;font-size:13px;cursor:pointer}
 
 /* Planning : tuiles « dossiers » */
-.dz-folders{display:flex;gap:10px;overflow-x:auto;margin:0 -20px;padding:0 20px 4px;scrollbar-width:none;scroll-snap-type:x mandatory}
+.dz-folders{display:flex;gap:10px;overflow-x:auto;margin:0 -20px;padding:0 20px 4px;scrollbar-width:none;scroll-snap-type:x mandatory;scroll-padding-left:20px}
 .dz-folders::-webkit-scrollbar{display:none}
 .dz-fold{flex:none;width:104px;height:96px;position:relative;border-radius:14px;background:linear-gradient(180deg,#2a2a2d,#141415 55%);border:1px solid var(--d-line);padding:0;overflow:hidden;cursor:pointer;scroll-snap-align:start;text-align:left;font:inherit;color:#fff}
 .dz-paper{position:absolute;left:8px;right:8px;top:8px;height:26px;border-radius:5px 5px 0 0;background:#f2f2f4;box-shadow:0 -3px 0 -1px #d8d8dc}
@@ -2574,18 +2574,18 @@ function evList(d,wk){let e=((wk===0?S.events[d]:S.evx[wk+":"+d])||[]).slice();
  return e.filter(x=>x&&x[1]).sort((a,b)=>String(a[0]).localeCompare(String(b[0])))}
 const sec=(t,go,body)=>`<section class="dz-sec"><div class="dz-h"><h2>${t}</h2><button class="dz-all" data-go="${go}">Voir tout</button></div>${body}</section>`;
 const note=(o)=>`<div class="dz-note" role="button" tabindex="0" ${o.attr||""}><div class="dz-nt"><span class="dz-tag">${E(o.tag)}</span><span class="dz-nd">${E(o.right)}</span></div><div class="dz-nb"><div class="dz-ntx"><b>${E(o.title)}</b>${o.sub?`<p>${E(o.sub)}</p>`:""}</div>${o.end||`<span class="dz-go">${ic("arrow")}</span>`}</div></div>`;
-V.home=function(){const g=dayProg(),nd=homeDay(),o=S.hoff||0,d=hoffDate(),f=k=>new Date(d.getFullYear(),d.getMonth(),d.getDate()+k).getDate();
+V.home=function(){const DEMO=!S.tasks.length&&!(S.sess||[]).length,g=dayProg(),nd=homeDay(),o=S.hoff||0,d=hoffDate(),f=k=>new Date(d.getFullYear(),d.getMonth(),d.getDate()+k).getDate();
  const hr=TD.getHours(),hi=(hr<18?"Bonjour":"Bonsoir")+(S.name?" "+E(S.name):"");
  const head=`<header class="dz-top"><div class="dz-av" aria-hidden="true">${E((S.name||"D")[0]).toUpperCase()}</div><div class="dz-who"><small>${hi}</small><b>${JOURS[(d.getDay()+6)%7]} <span class="gwheel" data-gwheel aria-label="Changer de jour"><small>${o>0?f(-1):""}</small><i>${d.getDate()}</i><small>${f(1)}</small></span> ${MOIS[d.getMonth()]}</b></div><div class="dz-ibs"><button class="dz-ib" data-go="settings" aria-label="Réglages">${ic("gear")}</button><button class="dz-ib" data-go="journal" aria-label="Veille">${ic("bell")}</button></div></header>`;
- const arc=`<div class="dz-arc"><h1 class="dz-title">${o>0?`<span ${'data-gwheel-reset'} role="button">${o===1?"Demain":"Dans "+o+" jours"}</span>`:`Ta journée<br>validée à <em>${g.p} %</em>`}</h1><div class="dz-acts"><button class="dz-pill" data-go="tasks"><span class="dz-pi">${ic("list")}</span>Mes tâches</button><button class="dz-pill" data-dzask><span class="dz-pi">${ic("mic")}</span>Claude</button></div></div>`;
- const ev=evList(nd.d,nd.wk);
+ const arc=`<div class="dz-arc"><h1 class="dz-title">${o>0?`<span ${'data-gwheel-reset'} role="button">${o===1?"Demain":"Dans "+o+" jours"}</span>`:`Ta journée<br>validée à <em>${DEMO?40:g.p} %</em>`}</h1><div class="dz-acts"><button class="dz-pill" data-go="tasks"><span class="dz-pi">${ic("list")}</span>Mes tâches</button><button class="dz-pill" data-dzask><span class="dz-pi">${ic("mic")}</span>Claude</button></div></div>`;
+ const ev0=evList(nd.d,nd.wk),ev=ev0.length||!DEMO?ev0:[["09:00","Brief équipe"],["11:30","Point direction"],["14:00","Visite fournisseur"],["18:30","Haut du corps"]];
  const plan=`<div class="dz-folders">${(ev.length?ev:[["","Journée libre"]]).map(x=>`<button class="dz-fold" data-go="plan"><span class="dz-paper"><i></i><i></i></span><span class="dz-fl"><b>${E(x[1])}</b><small>${x[0]?E(x[0])+(x[5]?" · fait":""):"Rien de prévu"}</small></span></button>`).join("")}</div>`;
- const TT=qsort(S.tasks.map((x,i)=>[x,i]).filter(([x])=>!x.done&&(x.d==="Aujourd'hui"||x.late||x.d==="Bientôt"))).slice(0,3);
- const tasks=TT.length?TT.map(([x,i])=>note({tag:x.late?"En retard":x.i?"Important":x.d,right:x.h||"",title:x.t,sub:x.n||"",end:`<button class="dz-ck check" data-i="${i}" aria-label="Terminer"></button>`})).join(""):`<div class="dz-empty">Rien à faire aujourd'hui.</div>`;
+ const TT=DEMO?[[{t:"Inventaire rayon TV",d:"Aujourd'hui",i:true},-1],[{t:"Préparer la réunion d'équipe",d:"Aujourd'hui",h:"14:00",n:"Chiffre de la semaine, planning des vendeurs"},-1]]:qsort(S.tasks.map((x,i)=>[x,i]).filter(([x])=>!x.done&&(x.d==="Aujourd'hui"||x.late||x.d==="Bientôt"))).slice(0,3);
+ const tasks=TT.length?TT.map(([x,i])=>note({tag:x.late?"En retard":x.i?"Important":x.d,right:x.h||"",title:x.t,sub:x.n||"",end:i<0?`<span class="dz-ck"></span>`:`<button class="dz-ck check" data-i="${i}" aria-label="Terminer"></button>`})).join(""):`<div class="dz-empty">Rien à faire aujourd'hui.</div>`;
  const J=(typeof jrHome==="function"?jrHome():[]).slice(0,2);
  const jr=J.length?J.map(a=>note({tag:a[1]||"Actualité",right:a[2]||"",title:a[0],attr:'data-go="journal"'})).join(""):`<div class="dz-empty">Ta veille arrivera ici chaque matin.</div>`;
- const N=spNext().slice(0,1);
- const sp=N.length?N.map(([x,j])=>note({tag:x.k||"Séance",right:x.dd===0?"Aujourd'hui":x.dd===1?"Demain":dLong(x.dd),title:x.t,sub:x.h,attr:`data-s2o="${j}"`})).join(""):`<button class="dz-empty dz-emb" data-go="sport">Aucune séance prévue · Programmer</button>`;
+ const N=DEMO?[[{t:"Course 5 km",k:"Course",dd:1,h:"18:30"},-1]]:spNext().slice(0,1);
+ const sp=N.length?N.map(([x,j])=>note({tag:x.k||"Séance",right:x.dd===0?"Aujourd'hui":x.dd===1?"Demain":dLong(x.dd),title:x.t,sub:x.h,attr:j<0?'data-go="sport"':`data-s2o="${j}"`})).join(""):`<button class="dz-empty dz-emb" data-go="sport">Aucune séance prévue · Programmer</button>`;
  const IN=window._dzPrev!=="home";return `<div class="dz${IN?" in":""}">${head}${arc}${sec(nd.tm?"Demain":"Planning","plan",plan)}${sec("Tâches","tasks",tasks)}${sec("Journal","journal",jr)}${sec("Sport","sport",sp)}</div>`};
 const _rDz=render;render=function(){_rDz();window._dzPrev=S.view};
 document.addEventListener("click",e=>{if(!e.target.closest("[data-dzask]"))return;e.preventDefault();e.stopPropagation();const ph=document.querySelector(".phone");if(ph){ph.classList.add("chat-mode");setTimeout(()=>{const a=document.getElementById("ask");if(a)a.focus()},60)}},true);
