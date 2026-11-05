@@ -2470,16 +2470,11 @@ html.dafi{--d-bg:#000;--d-s1:#0f0f10;--d-s2:#18181a;--d-line:rgba(255,255,255,.1
 html.dafi,html.dafi body{background:#000!important;color:#fff!important}
 html.dafi body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Inter",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
 
-/* Barre du bas : ronds séparés, blancs, l'actif en orange */
-html.dafi #dock{background:transparent!important;border:0!important;box-shadow:none!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
-html.dafi #dock .dglass,html.dafi #dock .dring,html.dafi #dock .dpct{display:none!important}
-html.dafi #dock .drawer{gap:6px!important}
-html.dafi #dock .menubtn,html.dafi #dock .drawer .it{width:48px!important;height:48px!important;border-radius:50%!important;background:#fff!important;color:#000!important;display:grid!important;place-items:center!important;padding:0!important;box-shadow:0 6px 18px rgba(0,0,0,.5)!important}
-html.dafi #dock .drawer .it .ic,html.dafi #dock .drawer .it .ic *{color:#000!important;background:none!important}
-html.dafi #dock .menubtn i{background:#000!important}
-html.dafi #dock .drawer .it.on,html.dafi .on-home #dock .menubtn{background:var(--d-acc)!important}
-html.dafi #dock .drawer .it.on .ic,html.dafi #dock .drawer .it.on .ic *{color:#fff!important}
-html.dafi .on-home #dock .menubtn i{background:#fff!important}
+/* Barre du bas : capsule sombre, l'actif en pilule nacrée */
+html.dafi #dock{background:rgba(13,13,15,.86)!important;border:1px solid rgba(255,255,255,.10)!important;box-shadow:0 10px 30px rgba(0,0,0,.6)!important;-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px)}
+html.dafi #dock .dglass{background:linear-gradient(180deg,#fff 0%,#e9e9ec 55%,#cfcfd4 100%)!important;border:0!important;box-shadow:inset 0 1px 0 #fff!important}
+html.dafi #dock .on,html.dafi #dock .on *{color:#000!important;stroke:#000}
+html.dafi #dock .dpct,html.dafi #dock .dring{display:none!important}
 
 /* ===== Accueil ===== */
 .dz{display:flex;flex-direction:column;gap:26px;padding:4px 0 24px;color:#fff}
@@ -2488,7 +2483,7 @@ html.dafi .on-home #dock .menubtn i{background:#fff!important}
 .dz-av{width:44px;height:44px;border-radius:50%;flex:none;display:grid;place-items:center;font-size:18px;font-weight:600;color:#000;background:radial-gradient(circle at 35% 30%,#fff,#bdbdc2 70%,#8e8e93)}
 .dz-who{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
 .dz-who small{font-size:12.5px;color:var(--d-t2)}
-.dz-who b{font-size:16px;font-weight:500;color:#fff;letter-spacing:-.01em;white-space:nowrap}
+.dz-who b{font-size:20px;font-weight:600;color:#fff;letter-spacing:-.01em;white-space:nowrap}
 .dz-who .gwheel{margin:0;padding:0 1px}
 .dz-who .gwheel i{font-style:normal}
 .dz-who .gwheel small{display:none}
@@ -2576,7 +2571,7 @@ const sec=(t,go,body)=>`<section class="dz-sec"><div class="dz-h"><h2>${t}</h2><
 const note=(o)=>`<div class="dz-note" role="button" tabindex="0" ${o.attr||""}><div class="dz-nt"><span class="dz-tag">${E(o.tag)}</span><span class="dz-nd">${E(o.right)}</span></div><div class="dz-nb"><div class="dz-ntx"><b>${E(o.title)}</b>${o.sub?`<p>${E(o.sub)}</p>`:""}</div>${o.end||`<span class="dz-go">${ic("arrow")}</span>`}</div></div>`;
 V.home=function(){const DEMO=!S.tasks.length&&!(S.sess||[]).length,g=dayProg(),nd=homeDay(),o=S.hoff||0,d=hoffDate(),f=k=>new Date(d.getFullYear(),d.getMonth(),d.getDate()+k).getDate();
  const hr=TD.getHours(),hi=(hr<18?"Bonjour":"Bonsoir")+(S.name?" "+E(S.name):"");
- const head=`<header class="dz-top"><div class="dz-av" aria-hidden="true">${E((S.name||"D")[0]).toUpperCase()}</div><div class="dz-who"><small>${hi}</small><b>${JOURS[(d.getDay()+6)%7]} <span class="gwheel" data-gwheel aria-label="Changer de jour"><small>${o>0?f(-1):""}</small><i>${d.getDate()}</i><small>${f(1)}</small></span> ${MOIS[d.getMonth()]}</b></div><div class="dz-ibs"><button class="dz-ib" data-go="settings" aria-label="Réglages">${ic("gear")}</button><button class="dz-ib" data-go="journal" aria-label="Veille">${ic("bell")}</button></div></header>`;
+ const head=`<header class="dz-top"><div class="dz-who"><b>${JOURS[(d.getDay()+6)%7]} <span class="gwheel" data-gwheel aria-label="Changer de jour"><small>${o>0?f(-1):""}</small><i>${d.getDate()}</i><small>${f(1)}</small></span> ${MOIS[d.getMonth()]}</b></div><button class="dz-ib" data-go="settings" aria-label="Réglages">${ic("gear")}</button></header>`;
  const arc=`<div class="dz-arc"><h1 class="dz-title">${o>0?`<span ${'data-gwheel-reset'} role="button">${o===1?"Demain":"Dans "+o+" jours"}</span>`:`Ta journée<br>validée à <em>${DEMO?40:g.p} %</em>`}</h1><div class="dz-acts"><button class="dz-pill" data-go="tasks"><span class="dz-pi">${ic("list")}</span>Mes tâches</button><button class="dz-pill" data-dzask><span class="dz-pi">${ic("mic")}</span>Claude</button></div></div>`;
  const ev0=evList(nd.d,nd.wk),ev=ev0.length||!DEMO?ev0:[["09:00","Brief équipe"],["11:30","Point direction"],["14:00","Visite fournisseur"],["18:30","Haut du corps"]];
  const plan=`<div class="dz-folders">${(ev.length?ev:[["","Journée libre"]]).map(x=>`<button class="dz-fold" data-go="plan"><span class="dz-paper"><i></i><i></i></span><span class="dz-fl"><b>${E(x[1])}</b><small>${x[0]?E(x[0])+(x[5]?" · fait":""):"Rien de prévu"}</small></span></button>`).join("")}</div>`;
