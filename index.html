@@ -14,6 +14,7 @@
   var t=document.createElement("div");t.style.cssText="position:fixed;top:0;height:env(safe-area-inset-top);visibility:hidden";document.addEventListener("DOMContentLoaded",function(){document.body.appendChild(t);var h=t.getBoundingClientRect().height;d.style.setProperty("--sbar",Math.max(h,54)+"px");t.remove()});d.style.setProperty("--sbar","54px")})();
 </script>
 <script>(function(){try{if(localStorage.getItem("deckGlass")!=="0")document.documentElement.classList.add("glass")}catch(e){}})()</script>
+<script>(function(){var h=document.documentElement;h.classList.remove("glass","bgl","bgb","bga");h.classList.add("dafi")})()</script>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icon-180.png">
@@ -2461,6 +2462,107 @@ document.addEventListener("click",async e=>{if(e.target.closest("[data-spcopy]")
  if(e.target.closest("[data-spoff]")){e.stopPropagation();S.spIn=deckSync.space;deckSync.leaveSpace();return}
  if(e.target.closest("[data-spuse]")){e.stopPropagation();const v=(($("#spin")||{}).value||"").trim();S.spIn=v;S.spMsg="Connexion…";keepRender();const r=await deckSync.useSpace(v);S.spMsg=r==="ok"?"":r;keepRender()}},true);
 document.addEventListener("click",e=>{if(e.target.closest("[data-cact]")){e.stopPropagation();deckClaude.load(true)}if(e.target.closest("[data-ccopy]")){e.stopPropagation();navigator.clipboard&&navigator.clipboard.writeText(deckSync.claudeUrl||S.claude.url);S.claude=S.claude||{};S.claude.copied=true;render()}},true);
+</script>
+<style id="dafi-css">
+/* ===== Deck · DA "Dafi" : noir pur, lumière, pilules ===== */
+html.dafi{--d-bg:#000;--d-s1:#0d0d0f;--d-s2:#161618;--d-s3:#1f1f22;--d-line:rgba(255,255,255,.09);--d-line2:rgba(255,255,255,.16);--d-t1:#f5f5f7;--d-t2:#8e8e93;--d-t3:#55555a;--d-pearl:linear-gradient(180deg,#fff 0%,#e9e9ec 55%,#cfcfd4 100%);
+ --card:var(--d-s1);--muted:var(--d-t2);--hi:#fff;--violet:#f5f5f7;--ink:#f5f5f7}
+html.dafi,html.dafi body{background:var(--d-bg)!important;color:var(--d-t1)!important}
+html.dafi body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Inter",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+
+/* Cartes : gris très foncé, filet clair, sans ombre */
+html.dafi .card{background:var(--d-s1)!important;border:1px solid var(--d-line)!important;box-shadow:none!important;border-radius:28px!important}
+html.dafi .card::before,html.dafi .card::after{display:none!important}
+html.dafi .label{text-transform:none;letter-spacing:0;font-size:16px;font-weight:600;color:var(--d-t1)!important}
+html.dafi .label span:last-child{color:var(--d-t2)!important;font-weight:400}
+html.dafi .small,html.dafi .vs{color:var(--d-t2)!important}
+
+/* Boutons : pilules. Principal = pilule nacrée blanche, texte noir */
+html.dafi button.cta,html.dafi .cta,html.dafi .bplus.hdone,html.dafi .spgo{background:var(--d-pearl)!important;color:#000!important;border:0!important;border-radius:999px!important;box-shadow:inset 0 1px 0 #fff,0 0 0 1px rgba(255,255,255,.2),0 6px 20px rgba(255,255,255,.06)!important}
+html.dafi .cta *{color:#000!important}
+html.dafi .bplus{background:var(--d-s2)!important;color:var(--d-t1)!important;border:1px solid var(--d-line)!important;border-radius:999px!important}
+html.dafi .seg,html.dafi .hm3{background:var(--d-s2)!important;border-radius:999px!important}
+html.dafi .seg button.on,html.dafi .hm3 button.on{background:var(--d-s3)!important;color:var(--d-t1)!important;border:1px solid var(--d-line2)!important;border-radius:999px!important;box-shadow:none!important}
+
+/* Barre du bas : ronds, l'actif en blanc */
+html.dafi #dock{background:rgba(13,13,15,.86)!important;border:1px solid var(--d-line)!important;box-shadow:0 10px 30px rgba(0,0,0,.6)!important;-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px)}
+html.dafi .dglass{background:var(--d-pearl)!important;border:0!important;box-shadow:inset 0 1px 0 #fff!important}
+html.dafi #dock .on,html.dafi #dock .on *{color:#000!important;stroke:#000}
+html.dafi #dock .dpct{display:none}
+
+/* ===== Accueil ===== */
+html.dafi .dz{display:flex;flex-direction:column;gap:22px;padding-bottom:12px}
+.dz-top{display:flex;align-items:flex-start;justify-content:space-between;padding:6px 4px 0}
+.dz-date{display:flex;flex-direction:column;gap:2px}
+.dz-dow{font-size:14px;color:var(--d-t2)}
+.dz-dm{font-size:22px;font-weight:600;letter-spacing:-.02em;color:var(--d-t1)}
+.dz-dm .gwheel{margin:0;padding:0 2px 0 0}
+.dz-ib{width:44px;height:44px;border-radius:50%;background:var(--d-s1);border:1px solid var(--d-line2);color:var(--d-t1);display:grid;place-items:center;cursor:pointer;padding:0}
+.dz-ib svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round}
+
+/* L'arc lumineux : un horizon de planète, lumière blanche sur le bord */
+.dz-arc{position:relative;margin:4px -22px 0;padding:58px 22px 6px;text-align:center;isolation:isolate}
+.dz-arc::before{content:"";position:absolute;z-index:-1;left:-25%;right:-25%;top:0;height:520px;border-radius:50%;
+ background:radial-gradient(ellipse 60% 45% at 50% 0%,rgba(255,255,255,.10),rgba(255,255,255,0) 70%),linear-gradient(180deg,#1b1b1e 0%,#0a0a0b 38%,#000 70%);
+ border-top:1.5px solid rgba(255,255,255,.95);
+ box-shadow:0 -1px 10px rgba(255,255,255,.55),0 -6px 40px rgba(255,255,255,.18),inset 0 10px 30px rgba(255,255,255,.08);
+ -webkit-mask-image:linear-gradient(90deg,transparent 4%,#000 32%,#000 68%,transparent 96%),linear-gradient(180deg,#000 55%,transparent 100%);
+ -webkit-mask-composite:source-in;mask-image:linear-gradient(90deg,transparent 4%,#000 32%,#000 68%,transparent 96%),linear-gradient(180deg,#000 55%,transparent 100%);mask-composite:intersect}
+.dz-lbl{font-size:14px;color:var(--d-t2);letter-spacing:.01em}
+.dz-score{font-size:76px;font-weight:600;letter-spacing:-.045em;line-height:1;margin-top:6px;color:var(--d-t1);font-variant-numeric:tabular-nums;background:none;border:0;padding:0;font-family:inherit}
+.dz-score span{font-size:30px;font-weight:500;letter-spacing:-.02em;color:var(--d-t2);margin-left:4px}
+.dz-reset{cursor:pointer}
+.dz-br{display:block;width:72%;height:22px;margin:14px auto 0;fill:none;stroke:var(--d-line2);stroke-width:1.2;vector-effect:non-scaling-stroke}
+.dz-pills{display:flex;justify-content:space-between;gap:8px;margin-top:2px}
+.dzp{flex:1;display:flex;flex-direction:column;align-items:center;gap:7px;background:none;border:0;padding:0;color:inherit;font:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.dzp-r{position:relative;width:96px;height:44px;display:flex;align-items:center;justify-content:center;gap:6px;border-radius:22px;background:var(--d-s1)}
+.dzp-o{position:absolute;inset:0;width:96px;height:44px;overflow:visible}
+.dzp-o rect{fill:none;stroke-width:1.6}
+.dzp-o .b{stroke:var(--d-line2)}
+.dzp-o .f{stroke:#fff;stroke-linecap:round;filter:drop-shadow(0 0 3px rgba(255,255,255,.55));transition:stroke-dasharray .6s cubic-bezier(.2,.8,.2,1)}
+.dzp-r svg:not(.dzp-o){width:16px;height:16px;fill:none;stroke:var(--d-t1);stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.dzp-r b{font-size:17px;font-weight:600;color:var(--d-t1);font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+.dzp-r small{font-size:12px;color:var(--d-t2);font-weight:500}
+.dzp-l{font-size:12.5px;color:var(--d-t2)}
+.dzp:active .dzp-r{transform:scale(.96);transition:transform .12s}
+
+/* Sections "Titre · Voir tout" */
+.dz-sec{display:flex;flex-direction:column;gap:12px}
+.dz-h{display:flex;align-items:baseline;justify-content:space-between;padding:0 4px}
+.dz-h h2{margin:0;font-size:18px;font-weight:600;letter-spacing:-.01em;color:var(--d-t1)}
+.dz-all{background:none;border:0;padding:6px 0;color:var(--d-t2);font:inherit;font-size:14px;cursor:pointer}
+.dz-card{background:var(--d-s1);border:1px solid var(--d-line);border-radius:28px;padding:18px}
+html.dafi .dz .hgrid{gap:14px}
+html.dafi .dz .hm .card{padding:18px}
+
+/* Correctifs v2 */
+html.dafi #dock .dring{display:none!important}
+html.dafi .vcheck,html.dafi .tlist .vrow[data-ti] .vcheck{border-radius:50%!important;border:1.5px solid var(--d-line2)!important;background:none!important}
+html.dafi .vcheck.on,html.dafi .tlist .vrow[data-ti] .vcheck.on{background:#fff!important;border-color:#fff!important}
+html.dafi .s2t{background:var(--d-s2)!important;border:1px solid var(--d-line)!important;color:var(--d-t1)!important;box-shadow:none!important}
+html.dafi .s2t.s2a{background:linear-gradient(180deg,#232326,#141416)!important;border-color:var(--d-line2)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.22)!important}
+html.dafi .s2t *{color:inherit}
+html.dafi .s2d{color:var(--d-t2)!important}
+html.dafi .gwheel small{color:var(--d-t3)}
+html.dafi .dz-plan{padding:18px}
+</style>
+<script>/* Deck · DA "Dafi" : accueil */
+(function(){
+const ICP={plan:'<path d="M4 7h16M4 12h10M4 17h7"/>',task:'<path d="m5 12 4 4 10-10"/>',hab:'<circle cx="12" cy="12" r="7.5"/><path d="M12 8v4l2.5 2"/>',sport:'<path d="M6 8v8M18 8v8M3 10v4M21 10v4M6 12h12"/>',gear:'<circle cx="12" cy="12" r="3"/><path d="M12 3v2.5M12 18.5V21M3 12h2.5M18.5 12H21M5.6 5.6l1.8 1.8M16.6 16.6l1.8 1.8M5.6 18.4l1.8-1.8M16.6 7.4l1.8-1.8"/>'};
+const ic=k=>`<svg viewBox="0 0 24 24" aria-hidden="true">${ICP[k]}</svg>`;
+function pill(k,lbl,d,n,go){const p=n?Math.round(d*100/n):0;return `<button class="dzp" data-go="${go}" aria-label="${lbl} ${d} sur ${n}"><span class="dzp-r"><svg class="dzp-o" viewBox="0 0 96 44" aria-hidden="true"><rect class="b" x="1" y="1" width="94" height="42" rx="21" pathLength="100"/><rect class="f" x="1" y="1" width="94" height="42" rx="21" pathLength="100" style="stroke-dasharray:${p} 100"/></svg>${ic(k)}<b>${d}<small>/${n}</small></b></span><span class="dzp-l">${lbl}</span></button>`}
+function hero(){const g=dayProg(),o=S.hoff||0,d=hoffDate(),f=k=>new Date(d.getFullYear(),d.getMonth(),d.getDate()+k).getDate();
+ const tk=S.tasks.filter(x=>x.d==="Aujourd'hui"||(S.set.late&&x.late)),hb=S.habits,W=(typeof spWeek==="function"?spWeek():[]);
+ const top=`<div class="dz-top"><div class="dz-date"><span class="dz-dow">${JOURS[(d.getDay()+6)%7]}</span><span class="dz-dm"><span class="gwheel" data-gwheel aria-label="Changer de jour"><small>${o>0?f(-1):""}</small><b>${d.getDate()}</b><small>${f(1)}</small></span> ${MOIS[d.getMonth()]}</span></div><button class="dz-ib" data-go="settings" aria-label="Réglages">${ic("gear")}</button></div>`;
+ const score=o>0?`<div class="dz-lbl">${o===1?"Demain":"Dans "+o+" jours"}</div><button class="dz-score dz-reset" data-gwheel-reset aria-label="Revenir à aujourd'hui">${d.getDate()}<span> ${MOIS[d.getMonth()].slice(0,4)}.</span></button>`
+  :`<div class="dz-lbl">Journée</div><div class="dz-score" aria-label="Journée validée à ${g.p} %">${g.p}<span>%</span></div>`;
+ return top+`<div class="dz-arc">${score}<svg class="dz-br" viewBox="0 0 300 26" preserveAspectRatio="none" aria-hidden="true"><path d="M2 25 V14 Q2 6 10 6 H138 Q150 6 150 1 Q150 6 162 6 H290 Q298 6 298 14 V25"/></svg><div class="dz-pills">${pill("task","Tâches",tk.filter(x=>x.done).length,tk.length,"tasks")}${pill("hab","Habitudes",hb.filter(h=>h.done).length,hb.length,"tasks")}${pill("sport","Sport",W.filter(([x])=>x.done).length,W.length,"sport")}</div></div>`}
+function sec(t,go,body){return `<section class="dz-sec"><div class="dz-h"><h2>${t}</h2>${go?`<button class="dz-all" data-go="${go}">Voir tout</button>`:""}</div>${body}</section>`}
+const ORDER=["today","journal","sp2"];
+V.home=function(){const nd=homeDay();
+ if(Array.isArray(S.hm)){const a=ORDER.filter(k=>S.hm.includes(k)),r=S.hm.filter(k=>!ORDER.includes(k));const n=a.concat(r);if(n.join()!==S.hm.join())S.hm.splice(0,S.hm.length,...n)}
+ return `<div class="dz">${hero()}<div class="card dz-plan" role="button" tabindex="0" data-go="plan"><div class="label"><span>${nd.tm?"Demain":"Planning"}</span><span>›</span></div><div class="v1" style="padding:0">${evRows(nd.d,nd.wk)}</div></div>${alertMod()}${homeMods()}</div>`};
+})();
 </script>
 <script type="module" src="sync.js"></script>
 <script>
