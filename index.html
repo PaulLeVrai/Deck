@@ -2747,6 +2747,9 @@ html.ios #scr .heroT .pplus svg{stroke:#fff}
 #scr .vrow.bc .vcheck.on{background:#8E5CF7!important;border-color:#8E5CF7!important}
 #scr .vrow.bc .vwrap[style]::before{content:"";position:absolute;left:50%;top:50%;width:64px;height:64px;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle,color-mix(in srgb,var(--g) 45%,transparent),transparent 65%);pointer-events:none}
 #scr .vrow.bc.done{opacity:.45}#scr .vrow.bc.done .t b{text-decoration:line-through}
+#scr .bimk{position:absolute;left:0;top:0;bottom:0;width:1.5px;background:linear-gradient(180deg,transparent,#8E5CF7 25%,#8E5CF7 75%,transparent);box-shadow:0 0 8px #8E5CF7;pointer-events:none;z-index:1}
+#scr .vrow[data-ti]{position:relative}#scr .vrow[data-ti]:not(.bc) .bimk{left:-4px;top:4px;bottom:4px}
+#scr .vrow .imk{display:none!important}
 </style>
 <script>/* Programmer une séance sous les séances de la semaine */
 (function(){const _r=render;render=function(){_r.apply(this,arguments);try{if(S.view!=="sport")return;const c=document.querySelector("#scr>.cta[data-prog]"),p=document.querySelector("#scr>.sppile");if(c&&p)p.after(c)}catch(e){}}})();</script>
@@ -2772,9 +2775,9 @@ setInterval(()=>{try{if(!document.hidden)rail()}catch(e){}},60000);addEventListe
 const WDJ=["DIM","LUN","MAR","MER","JEU","VEN","SAM"];
 function hzHTML(){const p=dayProg().p,e=14+72*p/100,d=new Date();window.HZE=window.HZE??e;return `<div class="phz ${p>=100?"full":""}" style="--e:${window.HZE}" data-e="${e}"><i class="phh"></i><i class="phv"></i><i class="phw"></i><div class="phc"><div class="phd"><b>${WDJ[d.getDay()]}</b><span>${d.getDate()}</span></div><i></i><div class="php">${p} %</div></div></div>`}
 function bTag(x){if(x.done)return"Fait";if(x.late)return"En retard";const q=quad(x);return q===1?"Important · urgent":q===2?"Important":x.d}
-const _taskRow=taskRow;taskRow=function(x,i){if(S.view!=="tasks")return _taskRow(x,i);
+const _taskRow=taskRow;const BIMK='<i class="bimk"></i>';taskRow=function(x,i){const im=x.i&&!x.done;if(S.view!=="tasks"){const h=_taskRow(x,i);return im?h.replace(`data-ti="${i}">`,`data-ti="${i}">`+BIMK):h}
  const f=elapsed(x),ff=f==null||x.done?0:f,col=x.late&&!x.done?"#ff453a":ff>=.8?dlColor(ff):"",gl=S.set.dglow&&!x.done&&f!=null&&f>=.5?` style="--g:${dlColor(f)}"`:"",sub=x.n?String(x.n).split("\n")[0]:"";
- return `<div class="bsw" data-sw="${i}"><span class="bsl">Supprimer</span><span class="bsr">Demain</span><div class="vrow bc ${x.done?"done":""}" data-ti="${i}"><div class="bct"><span class="btag" style="--f:${Math.round(ff*100)}${col?";color:"+col:""}">${esc(bTag(x))}</span>${x.h?`<small>${x.h}</small>`:""}</div><div class="bcb"><div class="t"><b>${esc(x.t)}</b>${sub?`<p>${esc(sub)}</p>`:""}</div><span class="vwrap"${gl}><button class="vcheck check ${x.done?"on":""}" data-i="${i}" aria-label="Terminer"></button></span></div></div></div>${qpick(i)}${edPanel("t",i)}`};
+ return `<div class="bsw" data-sw="${i}"><span class="bsl">Supprimer</span><span class="bsr">Demain</span><div class="vrow bc ${x.done?"done":""}" data-ti="${i}">${im?BIMK:""}<div class="bct"><span class="btag" style="--f:${Math.round(ff*100)}${col?";color:"+col:""}">${esc(bTag(x))}</span>${x.h?`<small>${x.h}</small>`:""}</div><div class="bcb"><div class="t"><b>${esc(x.t)}</b>${sub?`<p>${esc(sub)}</p>`:""}</div><span class="vwrap"${gl}><button class="vcheck check ${x.done?"on":""}" data-i="${i}" aria-label="Terminer"></button></span></div></div></div>${qpick(i)}${edPanel("t",i)}`};
 // Tap : coche à droite, le reste ouvre le détail.
 let BSWX=0;window.addEventListener("click",e=>{const r=e.target.closest(".tlist .vrow.bc");if(!r)return;if(Date.now()-BSWX<400){e.stopPropagation();e.preventDefault();return}if(e.target.closest(".vcheck"))return;e.stopPropagation();e.preventDefault();const b=r.getBoundingClientRect();if(b.right-e.clientX<64){r.querySelector(".vcheck").click();return}const i=+r.dataset.ti;S.ed=null;S.tx=S.tx===i?null:i;const st=$("#scr").scrollTop;render();$("#scr").scrollTop=st},true);
 // Glisser vers la droite = supprimer, vers la gauche = reporter à demain.
