@@ -2699,6 +2699,14 @@ html.ios #scr .day.on small{opacity:.8!important}
 .on-sport #scr .spfr{padding:24px 20px 20px!important;min-height:210px;display:flex;flex-direction:column;justify-content:space-between}
 .on-sport #scr .spfr .spft{font-size:32px!important;line-height:1.1}
 .on-sport #scr .sppile{margin-bottom:14px}
+/* Rail de la journée : se remplit jusqu'à maintenant, le passé pâlit */
+.vrail-host{position:relative}
+.vslot.vpast{opacity:.45;transition:opacity .4s}
+.vrail{position:absolute;width:3px;margin-left:-1.5px;border-radius:2px;background:linear-gradient(180deg,rgba(142,92,247,.25),#8E5CF7);pointer-events:none;z-index:2;transform-origin:top;animation:railIn .7s var(--ease-out,cubic-bezier(.2,.8,.2,1)) both}
+.vknob{position:absolute;width:15px;height:15px;margin:-7.5px 0 0 -7.5px;border-radius:50%;background:#fff;border:3px solid #8E5CF7;box-shadow:0 0 12px rgba(142,92,247,.9);pointer-events:none;z-index:3}
+#scr .vknt{position:absolute;margin-top:-8px;font-size:12px!important;font-weight:600;color:#b9a6ff!important;pointer-events:none;z-index:3;font-variant-numeric:tabular-nums}
+@keyframes railIn{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+@media (prefers-reduced-motion:reduce){.vrail{animation:none}}
 @keyframes spShine{from{background-position:100% 0}to{background-position:-150% 0}}
 html.ios .spsl.ok{background:rgba(142,92,247,.28)!important}
 html.ios .spsl.ok em{animation:none;color:#fff!important;background:none}
@@ -2706,6 +2714,23 @@ html.ios .spsl.ok em{animation:none;color:#fff!important;background:none}
 </style>
 <script>/* Programmer une séance sous les séances de la semaine */
 (function(){const _r=render;render=function(){_r.apply(this,arguments);try{if(S.view!=="sport")return;const c=document.querySelector("#scr>.cta[data-prog]"),p=document.querySelector("#scr>.sppile");if(c&&p)p.after(c)}catch(e){}}})();</script>
+<script>/* Rail « maintenant » dans le planning (accueil + calendrier) */
+(function(){const m=t=>{const x=/(\d{1,2}):(\d{2})/.exec(t||"");return x?+x[1]*60+ +x[2]:null};
+function rail(){document.querySelectorAll(".vrail,.vknob,.vknt").forEach(e=>e.remove());document.querySelectorAll(".vpast").forEach(e=>e.classList.remove("vpast"));
+ let today=false;if(S.view==="home")today=!(S.hoff>0)&&!(typeof homeDay==="function"&&homeDay().tm);else if(S.view==="plan")today=(S.wk||0)===0&&S.day===(new Date().getDay()+6)%7;
+ if(!today)return;const sl=[...document.querySelectorAll("#scr .vslot")];if(!sl.length)return;
+ const d=new Date(),now=d.getHours()*60+d.getMinutes();
+ const st=sl.map(e=>m(e.querySelector(".vtime")&&e.querySelector(".vtime").firstChild&&e.querySelector(".vtime").firstChild.textContent));
+ const en=sl.map((e,i)=>{const s=e.querySelector(".vtime small");if(s&&m(s.textContent)!=null)return m(s.textContent);if(i+1<sl.length&&st[i+1]!=null)return st[i+1];const j=m((/jusqu.à\s*(\d{1,2}:\d{2})/.exec(e.textContent)||[])[1]);return j!=null?j:(st[i]||0)+60});
+ if(st[0]==null||now<st[0])return;const host=sl[0].parentElement;host.classList.add("vrail-host");
+ const hb=host.getBoundingClientRect(),fv=host.querySelector(".vev.free")||sl[0].querySelector(".vev"),x=(fv?fv.getBoundingClientRect().left+(fv.classList.contains("free")?1:0):sl[0].getBoundingClientRect().left+60)-hb.left;
+ const top=sl[0].getBoundingClientRect().top-hb.top+4;let y=null;
+ sl.forEach((e,i)=>{if(en[i]<=now)e.classList.add("vpast");if(y==null&&now<en[i]){const r=e.getBoundingClientRect(),f=Math.max(0,Math.min(1,(now-st[i])/Math.max(1,en[i]-st[i])));y=r.top-hb.top+r.height*f}});
+ if(y==null){const r=sl[sl.length-1].getBoundingClientRect();y=r.bottom-hb.top}
+ const hh=String(d.getHours()).padStart(2,"0")+":"+String(d.getMinutes()).padStart(2,"0");
+ host.insertAdjacentHTML("beforeend",`<i class="vrail" style="left:${x}px;top:${top}px;height:${Math.max(0,y-top)}px"></i><i class="vknob" style="left:${x}px;top:${y}px"></i><span class="vknt" style="left:${x+14}px;top:${y}px">${hh}</span>`)}
+const _r=render;render=function(){_r.apply(this,arguments);try{requestAnimationFrame(rail)}catch(e){}};
+setInterval(()=>{try{if(!document.hidden)rail()}catch(e){}},60000);addEventListener("resize",()=>{try{rail()}catch(e){}})})();</script>
 <script type="module" src="sync.js"></script>
 <script>
 if("serviceWorker" in navigator){navigator.serviceWorker.register("sw.js",{updateViaCache:"none"}).then(r=>{r.update();addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")r.update()})});
