@@ -14,7 +14,7 @@
   var t=document.createElement("div");t.style.cssText="position:fixed;top:0;height:env(safe-area-inset-top);visibility:hidden";document.addEventListener("DOMContentLoaded",function(){document.body.appendChild(t);var h=t.getBoundingClientRect().height;d.style.setProperty("--sbar",Math.max(h,54)+"px");t.remove()});d.style.setProperty("--sbar","54px")})();
 </script>
 <script>(function(){try{if(localStorage.getItem("deckGlass")!=="0")document.documentElement.classList.add("glass")}catch(e){}})()</script>
-<script>(function(){var h=document.documentElement;h.classList.remove("glass","bgl","bgb","bga");h.classList.add("dafi")})()</script>
+<script>(function(){var h=document.documentElement;h.classList.remove("glass","bgl","bgb","bga");h.classList.add("dafi");try{var v=new URLSearchParams(location.search).get("v");if(v)localStorage.setItem("dzv",v)}catch(e){}})()</script>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icon-180.png">
@@ -2552,6 +2552,48 @@ html.dafi{--ease-out:cubic-bezier(.2,.8,.2,1);--ease-spring:cubic-bezier(.34,1.4
 .dz-ck{transition:transform var(--d-fast) var(--ease-spring),background var(--d-fast)}
 .dz-ck:active{transform:scale(.85)}
 @media (prefers-reduced-motion:reduce){.dz *,.dz *::before,.dz *::after{animation-duration:1ms!important;transition-duration:1ms!important}}
+
+/* ===== Accueil v3 : schéma de Paul, Planning en verre liquide ===== */
+.dz-who{gap:6px}
+.dz-pc{display:flex;align-items:center;gap:8px;font-size:13.5px;color:var(--d-t2);font-variant-numeric:tabular-nums}
+.dz-pcb{width:44px;height:4px;border-radius:4px;background:rgba(255,255,255,.12);overflow:hidden}
+.dz-pcb i{display:block;height:100%;background:#fff;border-radius:4px;transition:width var(--d-slow) var(--ease-out)}
+.dz-top{align-items:flex-start}
+.dz-stage{position:relative;isolation:isolate;margin:6px 0 0}
+.dz-light{position:absolute;z-index:-1;pointer-events:none}
+.dz-glass{position:relative;border-radius:30px;padding:18px 18px 52px;cursor:pointer;
+ background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(179,179,179,.035));
+ border:1px solid rgba(255,255,255,.10);
+ box-shadow:0 18px 40px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.5),inset 0 0 0 1px rgba(255,255,255,.08),inset 0 -1px 0 rgba(255,255,255,.06);
+ -webkit-backdrop-filter:blur(22px) saturate(140%);backdrop-filter:blur(22px) saturate(140%)}
+.dz-gh{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px}
+.dz-gh span:first-child{font-size:16px;font-weight:600;color:#fff}
+.dz-gall{font-size:13px;color:rgba(255,255,255,.6)}
+.pl{display:flex;flex-direction:column}
+.pl-r{display:flex;align-items:center;gap:12px;min-height:44px}
+.pl-r+.pl-r{border-top:1px solid rgba(255,255,255,.07)}
+.pl-t{width:44px;font-size:13px;color:rgba(255,255,255,.65);font-variant-numeric:tabular-nums}
+.pl-dot{width:7px;height:7px;border-radius:50%;background:#fff;box-shadow:0 0 8px rgba(255,255,255,.8);flex:none}
+.pl-n{flex:1;min-width:0;font-size:15px;font-weight:500;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pl-d{font-size:12px;color:rgba(255,255,255,.5)}
+.pl-r.past .pl-n,.pl-r.past .pl-t{color:rgba(255,255,255,.35)}
+.pl-r.past .pl-dot{background:rgba(255,255,255,.25);box-shadow:none}
+.dz-stage .dz-acts{position:relative;z-index:2;margin:-30px 10px 0}
+.dz-stage .dz-pill{background:linear-gradient(180deg,#1e1e20,#0f0f10);box-shadow:0 10px 24px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.1)}
+
+/* Prop 1 · Arc : l'horizon lumineux passe derrière le verre */
+.dzv1 .dz-light{left:-30%;right:-30%;top:-22px;height:420px;border-radius:50%;background:radial-gradient(ellipse 50% 32% at 50% 0%,rgba(255,255,255,.28),rgba(255,255,255,0) 75%),linear-gradient(180deg,#2a2a2d 0%,#0b0b0c 40%,#000 70%);border-top:2px solid #fff;box-shadow:0 -2px 14px rgba(255,255,255,.75),0 -10px 50px rgba(255,255,255,.22);-webkit-mask-image:linear-gradient(90deg,transparent 6%,#000 34%,#000 66%,transparent 94%);mask-image:linear-gradient(90deg,transparent 6%,#000 34%,#000 66%,transparent 94%)}
+/* Prop 2 · Halo : une sphère de lumière derrière le coin du verre */
+.dzv2 .dz-light{width:230px;height:230px;right:-40px;top:-60px;border-radius:50%;background:radial-gradient(circle at 38% 34%,rgba(255,255,255,.75) 0%,rgba(200,200,206,.45) 22%,rgba(90,90,96,.3) 48%,transparent 70%)}
+.dzv2 .dz-light::after{content:"";position:absolute;width:90px;height:90px;left:-150px;top:250px;border-radius:50%;background:radial-gradient(circle at 40% 35%,#bdbdc2,#3a3a3e 60%,transparent 72%)}
+/* Prop 3 · Rayons : deux faisceaux de lumière croisés */
+.dzv3 .dz-light{inset:-20px -20px 10px;overflow:hidden}
+.dzv3 .dz-light::before,.dzv3 .dz-light::after{content:"";position:absolute;left:-20%;width:140%;height:70px;top:40%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.22) 45%,rgba(255,255,255,.4) 50%,rgba(255,255,255,.22) 55%,transparent);transform:rotate(-24deg);filter:blur(10px)}
+.dzv3 .dz-light::after{height:26px;top:62%;transform:rotate(14deg);opacity:.7}
+/* Prop 4 · Plein écran : verre bord à bord, pilules dans une bande */
+.dzv4 .dz-light{left:-20px;right:-20px;top:-10px;height:300px;background:radial-gradient(ellipse 70% 60% at 30% 20%,rgba(255,255,255,.45),transparent 60%),radial-gradient(ellipse 50% 50% at 85% 70%,rgba(255,255,255,.25),transparent 60%)}
+.dzv4 .dz-glass{margin:0 -20px;border-radius:0 0 36px 36px;border-left:0;border-right:0;padding:20px 22px 64px}
+.dzv4 .dz-acts{margin:-34px -20px 0!important;padding:10px 14px;background:rgba(10,10,11,.82);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);border-top:1px solid rgba(255,255,255,.08);border-bottom:1px solid rgba(255,255,255,.08)}
 </style>
 <script>/* Deck · accueil calqué sur les règles de Dafi */
 (function(){
@@ -2571,17 +2613,20 @@ const sec=(t,go,body)=>`<section class="dz-sec"><div class="dz-h"><h2>${t}</h2><
 const note=(o)=>`<div class="dz-note" role="button" tabindex="0" ${o.attr||""}><div class="dz-nt"><span class="dz-tag">${E(o.tag)}</span><span class="dz-nd">${E(o.right)}</span></div><div class="dz-nb"><div class="dz-ntx"><b>${E(o.title)}</b>${o.sub?`<p>${E(o.sub)}</p>`:""}</div>${o.end||`<span class="dz-go">${ic("arrow")}</span>`}</div></div>`;
 V.home=function(){const DEMO=!S.tasks.length&&!(S.sess||[]).length,g=dayProg(),nd=homeDay(),o=S.hoff||0,d=hoffDate(),f=k=>new Date(d.getFullYear(),d.getMonth(),d.getDate()+k).getDate();
  const hr=TD.getHours(),hi=(hr<18?"Bonjour":"Bonsoir")+(S.name?" "+E(S.name):"");
- const head=`<header class="dz-top"><div class="dz-who"><b>${JOURS[(d.getDay()+6)%7]} <span class="gwheel" data-gwheel aria-label="Changer de jour"><small>${o>0?f(-1):""}</small><i>${d.getDate()}</i><small>${f(1)}</small></span> ${MOIS[d.getMonth()]}</b></div><button class="dz-ib" data-go="settings" aria-label="Réglages">${ic("gear")}</button></header>`;
- const arc=`<div class="dz-arc"><h1 class="dz-title">${o>0?`<span ${'data-gwheel-reset'} role="button">${o===1?"Demain":"Dans "+o+" jours"}</span>`:`Ta journée<br>validée à <em>${DEMO?40:g.p} %</em>`}</h1><div class="dz-acts"><button class="dz-pill" data-go="tasks"><span class="dz-pi">${ic("list")}</span>Mes tâches</button><button class="dz-pill" data-dzask><span class="dz-pi">${ic("mic")}</span>Claude</button></div></div>`;
+ const pc=DEMO?40:g.p,VV=(()=>{try{return localStorage.getItem("dzv")||"1"}catch(_){return "1"}})();
+ const head=`<header class="dz-top"><div class="dz-who"><b>${JOURS[(d.getDay()+6)%7]} <span class="gwheel" data-gwheel aria-label="Changer de jour"><small>${o>0?f(-1):""}</small><i>${d.getDate()}</i><small>${f(1)}</small></span> ${MOIS[d.getMonth()]}</b>${o>0?`<span class="dz-pc" data-gwheel-reset role="button">${o===1?"Demain":"Dans "+o+" jours"} · revenir</span>`:`<span class="dz-pc"><span class="dz-pcb"><i style="width:${pc}%"></i></span>${pc} % de la journée</span>`}</div><button class="dz-ib" data-go="settings" aria-label="Réglages">${ic("gear")}</button></header>`;
+ const acts=`<div class="dz-acts"><button class="dz-pill" data-go="tasks"><span class="dz-pi">${ic("list")}</span>Mes tâches</button><button class="dz-pill" data-dzask><span class="dz-pi">${ic("mic")}</span>Claude</button></div>`;
  const ev0=evList(nd.d,nd.wk),ev=ev0.length||!DEMO?ev0:[["09:00","Brief équipe"],["11:30","Point direction"],["14:00","Visite fournisseur"],["18:30","Haut du corps"]];
- const plan=`<div class="dz-folders">${(ev.length?ev:[["","Journée libre"]]).map(x=>`<button class="dz-fold" data-go="plan"><span class="dz-paper"><i></i><i></i></span><span class="dz-fl"><b>${E(x[1])}</b><small>${x[0]?E(x[0])+(x[5]?" · fait":""):"Rien de prévu"}</small></span></button>`).join("")}</div>`;
+ const nowM=TD.getHours()*60+TD.getMinutes(),tm=h=>{const m=/^(\d\d):(\d\d)/.exec(h||"");return m?+m[1]*60+ +m[2]:null};
+ const rows=(ev.length?ev:[["","Journée libre"]]).slice(0,4).map(x=>{const t=tm(x[0]),past=!nd.tm&&!DEMO&&t!=null&&t+(+x[4]||60)<nowM;return `<div class="pl-r${past||x[5]?" past":""}"><span class="pl-t">${E(x[0]||"—")}</span><span class="pl-dot"></span><span class="pl-n">${E(x[1])}</span>${x[4]?`<span class="pl-d">${x[4]>=60?Math.round(x[4]/6)/10+" h":x[4]+" min"}</span>`:""}</div>`}).join("");
+ const plan=`<div class="dz-stage"><div class="dz-light" aria-hidden="true"></div><div class="dz-glass" role="button" tabindex="0" data-go="plan"><div class="dz-gh"><span>${nd.tm?"Demain":"Planning"}</span><span class="dz-gall">Voir tout</span></div><div class="pl">${rows}</div></div>${acts}</div>`;
  const TT=DEMO?[[{t:"Inventaire rayon TV",d:"Aujourd'hui",i:true},-1],[{t:"Préparer la réunion d'équipe",d:"Aujourd'hui",h:"14:00",n:"Chiffre de la semaine, planning des vendeurs"},-1]]:qsort(S.tasks.map((x,i)=>[x,i]).filter(([x])=>!x.done&&(x.d==="Aujourd'hui"||x.late||x.d==="Bientôt"))).slice(0,3);
  const tasks=TT.length?TT.map(([x,i])=>note({tag:x.late?"En retard":x.i?"Important":x.d,right:x.h||"",title:x.t,sub:x.n||"",end:i<0?`<span class="dz-ck"></span>`:`<button class="dz-ck check" data-i="${i}" aria-label="Terminer"></button>`})).join(""):`<div class="dz-empty">Rien à faire aujourd'hui.</div>`;
  const J=(typeof jrHome==="function"?jrHome():[]).slice(0,2);
  const jr=J.length?J.map(a=>note({tag:a[1]||"Actualité",right:a[2]||"",title:a[0],attr:'data-go="journal"'})).join(""):`<div class="dz-empty">Ta veille arrivera ici chaque matin.</div>`;
  const N=DEMO?[[{t:"Course 5 km",k:"Course",dd:1,h:"18:30"},-1]]:spNext().slice(0,1);
  const sp=N.length?N.map(([x,j])=>note({tag:x.k||"Séance",right:x.dd===0?"Aujourd'hui":x.dd===1?"Demain":dLong(x.dd),title:x.t,sub:x.h,attr:j<0?'data-go="sport"':`data-s2o="${j}"`})).join(""):`<button class="dz-empty dz-emb" data-go="sport">Aucune séance prévue · Programmer</button>`;
- const IN=window._dzPrev!=="home";return `<div class="dz${IN?" in":""}">${head}${arc}${sec(nd.tm?"Demain":"Planning","plan",plan)}${sec("Tâches","tasks",tasks)}${sec("Journal","journal",jr)}${sec("Sport","sport",sp)}</div>`};
+ const IN=window._dzPrev!=="home";return `<div class="dz dzv${VV}${IN?" in":""}">${head}${plan}${sec("Tâches","tasks",tasks)}${sec("Journal","journal",jr)}${sec("Sport","sport",sp)}</div>`};
 const _rDz=render;render=function(){_rDz();window._dzPrev=S.view};
 document.addEventListener("click",e=>{if(!e.target.closest("[data-dzask]"))return;e.preventDefault();e.stopPropagation();const ph=document.querySelector(".phone");if(ph){ph.classList.add("chat-mode");setTimeout(()=>{const a=document.getElementById("ask");if(a)a.focus()},60)}},true);
 })();
