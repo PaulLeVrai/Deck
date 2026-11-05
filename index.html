@@ -14,7 +14,7 @@
   var t=document.createElement("div");t.style.cssText="position:fixed;top:0;height:env(safe-area-inset-top);visibility:hidden";document.addEventListener("DOMContentLoaded",function(){document.body.appendChild(t);var h=t.getBoundingClientRect().height;d.style.setProperty("--sbar",Math.max(h,54)+"px");t.remove()});d.style.setProperty("--sbar","54px")})();
 </script>
 <script>(function(){try{if(localStorage.getItem("deckGlass")!=="0")document.documentElement.classList.add("glass")}catch(e){}})()</script>
-<script>(function(){var h=document.documentElement;h.classList.remove("glass","bgl","bgb","bga");h.classList.add("dafi")})()</script>
+<script>(function(){var h=document.documentElement;h.classList.remove("glass","bgl","bgb","bga");h.classList.add("dafi","salt")})()</script>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icon-180.png">
@@ -2514,6 +2514,48 @@ html.dafi .card.sp2 .s2t,html.dafi .card.sp2 .s2t.s2a{background:transparent!imp
 /* Calendrier de l'accueil : plus de cadre, posé sur le fond */
 html.dafi .card.hero{background:transparent!important;border:0!important;box-shadow:none!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
 html.dafi .card.hero::before,html.dafi .card.hero::after{display:none!important}
+
+/* ===== Palette « Salt and pepper » : #FFFFFF #D4D4D4 #B3B3B3 #2B2B2B ===== */
+html.salt{--p0:#FFFFFF;--p1:#D4D4D4;--p2:#B3B3B3;--p3:#2B2B2B;
+ --d-bg:var(--p0);--d-s1:var(--p0);--d-s2:var(--p1);--d-s3:var(--p0);--d-line:var(--p1);--d-line2:var(--p2);--d-t1:var(--p3);--d-t2:var(--p2);--d-t3:var(--p1);
+ --card:var(--p0);--muted:var(--p2);--hi:var(--p3);--violet:var(--p3);--ink:var(--p3);color-scheme:light}
+html.salt,html.salt body{background:var(--p0)!important;color:var(--p3)!important}
+html.salt #scr,html.salt #scr *{color:var(--p3)}
+html.salt .small,html.salt .vs,html.salt .label span:last-child,html.salt .s2d,html.salt .gbig i,html.salt #scr small,html.salt .vrow .vs{color:var(--p2)!important}
+html.salt .label,html.salt .label span:first-child{color:var(--p3)!important}
+html.salt .card{background:var(--p0)!important;border:1px solid var(--p1)!important}
+html.salt .card.hero,html.salt .card.sp2 .s2t{border:0!important;background:transparent!important}
+html.salt .gdate,html.salt .gdate b,html.salt .gbig{color:var(--p3)!important}
+html.salt .gwheel small{display:none!important}
+html.salt .gset{border-color:var(--p1)!important;color:var(--p3)!important}
+/* Calendrier : évènements en gris anthracite, passés en gris moyen, créneaux libres en gris clair */
+html.salt .phone{background:var(--p0)!important}
+html.salt #scr .vev.free{background:transparent!important;color:var(--p2)!important}
+html.salt #scr .vev.free *{color:var(--p2)!important}
+html.salt #scr .vev:not(.free){background:var(--p3)!important;color:var(--p0)!important;box-shadow:none!important;border:0!important}
+html.salt #scr .vev:not(.free) *{color:var(--p0)!important}
+html.salt #scr .vev[style*="34c759"],html.salt #scr .vev.done,html.salt #scr .vev.past{background:var(--p2)!important}
+html.salt #scr .vev[style*="bf5af2"]{background:var(--p1)!important}
+html.salt #scr .vev[style*="bf5af2"] *{color:var(--p3)!important}
+html.salt .vfree,html.salt .vgap{color:var(--p2)!important}
+/* Tâches / habitudes */
+html.salt .vcheck,html.salt .tlist .vrow[data-ti] .vcheck{border-color:var(--p2)!important}
+html.salt .vcheck.on,html.salt .tlist .vrow[data-ti] .vcheck.on{background:var(--p3)!important;border-color:var(--p3)!important}
+html.salt .vrow+.vrow,html.salt .vrow{border-color:var(--p1)!important}
+html.salt .seg,html.salt .hm3{background:var(--p1)!important}
+html.salt .seg button,html.salt .hm3 button{color:var(--p3)!important}
+html.salt .seg button.on,html.salt .hm3 button.on{background:var(--p0)!important;color:var(--p3)!important;border:0!important;box-shadow:none!important}
+/* Boutons */
+html.salt button.cta,html.salt .cta,html.salt .bplus.hdone,html.salt .spgo{background:var(--p3)!important;color:var(--p0)!important;box-shadow:none!important}
+html.salt .cta *{color:var(--p0)!important}
+html.salt .bplus{background:var(--p0)!important;color:var(--p3)!important;border:1px solid var(--p1)!important}
+/* Barre du bas */
+html.salt #dock{background:var(--p0)!important;border:1px solid var(--p1)!important;box-shadow:none!important}
+html.salt #dock .dglass{background:var(--p3)!important;box-shadow:none!important}
+html.salt #dock button,html.salt #dock button *{color:var(--p3)!important}
+html.salt #dock .on,html.salt #dock .on *{color:var(--p0)!important;stroke:var(--p0)}
+html.salt #dock .menubtn i{background:var(--p3)!important}
+html.salt .on-home #dock .menubtn i{background:var(--p0)!important}
 </style>
 <script type="module" src="sync.js"></script>
 <script>
