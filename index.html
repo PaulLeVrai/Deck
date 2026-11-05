@@ -2685,6 +2685,10 @@ html.ios .spsl{height:56px!important;overflow:hidden;isolation:isolate;backgroun
 html.ios .spsl::before{content:"";position:absolute;left:0;top:0;bottom:0;z-index:-1;border-radius:99px;width:calc(54px + var(--p) * var(--mx,0px));background:linear-gradient(90deg,rgba(142,92,247,.12),rgba(142,92,247,.55));opacity:calc(var(--p) * 5)}
 html.ios .spsl .spkn{width:46px!important;height:46px!important;top:5px!important;left:4px!important;box-shadow:0 4px 14px rgba(142,92,247,.5)!important}
 html.ios .spsl em{font-size:15px!important;color:transparent!important;background:linear-gradient(90deg,#636366 0%,#636366 35%,#fff 50%,#636366 65%,#636366 100%);background-size:250% 100%;-webkit-background-clip:text;background-clip:text;animation:spShine 2.6s linear infinite}
+/* Évènements plus transparents, jour sélectionné lisible */
+html.ios #scr .vev:not(.free){background:color-mix(in srgb,var(--c) 45%,transparent)!important;text-shadow:none!important}
+html.ios #scr .day.on small,html.ios #scr .day.on b{color:#fff!important;opacity:1!important}
+html.ios #scr .day.on small{opacity:.8!important}
 @keyframes spShine{from{background-position:100% 0}to{background-position:-150% 0}}
 html.ios .spsl.ok{background:rgba(142,92,247,.28)!important}
 html.ios .spsl.ok em{animation:none;color:#fff!important;background:none}
