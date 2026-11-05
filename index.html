@@ -2636,6 +2636,33 @@ html.salt .on-goals #scr i:not([style*="width"]){background-color:var(--p1)!impo
 html.ios .on-goals #scr i:not([style*="width"]){background-color:var(--ios-2)!important}
 /* Audit P2 : titre de Réglages */
 html.salt .on-settings #scr .eyebrow{font-size:32px!important;font-weight:700!important;letter-spacing:-.02em;color:var(--p3)!important;opacity:1!important}
+
+/* ===== Animations (skill animations-premium) ===== */
+html.salt{--ease-out:cubic-bezier(.2,.8,.2,1);--ease-io:cubic-bezier(.65,0,.35,1);--ease-spring:cubic-bezier(.34,1.4,.64,1);--d-fast:120ms;--d-base:220ms;--d-slow:380ms}
+html.salt *{-webkit-tap-highlight-color:transparent}
+/* 1. Appui */
+html.salt .card,html.salt button,html.salt .vev:not(.free),html.salt .s2t,html.salt .spk,html.salt .spt{transition:transform var(--d-base) var(--ease-spring),background-color var(--d-base) var(--ease-out),color var(--d-base) var(--ease-out),opacity var(--d-base) var(--ease-out)}
+html.salt .card:active,html.salt .vev:not(.free):active,html.salt .s2t:active,html.salt .spk:active,html.salt .spt:active{transform:scale(.98);transition-duration:var(--d-fast)}
+html.salt button:active{transform:scale(.95);transition-duration:var(--d-fast)}
+/* 2. Apparition en cascade à l'arrivée sur une page */
+@keyframes cascIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+html.salt #scr.pgin{animation:none}
+html.salt #scr.pgin>*{animation:cascIn var(--d-slow) var(--ease-out) both}
+html.salt #scr.pgin>*:nth-child(2){animation-delay:35ms}html.salt #scr.pgin>*:nth-child(3){animation-delay:70ms}html.salt #scr.pgin>*:nth-child(4){animation-delay:105ms}html.salt #scr.pgin>*:nth-child(5){animation-delay:140ms}html.salt #scr.pgin>*:nth-child(n+6){animation-delay:175ms}
+html.salt #scr.pgin .hgrid>*{animation:cascIn var(--d-slow) var(--ease-out) both}
+html.salt #scr.pgin .hgrid>*:nth-child(2){animation-delay:60ms}html.salt #scr.pgin .hgrid>*:nth-child(3){animation-delay:100ms}html.salt #scr.pgin .hgrid>*:nth-child(n+4){animation-delay:140ms}
+/* 3. Validation d'une tâche : texte qui s'estompe et se barre */
+html.salt .vrow .t>div:first-child{width:fit-content;max-width:100%;background:linear-gradient(currentColor,currentColor) 0 55%/0 1px no-repeat;transition:background-size var(--d-slow) var(--ease-out),opacity var(--d-slow) var(--ease-out)}
+html.salt .vrow.done .t>div:first-child{background-size:100% 1px;opacity:.45}
+/* 5. Barres de progression qui se remplissent */
+@keyframes barIn{from{transform:scaleX(0)}to{transform:none}}
+html.salt #scr.pgin i[style*="width"]{transform-origin:left center;animation:barIn 600ms var(--ease-out) both;animation-delay:150ms}
+/* 7. Onglets : l'indicateur glisse */
+html.salt .pind{transition:transform var(--d-base) var(--ease-io),width var(--d-base) var(--ease-io)!important}
+html.salt .seg button,html.salt .hm3 button{transition:background-color var(--d-base) var(--ease-out),color var(--d-base) var(--ease-out)}
+/* Menu : la pastille active glisse */
+html.salt #dock .dglass{transition:transform var(--d-slow) var(--ease-spring),width var(--d-base) var(--ease-out)!important}
+@media (prefers-reduced-motion:reduce){html.salt *,html.salt *::before,html.salt *::after{animation-duration:1ms!important;animation-delay:0ms!important;transition-duration:1ms!important}}
 </style>
 <script>
 /* Audit : échelle typo et rayons unifiés, transition de page, compteur animé */
@@ -2646,7 +2673,7 @@ function tidy(){const r=document.getElementById("scr");if(!r)return;
  r.querySelectorAll("*").forEach(e=>{const s=getComputedStyle(e);const f=parseFloat(s.fontSize);if(f&&f<40){const n=snap(f);if(n!==f)e.style.setProperty("font-size",n+"px","important")}
   const rr=parseFloat(s.borderTopLeftRadius);if(rr>0&&!e.classList.contains("card")){const h=e.offsetHeight;if(h&&rr<h/2-1&&rr<30){const n=RS.reduce((a,b)=>Math.abs(b-rr)<Math.abs(a-rr)?b:a);if(n!==rr)e.style.setProperty("border-radius",n+"px","important")}}})}
 let last=null,lastPct=null;
-const _r=render;render=function(){_r();try{const sc=document.getElementById("scr");const w=document.querySelector(".wrap");if(w)w.classList.toggle("on-settings",S.view==="settings");if(last!==null&&last!==S.view){sc.classList.remove("pgin");void sc.offsetWidth;sc.classList.add("pgin")}last=S.view;
+const _r=render;render=function(){_r();try{const sc=document.getElementById("scr");const w=document.querySelector(".wrap");if(w)w.classList.toggle("on-settings",S.view==="settings");if(last!==S.view){sc.classList.remove("pgin");void sc.offsetWidth;sc.classList.add("pgin");clearTimeout(window._pgT);window._pgT=setTimeout(()=>sc.classList.remove("pgin"),900)}last=S.view;
  const g=document.querySelector(".gbig");if(g&&S.view==="home"&&typeof dayProg==="function"){const p=dayProg().p;if(lastPct!==null&&lastPct!==p&&!matchMedia("(prefers-reduced-motion: reduce)").matches){const a=lastPct,t0=performance.now(),D=500;const step=t=>{const k=Math.min(1,(t-t0)/D),e=1-Math.pow(1-k,3),v=Math.round(a+(p-a)*e)+"",el=document.querySelector(".gbig");if(el&&!el.classList.contains("gday"))el.innerHTML=v.slice(0,-1)+"<i>"+v.slice(-1)+"</i> %";if(k<1)requestAnimationFrame(step)};requestAnimationFrame(step)}lastPct=p}
  tidy()}catch(e){}};
 })();
