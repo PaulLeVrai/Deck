@@ -14,7 +14,7 @@
   var t=document.createElement("div");t.style.cssText="position:fixed;top:0;height:env(safe-area-inset-top);visibility:hidden";document.addEventListener("DOMContentLoaded",function(){document.body.appendChild(t);var h=t.getBoundingClientRect().height;d.style.setProperty("--sbar",Math.max(h,54)+"px");t.remove()});d.style.setProperty("--sbar","54px")})();
 </script>
 <script>(function(){try{if(localStorage.getItem("deckGlass")!=="0")document.documentElement.classList.add("glass")}catch(e){}})()</script>
-<script>(function(){var h=document.documentElement;h.classList.remove("glass","bgl","bgb","bga");h.classList.add("dafi","salt")})()</script>
+<script>(function(){var h=document.documentElement;h.classList.remove("glass","bgl","bgb","bga");h.classList.add("dafi","salt");try{var t=new URLSearchParams(location.search).get("t");if(t)localStorage.setItem("deckTheme",t);if(localStorage.getItem("deckTheme")==="ios")h.classList.add("ios")}catch(e){}})()</script>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icon-180.png">
@@ -2555,6 +2555,55 @@ html.salt #dock button,html.salt #dock button *{color:var(--p3)!important}
 html.salt #dock .on,html.salt #dock .on *{color:var(--p0)!important;stroke:var(--p0)}
 html.salt #dock .menubtn i{background:var(--p3)!important}
 html.salt .on-home #dock .menubtn i{background:var(--p0)!important}
+
+/* Audit P1 : palette sur toutes les pages */
+html.salt .pseg.pa{background:var(--p1)!important;box-shadow:none!important}
+html.salt .pseg.pa *{color:var(--p3)!important}
+html.salt .pind{background:var(--p0)!important;box-shadow:none!important;border:0!important}
+html.salt .spsb,html.salt .spt,html.salt .spk.spkd,html.salt .dvt{background:var(--p0)!important;background-image:none!important;border:1px solid var(--p1)!important;box-shadow:none!important}
+html.salt .spsb *,html.salt .spt *,html.salt .spk.spkd *,html.salt .dvt *{color:var(--p3)!important}
+html.salt .spt svg [stroke]:not([stroke=none]),html.salt .spt svg path,html.salt .spt svg polyline{stroke:var(--p3)!important}
+html.salt .spt svg [fill]:not([fill=none]){fill:var(--p3)!important}
+html.salt .spk.spku.dn{background:var(--p1)!important;border:0!important}
+html.salt .spk.spku.dn *{color:var(--p3)!important}
+html.salt .spfr{background:var(--p1)!important;box-shadow:none!important}
+html.salt .spfr *{color:var(--p3)!important}
+html.salt .spkn{background:var(--p3)!important;box-shadow:none!important}
+html.salt .spkn,html.salt .spkn *{color:var(--p0)!important;stroke:var(--p0)}
+html.salt .title{background:none!important;-webkit-text-fill-color:var(--p3)!important;color:var(--p3)!important}
+html.salt .dvt i,html.salt .spsb i{background:var(--p1)!important}
+html.salt .dvt i[style*="width"],html.salt .spsb i[style*="width"]{background:var(--p3)!important}
+
+/* ===== Essai « iOS Rappels » (?t=ios ; ?t=salt pour revenir) ===== */
+html.salt.ios{--p0:#1C1C1E;--p1:#38383A;--p2:#8E8E93;--p3:#FFFFFF;--ios-bg:#000;--ios-2:#2C2C2E;--ios-blue:#0A84FF;color-scheme:dark}
+html.ios,html.ios body,html.ios .phone{background:var(--ios-bg)!important}
+html.ios .card{border:0!important;border-radius:26px!important;background:var(--p0)!important}
+html.ios .card.hero{background:transparent!important}
+html.ios .gbig i{color:#48484A!important}
+html.ios .gset{background:var(--ios-2)!important;border:0!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.12)!important}
+html.ios .seg,html.ios .hm3,html.ios .pseg.pa{background:var(--ios-2)!important}
+html.ios .seg button.on,html.ios .hm3 button.on,html.ios .pind{background:#636366!important}
+html.ios .seg button.on,html.ios .hm3 button.on{color:#fff!important}
+html.ios button.cta,html.ios .cta,html.ios .spgo{background:var(--ios-blue)!important;color:#fff!important}
+html.ios .cta *{color:#fff!important}
+html.ios .bplus{background:var(--ios-2)!important;border:0!important;color:#fff!important}
+html.ios .vcheck,html.ios .tlist .vrow[data-ti] .vcheck{border-color:#636366!important}
+html.ios .vcheck.on,html.ios .tlist .vrow[data-ti] .vcheck.on{background:var(--ios-blue)!important;border-color:var(--ios-blue)!important}
+html.ios .card.sp2 .s2t{background:var(--ios-2)!important;border:0!important}
+html.ios .card.sp2 .s2t.s2a{background:var(--ios-blue)!important}
+html.ios .card.sp2 .s2t.s2a .s2d{color:rgba(255,255,255,.75)!important}
+html.ios .spsb,html.ios .spt,html.ios .spk.spkd,html.ios .dvt{background:var(--p0)!important;border:0!important}
+html.ios .day.on{background:var(--ios-blue)!important}
+html.ios .day.on *{color:#fff!important}
+html.ios .spfr,html.ios .spfr *{background-color:var(--ios-2)!important}
+html.ios .spkn{background:var(--ios-blue)!important}
+html.ios .spfr{background:var(--ios-2)!important}
+/* Barre du bas : capsule en verre sombre, actif en rond gris */
+html.ios #dock{background:rgba(44,44,46,.72)!important;border:0!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.14),0 12px 30px rgba(0,0,0,.6)!important;-webkit-backdrop-filter:blur(24px) saturate(160%)!important;backdrop-filter:blur(24px) saturate(160%)!important}
+html.ios #dock .dglass{background:#636366!important}
+html.ios #dock button,html.ios #dock button *{color:#fff!important}
+html.ios #dock .on,html.ios #dock .on *{color:#fff!important;stroke:#fff}
+html.ios #dock .menubtn i,html.ios .on-home #dock .menubtn i{background:#fff!important}
 </style>
 <script type="module" src="sync.js"></script>
 <script>
