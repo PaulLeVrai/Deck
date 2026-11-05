@@ -2576,7 +2576,7 @@ html.salt .dvt i,html.salt .spsb i{background:var(--p1)!important}
 html.salt .dvt i[style*="width"],html.salt .spsb i[style*="width"]{background:var(--p3)!important}
 
 /* ===== Essai « iOS Rappels » (?t=ios ; ?t=salt pour revenir) ===== */
-html.salt.ios{--p0:#1C1C1E;--p1:#38383A;--p2:#8E8E93;--p3:#FFFFFF;--ios-bg:#000;--ios-2:#2C2C2E;--ios-blue:#0A84FF;color-scheme:dark}
+html.salt.ios{--p0:#1C1C1E;--p1:#38383A;--p2:#8E8E93;--p3:#FFFFFF;--ios-bg:#000;--ios-2:#2C2C2E;--ios-blue:#8E5CF7;color-scheme:dark}
 html.ios,html.ios body,html.ios .phone{background:var(--ios-bg)!important}
 html.ios .card{border:0!important;border-radius:26px!important;background:var(--p0)!important}
 html.ios .card.hero{background:transparent!important}
@@ -2678,6 +2678,8 @@ const _r=render;render=function(){_r();try{const sc=document.getElementById("scr
  tidy()}catch(e){}};
 })();
 </script>
+<style id="deck-fix">/* Menu toujours au premier plan : la pile de séances reste dans son propre plan */
+#scr .spfr{z-index:3!important}#scr .spk{z-index:2!important}</style>
 <script type="module" src="sync.js"></script>
 <script>
 if("serviceWorker" in navigator){navigator.serviceWorker.register("sw.js",{updateViaCache:"none"}).then(r=>{r.update();addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")r.update()})});
