@@ -2853,8 +2853,8 @@ function logDay(off,p){S.set.dlog=S.set.dlog||{};S.set.dlog[dKey(dAdd(D0(),off))
 // En-tête : la date ouvre le sélecteur, le % ouvre l'avancement.
 const _hz=hzHTML;hzHTML=function(){let h=_hz();const off=S.pday||0,d=dAdd(D0(),off);
  if(off<0){const p=pastProg(off).p,e=14+72*p/100;window.HZE=e;h=h.replace(/--e:[\d.]+/,"--e:"+e).replace(/data-e="[\d.]+"/,`data-e="${e}"`).replace(/<b>[A-Z]+<\/b><span>\d+<\/span>/,`<b>${WDJ[d.getDay()]}</b><span>${d.getDate()}</span>`).replace(/<div class="php">\d+ %<\/div>/,`<div class="php">${p} %</div>`).replace('class="phz ','class="phz past ').replace('class="phz full','class="phz')}
- return h.replace('<div class="phd">',`<label class="phd"><input type="date" id="pdate" value="${dKey(d)}" min="${dKey(dAdd(D0(),-6))}" max="${dKey(D0())}" aria-label="Choisir un jour">`).replace('</span></div><i></i><div class="php">','</span></label><i></i><button class="php" data-pgo aria-label="Voir l\'avancement">').replace(/ %<\/div><\/div><\/div>$/," %</button></div></div>")};
-function pgPanel(){if(!S.pgo)return"";const J=["L","M","M","J","V","S","D"],seg=`<div class="pgseg"><button class="${S.pgm==="j"?"on":""}" data-pgm="j">Jour</button><button class="${S.pgm==="s"?"on":""}" data-pgm="s">Semaine</button></div>`;
+ return h.replace('<div class="phd">','<div class="phd" data-pdw role="button" aria-label="Choisir un jour">').replace('</span></div><i></i><div class="php">','</span></div><i></i><button class="php" data-pgo aria-label="Voir l\'avancement">').replace(/ %<\/div><\/div><\/div>$/," %</button></div></div>")};
+function pgPanel(){const J=["L","M","M","J","V","S","D"],seg=`<div class="pgseg"><button class="${S.pgm==="j"?"on":""}" data-pgm="j">Jour</button><button class="${S.pgm==="s"?"on":""}" data-pgm="s">Semaine</button></div>`;
  const mon=dAdd(D0(),-TDOW+7*S.pgw),bar=(p,l,on,a)=>`<button class="pgb ${on?"on":""}" ${a}><span class="pgt"><i style="height:${p==null?0:Math.max(4,p)}%"></i></span><em>${l}</em></button>`;let body="",head="";
  if(S.pgm==="j"){const days=[0,1,2,3,4,5,6].map(i=>dAdd(mon,i)),sel=S.pgd!=null?dAdd(D0(),S.pgd):(S.pgw===0?D0():dAdd(mon,6)),v=dayVal(sel);
   head=`<div class="pgh"><button class="pgn" data-pgw="-1">‹</button><div><b>${v==null?"–":v+" %"}</b><span>${DNF[sel.getDay()]} ${sel.getDate()} ${MOIS[sel.getMonth()]}</span></div><button class="pgn" data-pgw="1" ${S.pgw>=0?"disabled":""}>›</button></div>`;
@@ -2867,12 +2867,21 @@ function pastList(){const off=S.pday,{T,H}=pastItems(off),m=S.dr.m==="h"?"h":"t"
  const row=(t,sub,on,a)=>`<div class="prow ${on?"done":""}"><div class="t"><b>${esc(t)}</b>${sub?`<p>${esc(sub)}</p>`:""}</div><button class="vcheck ${on?"on":""}" ${a} aria-label="Fait ce jour-là"></button></div>`;
  const L=m==="t"?(T.length?T.map(([x,i])=>row(x.t,x.done?"Faite ce jour-là":"Prévue, pas faite",x.done,`data-pt="${i}"`)).join(""):`<p class="pempty">Aucune tâche ce jour-là.</p>`):(H.length?H.map(([h,i,v])=>row(h.t,"",v,`data-ph="${i}"`)).join(""):`<p class="pempty">Aucune habitude.</p>`);
  return `<div class="v1 tv1"><button class="pback" data-pback>‹ Revenir à aujourd'hui</button><div class="plbl">${DNF[d.getDay()]} ${d.getDate()} ${MOIS[d.getMonth()]}</div>${L}</div>`}
-const _vt=V.tasks;V.tasks=function(){const h=_vt.apply(this,arguments),i=h.indexOf('<div class="v1 tv1">');if(i<0)return h;const top=h.slice(0,i)+pgPanel();return (S.pday||0)<0?top+pastList():top+h.slice(i)};
+// Roue de dates : les 7 derniers jours, aujourd'hui en bas.
+function pdWheel(){if(!S.pdw)return"";const L=[-6,-5,-4,-3,-2,-1,0].map(o=>{const d=dAdd(D0(),o);return `<button class="pdi" data-pdi="${o}">${o===0?"Aujourd'hui":o===-1?"Hier":DNF[d.getDay()]+" "+d.getDate()+" "+MOIS[d.getMonth()]}</button>`}).join("");
+ return `<div class="pdwrap" data-pdclose><div class="pdsheet"><div class="pdwh"><i class="pdsel"></i><div class="pdlist" id="pdlist"><span class="pdpad"></span>${L}<span class="pdpad"></span></div></div><button class="pdok" data-pdok>Valider</button></div></div>`}
+const _vt=V.tasks;V.tasks=function(){const h=_vt.apply(this,arguments),i=h.indexOf('<div class="v1 tv1">');if(i<0)return h;const top=h.slice(0,i);return ((S.pday||0)<0?top+pastList():top+h.slice(i))};
+V.prog=function(){return `<div class="top"><button class="back" data-go="tasks" aria-label="Retour">‹</button></div><div class="eyebrow">Productivité</div><div class="title">Avancement</div>${pgPanel()}`};
+const pdIdx=()=>{const l=document.getElementById("pdlist");return l?Math.max(0,Math.min(6,Math.round(l.scrollTop/44))):6};
+{const _r=render;render=function(){_r.apply(this,arguments);const old=document.getElementById("pdwr");old&&old.remove();if(S.pdw&&S.view==="tasks"){const r=document.createElement("div");r.id="pdwr";r.innerHTML=pdWheel();(document.querySelector(".phone")||document.body).appendChild(r)}const l=document.getElementById("pdlist");if(l&&!l.dataset.ok){l.dataset.ok=1;l.scrollTop=(6+(S.pday||0))*44;const up=()=>{const k=pdIdx();l.querySelectorAll(".pdi").forEach((b,j)=>b.classList.toggle("on",j===k))};up();l.addEventListener("scroll",up,{passive:true})}}}
 // Garde l'avancement du jour pour l'historique.
 {const _r=render;render=function(){try{logDay(0,dayProg().p)}catch(e){}_r.apply(this,arguments);if((S.pday||0)<0&&S.view==="tasks"){const h=document.getElementById("thist");h&&h.remove()}}}
-document.addEventListener("change",e=>{if(e.target.id!=="pdate")return;const v=e.target.value;if(!v){S.pday=0;keepRender();return}const [y,mo,da]=v.split("-").map(Number),off=Math.round((new Date(y,mo-1,da)-D0())/864e5);S.pday=Math.max(-6,Math.min(0,off));S.tx=null;keepRender()},true);
-document.addEventListener("click",e=>{const t=e.target.closest("[data-pgo],[data-pgm],[data-pgw],[data-pgd],[data-pgsw],[data-pback],[data-pt],[data-ph]");if(!t||!t.closest("#scr"))return;e.stopPropagation();e.preventDefault();const s=t.dataset;
- if("pgo" in s){S.pgo=!S.pgo;S.pgd=null;S.pgw=0}
+document.addEventListener("click",e=>{const t=e.target.closest("[data-pgo],[data-pdw],[data-pdi],[data-pdok],[data-pdclose],[data-pgm],[data-pgw],[data-pgd],[data-pgsw],[data-pback],[data-pt],[data-ph]");if(!t||!t.closest("#scr,#pdwr"))return;e.stopPropagation();e.preventDefault();const s=t.dataset;
+ if("pgo" in s){S.pgd=null;S.pgw=0;S.pgm="j";go("prog");return}
+ else if("pdw" in s){S.pdw=1}
+ else if("pdi" in s){const l=document.getElementById("pdlist");l&&l.scrollTo({top:(6+ +s.pdi)*44,behavior:"smooth"});return}
+ else if("pdok" in s){S.pday=pdIdx()-6;S.pdw=0;S.tx=null}
+ else if("pdclose" in s){if(e.target!==t)return;S.pdw=0}
  else if(s.pgm){S.pgm=s.pgm}
  else if(s.pgw){if(t.disabled)return;S.pgw=Math.min(0,S.pgw+ +s.pgw);S.pgd=null}
  else if("pgd" in s){if(t.disabled)return;S.pgd=+s.pgd}
@@ -2883,6 +2892,15 @@ document.addEventListener("click",e=>{const t=e.target.closest("[data-pgo],[data
  keepRender()},true);
 </script>
 <style id="pday-css">
+#pdwr .pdwrap{position:fixed;inset:0;z-index:9000;background:rgba(0,0,0,.45);display:flex;align-items:flex-end;animation:pdf .2s ease-out}
+#pdwr .pdsheet{width:100%;background:#1c1c1e;border-radius:22px 22px 0 0;padding:16px 16px calc(20px + env(safe-area-inset-bottom));animation:pdu .3s cubic-bezier(.2,.8,.2,1)}
+#pdwr .pdwh{position:relative;height:220px}#pdwr .pdsel{position:absolute;left:0;right:0;top:88px;height:44px;border-radius:14px;background:#2c2c2e;pointer-events:none}
+#pdwr .pdlist{position:relative;height:220px;overflow-y:auto;scroll-snap-type:y mandatory;-webkit-mask:linear-gradient(transparent,#000 35%,#000 65%,transparent);mask:linear-gradient(transparent,#000 35%,#000 65%,transparent);scrollbar-width:none}#pdwr .pdlist::-webkit-scrollbar{display:none}
+#pdwr .pdpad{display:block;height:88px}#pdwr .pdi{all:unset;display:block;width:100%;height:44px;line-height:44px;text-align:center;font-size:20px;color:#8e8e93;scroll-snap-align:start;cursor:pointer}#pdwr .pdi.on{color:#fff;font-weight:600}
+#pdwr .pdok{all:unset;display:block;width:100%;box-sizing:border-box;text-align:center;margin-top:14px;height:50px;line-height:50px;border-radius:14px;background:#8E5CF7;color:#fff;font-size:17px;font-weight:600;cursor:pointer}
+@keyframes pdf{from{opacity:0}}@keyframes pdu{from{transform:translateY(100%)}}
+#scr .phd{cursor:pointer}
+
 #scr .phd{position:relative;cursor:pointer}#scr .phd input{position:absolute;inset:-8px;width:calc(100% + 16px);height:calc(100% + 16px);opacity:0;border:0;-webkit-appearance:none;appearance:none;font-size:16px}
 #scr button.php{all:unset;font-size:56px;font-weight:700;letter-spacing:-.03em;color:#fff;font-variant-numeric:tabular-nums;cursor:pointer}
 #scr .phz.past .phd b{color:#8e8e93}
