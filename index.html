@@ -1768,7 +1768,7 @@ const isTab=v=>["home","plan","tasks","goals","sport"].includes(v);
 function page(t,eyebrow,body){return `${isTab(S.view)?"":`<div class="top"><button class="back" data-go="${S.view==="project"?(S.pjBack==="goals"?"goals":"projects"):S.view==="workout"||S.view==="shist"||S.view==="spdet"||S.view==="sessd"?"sport":S.view==="journal"?"goals":S.view==="shelf"?"library":"home"}" aria-label="Retour">‹</button></div>`}<div class="eyebrow">${eyebrow}</div><div class="title">${t}</div>${body}`}
 // Once today's last event (or 19:00) is over, the home planning shows tomorrow.
 function homeDay(){if(S.hoff>0){const t=TDOW+S.hoff;return {d:t%7,wk:Math.floor(t/7),tm:1}}const m=h=>/^\d\d:\d\d$/.test(h)?+h.slice(0,2)*60+ +h.slice(3):null,n=new Date(),now=n.getHours()*60+n.getMinutes();
- let end=1140;(S.events[TDOW]||[]).concat(S.apple.ev["0:"+TDOW]||[]).forEach(x=>{const a=m(x[0]);if(a!=null)end=Math.max(end,a+((S.apple.ev["0:"+TDOW]||[]).includes(x)?(x[3]>0?x[3]:60):60))});
+ let end=1440;(S.events[TDOW]||[]).concat(S.apple.ev["0:"+TDOW]||[]).forEach(x=>{const a=m(x[0]);if(a!=null)end=Math.max(end,a+((S.apple.ev["0:"+TDOW]||[]).includes(x)?(x[3]>0?x[3]:60):60))});
  if(now<end)return {d:TDOW,wk:0};const t=TDOW+1;return t>6?{d:0,wk:1,tm:1}:{d:t,wk:0,tm:1}}
 // Simple green day-progress bars (Réglages > Style de la barre): G1 above the date, G2 under the greeting, G3 under the planning, G4 along the block's bottom edge, G5 beside the date.
 function gbar(g,n){return `<div class="gb gb${n}" aria-label="Journée validée à ${g.p} %"><span class="gbt"><i style="width:${g.p}%"></i></span>${n===4?"":`<span class="gbp">${g.p} %</span>`}</div>`}
@@ -2839,6 +2839,64 @@ $("#scr").addEventListener("pointerup",bswEnd);$("#scr").addEventListener("point
 // Le trait blanc glisse jusqu'au nouvel avancement.
 {const _r=render;render=function(){_r.apply(this,arguments);const h=document.querySelector("#scr .phz");if(!h)return;const e=+h.dataset.e;if(window.HZE!==e){requestAnimationFrame(()=>requestAnimationFrame(()=>h.style.setProperty("--e",e)));window.HZE=e}}}
 </script>
+<script>
+/* Productivité : jour passé (sélecteur de date sur la date) et avancement jour / semaine (tap sur le %). */
+const D0=()=>new Date(TD.getFullYear(),TD.getMonth(),TD.getDate()),dAdd=(d,n)=>new Date(d.getFullYear(),d.getMonth(),d.getDate()+n),dKey=d=>d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+S.pday=0;S.pgw=0;S.pgm="j";S.pgd=null;
+// Ce qui comptait pour un jour passé : tâches faites ce jour-là, tâches dues jusqu'à ce jour et pas faites, habitudes du jour.
+function pastItems(off){const a=dAdd(D0(),off).getTime(),b=dAdd(D0(),off+1).getTime(),k=-off;
+ const T=S.tasks.map((x,i)=>[x,i]).filter(([x])=>x.done?(x.dn>=a&&x.dn<b):(x.e!=null&&dOf(x.e).getTime()<b));
+ const H=S.habits.map((h,i)=>{const w=h.w||[],j=w.length-k;return [h,i,j>=0?!!w[j]:false]});return {T,H,a}}
+function pastProg(off){const {T,H}=pastItems(off),it=[...T.map(([x])=>!!x.done),...(S.set.habits?H.map(x=>x[2]):[])],d=it.filter(Boolean).length,n=it.length;return {d,n,p:n?Math.round(d*100/n):0}}
+function dayVal(d){const off=Math.round((d-D0())/864e5),L=S.set.dlog||{};if(off>0)return null;if(off===0)return dayProg().p;if(off>=-6){const q=pastProg(off);if(q.n)return q.p}return L[dKey(d)]??null}
+function logDay(off,p){S.set.dlog=S.set.dlog||{};S.set.dlog[dKey(dAdd(D0(),off))]=p;const ks=Object.keys(S.set.dlog).sort();while(ks.length>150)delete S.set.dlog[ks.shift()]}
+// En-tête : la date ouvre le sélecteur, le % ouvre l'avancement.
+const _hz=hzHTML;hzHTML=function(){let h=_hz();const off=S.pday||0,d=dAdd(D0(),off);
+ if(off<0){const p=pastProg(off).p,e=14+72*p/100;window.HZE=e;h=h.replace(/--e:[\d.]+/,"--e:"+e).replace(/data-e="[\d.]+"/,`data-e="${e}"`).replace(/<b>[A-Z]+<\/b><span>\d+<\/span>/,`<b>${WDJ[d.getDay()]}</b><span>${d.getDate()}</span>`).replace(/<div class="php">\d+ %<\/div>/,`<div class="php">${p} %</div>`).replace('class="phz ','class="phz past ').replace('class="phz full','class="phz')}
+ return h.replace('<div class="phd">',`<label class="phd"><input type="date" id="pdate" value="${dKey(d)}" min="${dKey(dAdd(D0(),-6))}" max="${dKey(D0())}" aria-label="Choisir un jour">`).replace('</span></div><i></i><div class="php">','</span></label><i></i><button class="php" data-pgo aria-label="Voir l\'avancement">').replace(/ %<\/div><\/div><\/div>$/," %</button></div></div>")};
+function pgPanel(){if(!S.pgo)return"";const J=["L","M","M","J","V","S","D"],seg=`<div class="pgseg"><button class="${S.pgm==="j"?"on":""}" data-pgm="j">Jour</button><button class="${S.pgm==="s"?"on":""}" data-pgm="s">Semaine</button></div>`;
+ const mon=dAdd(D0(),-TDOW+7*S.pgw),bar=(p,l,on,a)=>`<button class="pgb ${on?"on":""}" ${a}><span class="pgt"><i style="height:${p==null?0:Math.max(4,p)}%"></i></span><em>${l}</em></button>`;let body="",head="";
+ if(S.pgm==="j"){const days=[0,1,2,3,4,5,6].map(i=>dAdd(mon,i)),sel=S.pgd!=null?dAdd(D0(),S.pgd):(S.pgw===0?D0():dAdd(mon,6)),v=dayVal(sel);
+  head=`<div class="pgh"><button class="pgn" data-pgw="-1">‹</button><div><b>${v==null?"–":v+" %"}</b><span>${DNF[sel.getDay()]} ${sel.getDate()} ${MOIS[sel.getMonth()]}</span></div><button class="pgn" data-pgw="1" ${S.pgw>=0?"disabled":""}>›</button></div>`;
+  body=days.map((d,i)=>bar(dayVal(d),J[i],d.getTime()===sel.getTime(),`data-pgd="${Math.round((d-D0())/864e5)}" ${d>D0()?"disabled":""}`)).join("")}
+ else{const W=[-5,-4,-3,-2,-1,0].map(w=>{const m=dAdd(D0(),-TDOW+7*w),v=[0,1,2,3,4,5,6].map(i=>dayVal(dAdd(m,i))).filter(x=>x!=null);return [w,m,v.length?Math.round(v.reduce((a,b)=>a+b,0)/v.length):null]}),sw=S.pgsw??0,s=W.find(x=>x[0]===sw);
+  head=`<div class="pgh"><span></span><div><b>${s[2]==null?"–":s[2]+" %"}</b><span>${sw===0?"Cette semaine":"Semaine du "+s[1].getDate()+" "+MOIS[s[1].getMonth()]}</span></div><span></span></div>`;
+  body=W.map(([w,m,v])=>bar(v,m.getDate()+"/"+(m.getMonth()+1),w===sw,`data-pgsw="${w}"`)).join("")}
+ return `<div class="card pgc">${seg}${head}<div class="pgbars">${body}</div></div>`}
+function pastList(){const off=S.pday,{T,H}=pastItems(off),m=S.dr.m==="h"?"h":"t",d=dAdd(D0(),off);
+ const row=(t,sub,on,a)=>`<div class="prow ${on?"done":""}"><div class="t"><b>${esc(t)}</b>${sub?`<p>${esc(sub)}</p>`:""}</div><button class="vcheck ${on?"on":""}" ${a} aria-label="Fait ce jour-là"></button></div>`;
+ const L=m==="t"?(T.length?T.map(([x,i])=>row(x.t,x.done?"Faite ce jour-là":"Prévue, pas faite",x.done,`data-pt="${i}"`)).join(""):`<p class="pempty">Aucune tâche ce jour-là.</p>`):(H.length?H.map(([h,i,v])=>row(h.t,"",v,`data-ph="${i}"`)).join(""):`<p class="pempty">Aucune habitude.</p>`);
+ return `<div class="v1 tv1"><button class="pback" data-pback>‹ Revenir à aujourd'hui</button><div class="plbl">${DNF[d.getDay()]} ${d.getDate()} ${MOIS[d.getMonth()]}</div>${L}</div>`}
+const _vt=V.tasks;V.tasks=function(){const h=_vt.apply(this,arguments),i=h.indexOf('<div class="v1 tv1">');if(i<0)return h;const top=h.slice(0,i)+pgPanel();return (S.pday||0)<0?top+pastList():top+h.slice(i)};
+// Garde l'avancement du jour pour l'historique.
+{const _r=render;render=function(){try{logDay(0,dayProg().p)}catch(e){}_r.apply(this,arguments);if((S.pday||0)<0&&S.view==="tasks"){const h=document.getElementById("thist");h&&h.remove()}}}
+document.addEventListener("change",e=>{if(e.target.id!=="pdate")return;const v=e.target.value;if(!v){S.pday=0;keepRender();return}const [y,mo,da]=v.split("-").map(Number),off=Math.round((new Date(y,mo-1,da)-D0())/864e5);S.pday=Math.max(-6,Math.min(0,off));S.tx=null;keepRender()},true);
+document.addEventListener("click",e=>{const t=e.target.closest("[data-pgo],[data-pgm],[data-pgw],[data-pgd],[data-pgsw],[data-pback],[data-pt],[data-ph]");if(!t||!t.closest("#scr"))return;e.stopPropagation();e.preventDefault();const s=t.dataset;
+ if("pgo" in s){S.pgo=!S.pgo;S.pgd=null;S.pgw=0}
+ else if(s.pgm){S.pgm=s.pgm}
+ else if(s.pgw){if(t.disabled)return;S.pgw=Math.min(0,S.pgw+ +s.pgw);S.pgd=null}
+ else if("pgd" in s){if(t.disabled)return;S.pgd=+s.pgd}
+ else if("pgsw" in s){S.pgsw=+s.pgsw}
+ else if("pback" in s){S.pday=0}
+ else if("pt" in s){const x=S.tasks[+s.pt];if(!x)return;if(x.done){x.done=false;x.dn=null}else{x.done=true;x.dn=dAdd(D0(),S.pday).getTime()+12*36e5}logDay(S.pday,pastProg(S.pday).p);persist()}
+ else if("ph" in s){const h=S.habits[+s.ph];if(!h)return;const k=-S.pday,w=(h.w||[]).slice();while(w.length<6)w.unshift(0);const j=w.length-k;w[j]=w[j]?0:1;h.w=w;let n=0;for(let q=w.length-1;q>=0&&w[q];q--)n++;h.s=n;logDay(S.pday,pastProg(S.pday).p);persist()}
+ keepRender()},true);
+</script>
+<style id="pday-css">
+#scr .phd{position:relative;cursor:pointer}#scr .phd input{position:absolute;inset:-8px;width:calc(100% + 16px);height:calc(100% + 16px);opacity:0;border:0;-webkit-appearance:none;appearance:none;font-size:16px}
+#scr button.php{all:unset;font-size:56px;font-weight:700;letter-spacing:-.03em;color:#fff;font-variant-numeric:tabular-nums;cursor:pointer}
+#scr .phz.past .phd b{color:#8e8e93}
+#scr .pgc{padding:14px 16px 16px!important;margin-bottom:12px}
+#scr .pgseg{display:flex;background:var(--ios-2,#2c2c2e);border-radius:99px;padding:3px;margin-bottom:14px}#scr .pgseg button{all:unset;flex:1;text-align:center;font-size:13px;padding:7px;border-radius:99px;color:#aeaeb2;cursor:pointer}#scr .pgseg button.on{background:#636366;color:#fff;font-weight:600}
+#scr .pgh{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}#scr .pgh>div{text-align:center;line-height:1.2}#scr .pgh b{display:block;font-size:24px;font-weight:700}#scr .pgh>div span{font-size:13px;color:#8e8e93}
+#scr .pgn{all:unset;width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:50%;background:#2c2c2e;color:#fff;font-size:17px;cursor:pointer}#scr .pgn:disabled{opacity:.3}
+#scr .pgbars{display:flex;gap:8px;align-items:flex-end}#scr .pgb{all:unset;flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer}#scr .pgb:disabled{opacity:.35}
+#scr .pgt{width:100%;height:72px;border-radius:8px;background:#2c2c2e;display:flex;align-items:flex-end;overflow:hidden}#scr .pgt i{display:block;width:100%;background:rgba(142,92,247,.45);border-radius:8px}
+#scr .pgb.on .pgt i{background:#8E5CF7;box-shadow:0 0 10px rgba(142,92,247,.7)}#scr .pgb em{font-style:normal;font-size:12px;color:#8e8e93}#scr .pgb.on em{color:#fff;font-weight:600}
+#scr .pback{all:unset;font-size:13px;color:#b9a6ff;cursor:pointer;margin:2px 0 10px 4px;display:inline-block}#scr .plbl{font-size:13px;color:#8e8e93;margin:0 0 8px 4px}
+#scr .prow{display:flex;align-items:center;gap:12px;background:#1c1c1e;border-radius:22px;padding:14px 16px 14px 18px;margin-bottom:10px}#scr .prow .t{flex:1;min-width:0}#scr .prow b{display:block;font-size:17px;font-weight:500}#scr .prow p{margin:2px 0 0;font-size:13px;color:#8e8e93}#scr .prow.done b{color:#8e8e93}
+#scr .pempty{color:#8e8e93;font-size:15px;margin:8px 4px}
+</style>
 <script type="module" src="sync.js"></script>
 <script>
 if("serviceWorker" in navigator){navigator.serviceWorker.register("sw.js",{updateViaCache:"none"}).then(r=>{r.update();addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")r.update()})});
