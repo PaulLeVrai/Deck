@@ -1529,9 +1529,9 @@ const DN=["lun","mar","mer","jeu","ven","sam","dim"],DL=["lundi","mardi","mercre
 function weekDays(wk){const m=new Date(TD.getFullYear(),TD.getMonth(),TD.getDate()-TDOW+wk*7);return [...Array(7)].map((_,i)=>new Date(m.getFullYear(),m.getMonth(),m.getDate()+i))}
 function isoWeek(d){const x=new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate()));const n=x.getUTCDay()||7;x.setUTCDate(x.getUTCDate()+4-n);const y=new Date(Date.UTC(x.getUTCFullYear(),0,1));return Math.ceil(((x-y)/864e5+1)/7)}
 function evRows(d,wk=0){const ae=S.apple.err&&S.view==="plan"?`<div class="vs" style="color:#e8a25b">${esc(S.apple.err)}</div>`:"";return ae+evRows0(d,wk)}
-function evRows0(d,wk=0){let e=((wk===0?S.events[d]:S.evx[wk+":"+d])||[]).slice();if(S.apple.on||S.apple.cals.some(c=>c[4]))(S.apple.ev[wk+":"+d]||[]).forEach(([h,t,c,du])=>{const k=S.apple.cals[c];if(k&&k[2])e.push([h,t,k[0],k[1],du,1])});{const dt=weekDays(wk)[d],off=Math.round((new Date(dt.getFullYear(),dt.getMonth(),dt.getDate())-new Date(TD.getFullYear(),TD.getMonth(),TD.getDate()))/864e5);
+function evRows0(d,wk=0){const TK=[];let e=((wk===0?S.events[d]:S.evx[wk+":"+d])||[]).slice();if(S.apple.on||S.apple.cals.some(c=>c[4]))(S.apple.ev[wk+":"+d]||[]).forEach(([h,t,c,du])=>{const k=S.apple.cals[c];if(k&&k[2])e.push([h,t,k[0],k[1],du,1])});{const dt=weekDays(wk)[d],off=Math.round((new Date(dt.getFullYear(),dt.getMonth(),dt.getDate())-new Date(TD.getFullYear(),TD.getMonth(),TD.getDate()))/864e5);
  (S.sess||[]).forEach((x,si)=>{if(x.dd===off){(window.SESSMAP=window.SESSMAP||{})[(x.done?"✓ ":"")+x.t+"|"+(x.h||"18:00")]=si;const w=(S.wo||[]).find(o=>o.n===x.t||o.t===x.t);let du=45;try{du=w&&typeof woMin==="function"?woMin(w)||45:45}catch(_){}e.push([x.h||"18:00",(x.done?"✓ ":"")+x.t,"Sport",x.done?"#34c759":(document.documentElement.classList.contains("bgb")?"#09318D":document.documentElement.classList.contains("bga")?"#253745":"#7c4dff"),du])}});
- if(off>=0&&off<31)(S.tasks||[]).forEach(x=>{if(!x.i||x.done)return;const ok=x.e!=null?x.e===dt.getDate():(x.d==="Aujourd'hui"&&off===0);if(ok)e.push([x.h||"09:00","★ "+x.t,"Tâche importante","#bf5af2",30])});
+ if(off>=0&&off<31)(S.tasks||[]).forEach(x=>{if(!x.i||x.done)return;const ok=x.e!=null?x.e===dt.getDate():(x.d==="Aujourd'hui"&&off===0);if(ok)TK.push([x.h||"09:00",x.t,S.tasks.indexOf(x)])});
  /* Une séance ajoutée aussi au calendrier Apple n'apparaît qu'une fois : on masque l'évènement Apple du même jour et du même titre. */
  {const n=v=>String(v).replace(/^✓ /,"").trim().toLowerCase(),T=new Set((S.sess||[]).filter(x=>x.dd===off).map(x=>n(x.t)));if(T.size)e=e.filter(x=>!(x[5]===1&&T.has(n(x[1]))))}}e.sort((a,b)=>a[0].localeCompare(b[0]));
  // Free slot between two events at least 2 h apart (events count as 1 h when no end is known).
@@ -1540,7 +1540,12 @@ function evRows0(d,wk=0){let e=((wk===0?S.events[d]:S.evx[wk+":"+d])||[]).slice(
  // Free slots are counted inside the working day, 08:00 to 19:00.
  const px=n=>Math.round(Math.min(120,Math.max(0,n-60)*.4));let last=480;
  e.forEach((x,i)=>{const a=m(x[0]),du=x[4]>0?x[4]:60;const b=a==null?null:Math.min(a,1140);if(b!=null&&b-last>=60)f.push([hh(last),null,hh(b),null,b-last]);f.push(a==null?x:[x[0],x[1],x[2],x[3],du,hh(Math.min(1439,a+du))]);if(a!=null)last=Math.max(last,a+du)});if(1140-last>=60)f.push([hh(last),null,"19:00",null,1140-last]);e=f;
- return e.map(([h,t,p,col,du,end])=>`<div class="vslot"><span class="vtime">${h}${end?`<small>${end}</small>`:""}</span>${t?`<div class="vev" style="--c:${col||"#7a5cff"};${col?`border-left-color:${col};`:""}min-height:${px(du)}px"><div>${esc(t)}</div></div>`:`<div class="vev free" style="min-height:${px(du)}px">Créneau libre jusqu'à ${p}</div>`}</div>`).join("")}
+ /* Tâches importantes : onglet en verre (6a) posé sur le bord droit du créneau qui contient leur heure, sans couper l'événement. */
+ const used=new Set(),tabs=(a,b)=>{if(a==null||b==null)return"";return TK.filter((k,j)=>{const t=m(k[0]);if(used.has(j)||t==null||t<a||t>=b)return false;used.add(j);return true}).map(k=>vTab(k,(m(k[0])-a)/Math.max(1,b-a))).join("")};
+ const rows=e.map(([h,t,p,col,du,end])=>{const a=m(h),b=t?m(end||""):m(p||"");const tb=tabs(a,b??(a!=null?a+60:null));return `<div class="vslot"><span class="vtime">${h}${end?`<small>${end}</small>`:""}</span>${t?`<div class="vev" style="--c:${col||"#7a5cff"};${col?`border-left-color:${col};`:""}min-height:${px(du)}px"><div>${esc(t)}</div>${tb}</div>`:`<div class="vev free" style="min-height:${px(du)}px">Créneau libre jusqu'à ${p}${tb}</div>`}</div>`});
+ TK.forEach((k,j)=>{if(!used.has(j))rows.push(`<div class="vslot"><span class="vtime">${k[0]}</span><div class="vev vtk0">${vTab(k,0)}</div></div>`)});
+ return rows.join("")}
+function vTab(k,f){const on=S.vtk===k[2];return `<span class="vtab ${on?"on":""}" style="top:${Math.round(f*100)}%" data-vtk="${k[2]}">${on?`<span>${esc(k[1])}</span><button data-vtok="${k[2]}">Valider</button>`:`${k[0]} · ${esc(k[1])}`}</span>`}
 function habitRows(){const D=[0,1,2,3,4,5,6].map(k=>"DLMMJVS"[(TD.getDay()+k+1)%7]);return S.habits.map((h,i)=>`<div class="vrow hrow ${h.done?"done":""}" data-hi="${i}"><button class="vcheck hcheck ${h.done?"on":""}" data-h="${i}" aria-label="Fait aujourd'hui"></button><div class="t"><div>${esc(h.t)}</div><div class="vs">${h.r&&h.r!=="Tous les jours"?h.r+" · ":""}${(+h.s||0)+(h.done?1:0)} jour${((+h.s||0)+(h.done?1:0))>1?"s":""} d'affilée</div></div><div class="hweek" aria-hidden="true">${[0,0,0,0,0,0,...(h.w||[]),h.done?1:0].slice(-7).map((x,k)=>`<span class="${x?"y":""} ${k===6?"td":""}">${D[k]}</span>`).join("")}</div></div>${edPanel("h",i)}`).join("")}
 function dayProg(){const items=[...S.tasks.filter(x=>x.d==="Aujourd'hui"||(S.set.late&&x.late)).map(x=>x.done),...(S.set.habits?S.habits.map(h=>h.done):[])],d=items.filter(Boolean).length,n=items.length;return{items,d,n,p:n?Math.round(d*100/n):0}}
 function progA(){const g=dayProg();return `<div class="dprog"><div class="dph"><span>Ta journée</span><span>${g.p} %</span></div><div class="dbar"><i style="width:${g.p}%"></i></div><div class="vs">${g.d} sur ${g.n} validés · tâches et habitudes du jour</div></div>`}
@@ -2919,6 +2924,20 @@ document.addEventListener("click",e=>{const t=e.target.closest("[data-pgo],[data
 .vnowl::before{content:"";position:absolute;left:0;top:-3px;width:8px;height:8px;border-radius:50%;background:#8E5CF7}
 .vnowp{position:absolute;margin-top:-11px!important;width:46px;text-align:center;line-height:22px;height:22px;border-radius:8px;background:#8E5CF7;color:#fff!important;font-size:12px!important;font-weight:700;z-index:5}
 .vrail-host{position:relative}
+</style>
+<script>
+/* Onglet tâche du planning : un tap ouvre la tâche, « Valider » la coche. */
+document.addEventListener("click",e=>{const ok=e.target.closest("[data-vtok]");if(ok){e.stopPropagation();e.preventDefault();const x=S.tasks[+ok.dataset.vtok];if(x){x.done=true;x.dn=Date.now();persist()}S.vtk=null;keepRender();return}
+ const t=e.target.closest("[data-vtk]");if(t){e.stopPropagation();e.preventDefault();const i=+t.dataset.vtk;S.vtk=S.vtk===i?null:i;keepRender()}},true);
+</script>
+<style id="vtab-css">
+.vev{position:relative;overflow:visible!important}
+.vtab{position:absolute;right:-6px;transform:translateY(-2px);max-width:62%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:4px 12px 4px 10px;border-radius:10px 0 0 10px;background:rgba(255,255,255,.1);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.18);border-right:0;box-shadow:inset 0 1px 0 rgba(255,255,255,.25),0 6px 16px rgba(0,0,0,.35);font-size:12px!important;font-weight:600;color:#fff!important;cursor:pointer;z-index:3;line-height:1.4}
+.vtab.on{display:flex;align-items:center;gap:10px;max-width:86%;padding:6px 6px 6px 12px;z-index:6}
+.vtab.on span{overflow:hidden;text-overflow:ellipsis;font-size:13px!important}
+.vtab button{all:unset;flex:none;background:#8E5CF7;color:#fff;font-size:12px!important;font-weight:700;padding:5px 10px;border-radius:8px;cursor:pointer}
+.vev.vtk0{background:none!important;border:0!important;min-height:24px;box-shadow:none!important}
+.vev.vtk0 .vtab{right:auto;left:0;border-radius:10px;border-right:1px solid rgba(255,255,255,.18)}
 </style>
 <script type="module" src="sync.js"></script>
 <script>
