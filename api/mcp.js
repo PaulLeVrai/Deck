@@ -30,7 +30,7 @@ const TOOLS=[
  ["valider_habitude","Coche une habitude pour aujourd'hui.",{titre:{type:"string"}},["titre"]],
  ["ajouter_note","Crée une note.",{titre:{type:"string"},contenu:{type:"string"},dossier:{type:"string",description:"Ecole, Pro, Perso, Cockpit, Favoris, Veille ou un dossier existant"}},["titre"]],
  ["chercher","Cherche un texte dans les tâches, notes, projets, objectifs et livres.",{texte:{type:"string"}},["texte"]],
- ["ajouter_projet","Crée un projet.",{nom:{type:"string"},prochaine_etape:{type:"string"}},["nom"]],
+ ["ajouter_projet","Crée un projet.",{nom:{type:"string"},echeance:{type:"string",description:"AAAA-MM-JJ, facultatif"},notes:{type:"string"}},["nom"]],
  ["ajouter_objectif","Crée un objectif.",{titre:{type:"string"},domaine:{type:"string"},echeance:{type:"string",description:"ex. décembre 2026"}},["titre"]],
  ["ajouter_operation","Ajoute une opération financière.",{type:{type:"string",enum:["depense","revenu","investissement"]},libelle:{type:"string"},montant:{type:"number"},categorie:{type:"string"}},["type","libelle","montant"]],
  ["lire_finances","Solde, revenus, dépenses, investissements et dernières opérations.",{}],
@@ -55,9 +55,9 @@ async function run(name,a,token){
     d.nb.push({id,title:a.titre,body:txt.split(/\n+/).map(p=>`<p>${esc(p)}</p>`).join(""),sum:txt.slice(0,90),folder:f||a.dossier||"Perso",manual:!!a.dossier,ts:Date.now(),when:"À l'instant"});save=true;out=`Note créée : ${a.titre} (${f||a.dossier||"Perso"}).`;break}
   case "chercher":{const q=norm(a.texte),hit=s=>norm(s).includes(q);
     const r=[...D.tasks.filter(x=>hit(x.t)).map(x=>"Tâche : "+taskLine(x)),...d.nb.filter(n=>hit(n.title+" "+(n.body||"").replace(/<[^>]+>/g," "))).map(n=>`Note : ${n.title} (${n.folder}) : ${(n.body||"").replace(/<[^>]+>/g," ").slice(0,200)}`),
-      ...D.projects.filter(p=>hit(p[0])).map(p=>"Projet : "+p[0]),...D.goals.filter(g=>hit(g[0])).map(g=>`Objectif : ${g[0]} (${g[1]} %)`),...d.books.filter(b=>hit(b.t+" "+(b.a||""))).map(b=>`Livre : ${b.t} (${b.cur||0}/${b.tot||"?"} p.)`)];
+      ...D.projects.map(p=>Array.isArray(p)?p[0]:p.t).filter(hit).map(t=>"Projet : "+t),...D.goals.filter(g=>hit(g[0])).map(g=>`Objectif : ${g[0]} (${g[1]} %)`),...d.books.filter(b=>hit(b.t+" "+(b.a||""))).map(b=>`Livre : ${b.t} (${b.cur||0}/${b.tot||"?"} p.)`)];
     out=r.join("\n")||"Rien trouvé.";break}
-  case "ajouter_projet":{const kw=norm(a.nom).split(/[^a-z0-9]+/).filter(w=>w.length>=4);D.projects.unshift([a.nom,a.prochaine_etape||"Nouveau projet",0,kw]);save=true;out=`Projet créé : ${a.nom}.`;break}
+  case "ajouter_projet":{D.projects.unshift({id:Date.now(),t:a.nom,dl:a.echeance||"",n:a.notes||""});save=true;out=`Projet créé : ${a.nom}.`;break}
   case "ajouter_objectif":D.goals.push([a.titre,0,(a.domaine||"Perso")+(a.echeance?" · "+a.echeance:""),"Démarré aujourd'hui"]);save=true;out=`Objectif créé : ${a.titre}.`;break;
   case "ajouter_operation":{const m=Math.abs(+a.montant),k=a.type==="depense"?"d":a.type==="investissement"?"i":"r";if(!m){out="Montant invalide.";break}
     D.money.unshift([a.libelle,k==="r"?"Revenus":a.categorie||(k==="d"?"Autre":"Actions"),(k==="d"?"−":k==="r"?"+":"")+nf(m)+" €",k]);D.fin.bal+=k==="r"?m:-m;if(k==="d")D.fin.out+=m;else if(k==="i")D.fin.inv+=m;else D.fin.inn+=m;save=true;out=`Opération ajoutée : ${a.libelle} ${nf(m)} €.`;break}
