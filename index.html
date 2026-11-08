@@ -2970,4 +2970,32 @@ html:root body #scr .spfr.dn .spsl.ok.ok{background:rgba(52,199,89,.22)!importan
 html:root body #scr .spfr.dn .spsl.ok .spkn.spkn{background:#34c759!important;box-shadow:0 0 12px rgba(52,199,89,.6)!important}
 html:root body #scr .spfr.dn .spsl.ok::before{background:linear-gradient(90deg,rgba(52,199,89,.12),rgba(52,199,89,.55))!important}
 </style>
+<style id="wide">/* Tablette et ordinateur (2026-11-08) : plein écran, contenu centré, accueil en grille, menu en rail vertical à gauche. L'iPhone (<768 px) ne change pas. */
+@media (min-width:768px){
+  html,body{height:100%;overscroll-behavior:none}
+  body{padding:0!important;margin:0!important}
+  .wrap{display:block!important;height:100%}
+  .phone{max-width:none!important;width:100%;height:100dvh!important;max-height:none!important;min-height:0!important;border:0!important;border-radius:0!important}
+  .note,.propsw{display:none!important}
+  #scr.screen{--cw:720px;padding-left:max(28px,calc((100% - var(--cw))/2))!important;padding-right:max(28px,calc((100% - var(--cw))/2))!important;padding-top:28px!important;scrollbar-width:thin;scrollbar-color:#2c2c2e transparent}
+  .screen>.hero:first-child,.screen>.heroP:first-child{margin-top:-28px!important;padding-top:44px!important}
+  .screen>:first-child:not(.hero):not(.heroP){margin-top:0!important}
+  .on-home #scr.screen{--cw:1120px}
+  .on-plan #scr.screen{--cw:960px}
+  .on-home .hgrid{grid-template-columns:repeat(2,1fr);gap:14px;align-items:start;grid-auto-flow:row dense}
+  .on-home .hgrid .hfull{grid-column:span 1}
+  .talk{left:50%!important;right:auto!important;width:min(720px,calc(100% - 56px));transform:translateX(-50%)}
+  .chat-mode #dock.dock{width:min(720px,calc(100% - 56px))!important}
+  .card:hover{filter:brightness(1.06)}
+  .dock .drawer .it:hover .ic{background:rgba(255,255,255,.08);border-radius:50%}
+}
+@media (min-width:1100px){
+  .on-home .hgrid{grid-template-columns:repeat(4,1fr)}
+  .on-home .hgrid .hfull{grid-column:span 2}
+  /* rail vertical à gauche, centré en hauteur */
+  .phone:not(.chat-mode) #dock.dock{left:22px!important;top:50%!important;bottom:auto!important;transform:translateY(-50%)!important;flex-direction:column;margin:0!important;height:auto!important;align-items:center!important;justify-content:flex-start!important}
+  .phone:not(.chat-mode) #dock .drawer{flex-direction:column!important;margin:6px 0 0!important;max-height:none}
+  #scr.screen{padding-left:max(124px,calc((100% - var(--cw))/2 + 48px))!important;padding-right:max(52px,calc((100% - var(--cw))/2 - 48px))!important;padding-bottom:48px!important}
+}
+</style>
 </body></html>
