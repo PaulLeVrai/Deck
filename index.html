@@ -2972,14 +2972,10 @@ html:root body #scr .spfr.dn .spsl.ok .spkn.spkn{background:#34c759!important;bo
 html:root body #scr .spfr.dn .spsl.ok::before{background:linear-gradient(90deg,rgba(52,199,89,.12),rgba(52,199,89,.55))!important}
 </style>
 <style id="vs-test">
-/* ===== VERSION TEST « verre sombre » (captures rondesignlab / Dafi) ===== */
+/* ===== Style « verre sombre » (2026-11-12) ===== */
 html.vs{--vsr:36px;--vsrim:inset 0 1px 0 rgba(255,255,255,.16),inset 0 0 0 1px rgba(255,255,255,.07);--dot:-apple-system,"SF Pro Display",system-ui,sans-serif}
 html.vs,html.vs body,html.vs .wrap,html.vs .phone{background:#000!important}
 html.vs body{font-family:-apple-system,"SF Pro Display","SF Pro Text",system-ui,"Segoe UI",Roboto,sans-serif!important;-webkit-font-smoothing:antialiased;letter-spacing:-.01em}
-/* trame de points en fond, en halo autour du haut */
-html.vs .phone::before{content:"";position:absolute;left:0;right:0;top:0;height:520px;pointer-events:none;z-index:0;
- background:radial-gradient(circle,rgba(255,255,255,.22) 1px,transparent 1.4px) 0 0/14px 14px;
- -webkit-mask:radial-gradient(ellipse 60% 55% at 50% 22%,#000 0,rgba(0,0,0,.35) 55%,transparent 75%);mask:radial-gradient(ellipse 60% 55% at 50% 22%,#000 0,rgba(0,0,0,.35) 55%,transparent 75%)}
 html.vs #scr{position:relative;z-index:1}
 /* cartes : squircle, graphite profond, liseré clair fin */
 html.vs.vs.vs body #scr .card:not(.hero){border-radius:var(--vsr)!important;border:0!important;
@@ -2987,9 +2983,6 @@ html.vs.vs.vs body #scr .card:not(.hero){border-radius:var(--vsr)!important;bord
 html.vs.vs.vs body #scr .card.hero{background:transparent!important;box-shadow:none!important;border:0!important}
 /* couleurs par module (accueil) */
 html.vs.vs.vs body #scr .card.tmod{background:radial-gradient(130% 70% at 50% 108%,rgba(232,120,70,.85),rgba(150,85,95,.35) 45%,transparent 70%),linear-gradient(180deg,#2c3048 0%,#3a3550 55%,#4a3040 100%)!important}
-html.vs.vs.vs body #scr .card:has(#jrw){background:radial-gradient(120% 90% at 50% 120%,rgba(190,70,140,.75),transparent 70%),linear-gradient(180deg,#120a10,#3a1530)!important}
-html.vs.vs.vs body #scr .card.sp2{background:radial-gradient(120% 100% at 80% 0%,rgba(140,190,150,.45),transparent 60%),linear-gradient(160deg,#1d3a2e,#0e1a14 70%)!important}
-html.vs.vs.vs body #scr .card:has(.hnt){background:radial-gradient(120% 100% at 50% 110%,rgba(200,150,140,.55),transparent 70%),linear-gradient(180deg,#1e1716,#3c2a27)!important}
 /* textes : fins et légers */
 html.vs.vs.vs body #scr .label>span:first-child,html.vs.vs.vs body #scr .label b{font-weight:500!important;font-size:15px!important;color:rgba(255,255,255,.88)!important;letter-spacing:-.01em}
 html.vs.vs.vs body #scr h1,html.vs.vs.vs body #scr .title{font-weight:400!important;letter-spacing:-.025em!important}
@@ -3032,11 +3025,12 @@ html.vs.vs.vs body .dglass{background:rgba(255,255,255,.14)!important;box-shadow
 /* feuilles (nouvelle tâche…) : graphite + liseré */
 html.vs.vs.vs body .nsheet,html.vs.vs.vs body [class*="sheet"]{background:linear-gradient(180deg,#151518,#08080a)!important}
 html.vs.vs.vs.vsnp body .dock{left:50%!important}
-html.vs.vs.vs body #scr .eyebrow:has(+.scats){font-weight:400!important;letter-spacing:-.025em}
-html.vs.vs.vs body #scr .s2a{background:rgba(255,255,255,.14)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.3),inset 0 0 0 1px rgba(255,255,255,.1)!important;-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);color:#fff!important}
-html.vs.vs.vs body #scr .s2a *{color:#fff!important}
-html.vs.vs.vs body #scr .s2t:not(.s2a){background:rgba(0,0,0,.25)!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)!important}
-html.vs.vs.vs body #scr .bcv{border-radius:22px!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.18),inset 0 0 0 1px rgba(255,255,255,.08),0 10px 24px rgba(0,0,0,.5)!important;overflow:hidden}
+html.vs.vs.vs body .on-settings #scr .eyebrow{font-weight:400!important;letter-spacing:-.025em}
+html.vs.vs.vs body #scr .spk.spkd[data-spf="2"]{z-index:7!important}html.vs.vs.vs body #scr .spk.spkd[data-spf="3"]{z-index:6!important}html.vs.vs.vs body #scr .spk.spkd[data-spf="4"]{z-index:5!important}html.vs.vs.vs body #scr .spk.spkd[data-spf="5"]{z-index:4!important}html.vs.vs.vs body #scr .spk.spkd[data-spf="6"]{z-index:3!important}
+html.vs.vs.vs body #scr .sppile .spfr{position:relative;z-index:8!important}
+html.vs.vs.vs body #scr .pind,html.vs.vs.vs body #scr [class*="seg"] button.on{border-radius:99px!important}
+html.vs.vs.vs body #scr .vfree{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+html.vs.vs.vs body #scr .jvu .jvm{color:rgba(255,255,255,.8)!important;border-bottom-color:rgba(255,255,255,.2)!important}
 @media (prefers-reduced-motion:reduce){#vsplus{transition:none}}
 </style>
 <script>
@@ -3045,7 +3039,8 @@ html.vs.vs.vs body #scr .bcv{border-radius:22px!important;box-shadow:inset 0 1px
 function pct(){document.querySelectorAll("#scr .gbig:not(.gday),#scr .php").forEach(el=>{if(el.querySelector(".vspct"))return;for(const n of [...el.childNodes])if(n.nodeType===3&&n.nodeValue.includes("%")){n.nodeValue=n.nodeValue.replace(/\s*%\s*/,"");const sp=document.createElement("span");sp.className="vspct";sp.textContent="%";n.after(sp)}})}
 function place(){pct();const d=document.getElementById("dock"),ph=document.querySelector(".phone");if(!d||!ph)return;let b=document.getElementById("vsplus");if(!b){b=document.createElement("button");b.id="vsplus";b.setAttribute("aria-label","Ajouter");b.innerHTML=P;ph.appendChild(b)}
  const r=d.getBoundingClientRect(),q=ph.getBoundingClientRect();b.style.left=(r.right-q.left+10)+"px";b.style.top=(r.top-q.top+(r.height-56)/2)+"px";const off=S.view==="write"||S.view==="settings";b.classList.toggle("off",off);document.documentElement.classList.toggle("vsnp",off)}
-const _r=render;render=function(){_r.apply(this,arguments);requestAnimationFrame(place)};addEventListener("resize",place);requestAnimationFrame(place);setTimeout(place,400);
+function fix(){document.querySelectorAll("#scr .vev.free").forEach(v=>{const t=v.querySelector(".vtab");if(!t||v.querySelector(".vfree"))return;const n=[...v.childNodes].find(x=>x.nodeType===3&&x.nodeValue.trim());if(!n)return;const sp=document.createElement("span");sp.className="vfree";sp.textContent=n.nodeValue;sp.style.maxWidth="calc(100% - "+(t.offsetWidth+10)+"px)";n.replaceWith(sp)})}
+const later=()=>{place();fix()};const _r=render;render=function(){_r.apply(this,arguments);requestAnimationFrame(later);setTimeout(place,350);setTimeout(place,700)};addEventListener("resize",place);requestAnimationFrame(later);setTimeout(later,400);
 document.addEventListener("click",e=>{if(!e.target.closest("#vsplus"))return;e.preventDefault();
  if(S.view==="sport"){const c=document.querySelector("#scr .cta[data-prog]");if(c){c.click();return}}
  nsOpen()});})();
