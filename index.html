@@ -13,6 +13,7 @@
 (function(){var st=navigator.standalone||matchMedia("(display-mode: standalone)").matches;if(!st)return;var d=document.documentElement;d.classList.add("ios-app");
   var t=document.createElement("div");t.style.cssText="position:fixed;top:0;height:env(safe-area-inset-top);visibility:hidden";document.addEventListener("DOMContentLoaded",function(){document.body.appendChild(t);var h=t.getBoundingClientRect().height;d.style.setProperty("--sbar",Math.max(h,54)+"px");t.remove()});d.style.setProperty("--sbar","54px")})();
 </script>
+<script>document.documentElement.classList.add("vs")</script>
 <script>(function(){try{if(localStorage.getItem("deckGlass")!=="0")document.documentElement.classList.add("glass")}catch(e){}})()</script>
 <script>(function(){var h=document.documentElement;h.classList.remove("glass","bgl","bgb","bga");h.classList.add("dafi","salt","ios");try{localStorage.removeItem("deckTheme")}catch(e){}})()</script>
 <link rel="manifest" href="manifest.webmanifest">
@@ -2970,4 +2971,78 @@ html:root body #scr .spfr.dn .spsl.ok.ok{background:rgba(52,199,89,.22)!importan
 html:root body #scr .spfr.dn .spsl.ok .spkn.spkn{background:#34c759!important;box-shadow:0 0 12px rgba(52,199,89,.6)!important}
 html:root body #scr .spfr.dn .spsl.ok::before{background:linear-gradient(90deg,rgba(52,199,89,.12),rgba(52,199,89,.55))!important}
 </style>
+<style id="vs-test">
+/* ===== Style « verre sombre » (2026-11-12) ===== */
+html.vs{--vsr:36px;--vsrim:inset 0 1px 0 rgba(255,255,255,.16),inset 0 0 0 1px rgba(255,255,255,.07);--dot:-apple-system,"SF Pro Display",system-ui,sans-serif}
+html.vs,html.vs body,html.vs .wrap,html.vs .phone{background:#000!important}
+html.vs body{font-family:-apple-system,"SF Pro Display","SF Pro Text",system-ui,"Segoe UI",Roboto,sans-serif!important;-webkit-font-smoothing:antialiased;letter-spacing:-.01em}
+html.vs #scr{position:relative;z-index:1}
+/* cartes : squircle, graphite profond, liseré clair fin */
+html.vs.vs.vs body #scr .card:not(.hero){border-radius:var(--vsr)!important;border:0!important;
+ background:radial-gradient(120% 80% at 30% 0%,rgba(255,255,255,.07),transparent 60%),linear-gradient(180deg,#1b1b1f,#0c0c0e)!important;box-shadow:var(--vsrim),0 18px 40px rgba(0,0,0,.6)!important}
+html.vs.vs.vs body #scr .card.hero{background:transparent!important;box-shadow:none!important;border:0!important}
+/* couleurs par module (accueil) */
+html.vs.vs.vs body #scr .card.tmod{background:radial-gradient(130% 70% at 50% 108%,rgba(232,120,70,.85),rgba(150,85,95,.35) 45%,transparent 70%),linear-gradient(180deg,#2c3048 0%,#3a3550 55%,#4a3040 100%)!important}
+/* textes : fins et légers */
+html.vs.vs.vs body #scr .label>span:first-child,html.vs.vs.vs body #scr .label b{font-weight:500!important;font-size:15px!important;color:rgba(255,255,255,.88)!important;letter-spacing:-.01em}
+html.vs.vs.vs body #scr h1,html.vs.vs.vs body #scr .title{font-weight:400!important;letter-spacing:-.025em!important}
+html.vs.vs.vs body #scr .gdate{font-weight:400!important;color:rgba(255,255,255,.7)!important;font-size:15px!important}
+/* grands chiffres en police à points */
+html.vs.vs.vs body #scr .gbig:not(.gday),html.vs.vs.vs body #scr .gbig i,html.vs.vs.vs body #scr button.php,html.vs.vs.vs body #scr .spA .wklt>b{font-family:var(--dot)!important;font-weight:200!important;letter-spacing:-.04em!important;color:#fff!important}
+html.vs.vs.vs body #scr .gbig{font-size:92px!important;text-shadow:0 0 24px rgba(255,255,255,.18)}
+html.vs.vs.vs body #scr .gbig i{color:#fff!important;font-style:normal}
+html.vs.vs.vs body #scr .vspct{font-family:-apple-system,"SF Pro Display",system-ui,sans-serif!important;font-weight:200!important;font-size:.5em;color:rgba(255,255,255,.55);margin-left:.12em;letter-spacing:0;text-shadow:none;vertical-align:.55em}
+html.vs.vs.vs body #scr button.php{font-size:64px!important;text-shadow:0 0 20px rgba(255,255,255,.3)}
+html.vs.vs.vs body #scr .spA .wklt>b{font-size:40px!important}
+/* boutons ronds en verre (haut) */
+html.vs.vs.vs body .gset,html.vs.vs.vs body #scr .pback,html.vs.vs.vs body #scr .back,html.vs.vs.vs body #scr [class*="bk"]>button:first-child{border-radius:50%!important}
+html.vs.vs.vs body .gset{width:48px!important;height:48px!important;top:-10px!important;background:radial-gradient(circle at 50% 0%,rgba(255,255,255,.14),rgba(255,255,255,.03) 70%),#0d0d0f!important;border:0!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.3),inset 0 0 0 1px rgba(255,255,255,.12),0 8px 20px rgba(0,0,0,.6)!important}
+/* segmentés : verre sombre, pastille claire */
+html.vs.vs.vs body #scr .pseg,html.vs.vs.vs body #scr .pgseg,html.vs.vs.vs body #scr .hseg,html.vs.vs.vs body #scr [class*="seg"]:not(button){background:rgba(0,0,0,.35)!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.1)!important}
+html.vs.vs.vs body #scr .pind,html.vs.vs.vs body #scr [class*="seg"] button.on{background:rgba(255,255,255,.16)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.3)!important}
+/* « + » de la page Tâches remplacé par le + du dock */
+html.vs.vs.vs body #scr .heroT .pplus{display:none!important}
+/* cartes de tâches */
+html.vs.vs.vs body #scr .vrow.bc{border-radius:28px!important;background:linear-gradient(180deg,#1a1a1d,#0f0f11)!important;box-shadow:var(--vsrim)!important;border:0!important}
+html.vs.vs.vs body #scr .bsw{border-radius:28px!important}
+/* Sport : prochaine séance = grande carte dégradé indigo → orange */
+html.vs.vs.vs body #scr .spfr:not(.dn):not(.ms){border-radius:var(--vsr)!important;background:radial-gradient(130% 60% at 50% 115%,rgba(232,120,70,.9),rgba(150,85,95,.35) 50%,transparent 75%),linear-gradient(180deg,#363c5c,#4a4560 60%,#5a3a40)!important;box-shadow:var(--vsrim),0 24px 50px rgba(0,0,0,.6)!important;border:0!important}
+html.vs.vs.vs body #scr .spsl{background:rgba(0,0,0,.28)!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.14)!important;-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
+html.vs.vs.vs body #scr .spkn{background:#fff!important;color:#000!important;box-shadow:0 4px 14px rgba(0,0,0,.4)!important}
+html.vs.vs.vs body #scr .spkn svg,html.vs.vs.vs body #scr .spkn svg *{stroke:#000!important}
+html.vs.vs.vs body #scr .cta[data-prog]{background:linear-gradient(180deg,#fff,#d9d9de)!important;color:#000!important;border-radius:99px!important;box-shadow:inset 0 -2px 0 rgba(0,0,0,.12),0 8px 24px rgba(0,0,0,.5)!important;font-weight:500!important}
+/* Calendrier : jour choisi blanc */
+html.vs.vs.vs body #scr .vev:not(.free){border-radius:14px!important}
+/* dock : capsule en verre sombre + bouton « + » blanc séparé */
+html.vs.vs.vs body .dock{left:calc(50% - 33px)!important;padding:5px!important;background:rgba(28,28,32,.55)!important;-webkit-backdrop-filter:blur(26px) saturate(1.6)!important;backdrop-filter:blur(26px) saturate(1.6)!important;border:0!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.22),inset 0 0 0 1px rgba(255,255,255,.1),0 14px 34px rgba(0,0,0,.6)!important}
+html.vs.vs.vs body .dock .it,html.vs.vs.vs body .dock .menubtn{width:42px!important;min-width:42px!important}
+html.vs.vs.vs body .dglass{background:rgba(255,255,255,.14)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.3)!important}
+#vsplus{all:unset;position:absolute;z-index:10;width:56px;height:56px;border-radius:50%;display:grid;place-items:center;cursor:pointer;
+ background:radial-gradient(circle at 50% 20%,#fff,#e4e4e8 70%);box-shadow:inset 0 -2px 0 rgba(0,0,0,.12),0 10px 26px rgba(0,0,0,.6);transition:transform .25s cubic-bezier(.2,.8,.2,1),opacity .2s}
+#vsplus:active{transform:scale(.9)}
+#vsplus.off{opacity:0;pointer-events:none;transform:scale(.6)}
+.chat-mode #vsplus{display:none}
+/* feuilles (nouvelle tâche…) : graphite + liseré */
+html.vs.vs.vs body .nsheet,html.vs.vs.vs body [class*="sheet"]{background:linear-gradient(180deg,#151518,#08080a)!important}
+html.vs.vs.vs.vsnp body .dock{left:50%!important}
+html.vs.vs.vs body .on-settings #scr .eyebrow{font-weight:400!important;letter-spacing:-.025em}
+html.vs.vs.vs body #scr .spk.spkd[data-spf="2"]{z-index:7!important}html.vs.vs.vs body #scr .spk.spkd[data-spf="3"]{z-index:6!important}html.vs.vs.vs body #scr .spk.spkd[data-spf="4"]{z-index:5!important}html.vs.vs.vs body #scr .spk.spkd[data-spf="5"]{z-index:4!important}html.vs.vs.vs body #scr .spk.spkd[data-spf="6"]{z-index:3!important}
+html.vs.vs.vs body #scr .sppile .spfr{position:relative;z-index:8!important}
+html.vs.vs.vs body #scr .pind,html.vs.vs.vs body #scr [class*="seg"] button.on{border-radius:99px!important}
+html.vs.vs.vs body #scr .vfree{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+html.vs.vs.vs body #scr .jvu .jvm{color:rgba(255,255,255,.8)!important;border-bottom-color:rgba(255,255,255,.2)!important}
+@media (prefers-reduced-motion:reduce){#vsplus{transition:none}}
+</style>
+<script>
+/* Bouton « + » blanc à côté du dock : action principale de la page. */
+(function(){const P='<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>';
+function pct(){document.querySelectorAll("#scr .gbig:not(.gday),#scr .php").forEach(el=>{if(el.querySelector(".vspct"))return;for(const n of [...el.childNodes])if(n.nodeType===3&&n.nodeValue.includes("%")){n.nodeValue=n.nodeValue.replace(/\s*%\s*/,"");const sp=document.createElement("span");sp.className="vspct";sp.textContent="%";n.after(sp)}})}
+function place(){pct();const d=document.getElementById("dock"),ph=document.querySelector(".phone");if(!d||!ph)return;let b=document.getElementById("vsplus");if(!b){b=document.createElement("button");b.id="vsplus";b.setAttribute("aria-label","Ajouter");b.innerHTML=P;ph.appendChild(b)}
+ const r=d.getBoundingClientRect(),q=ph.getBoundingClientRect();b.style.left=(r.right-q.left+10)+"px";b.style.top=(r.top-q.top+(r.height-56)/2)+"px";const off=S.view==="write"||S.view==="settings";b.classList.toggle("off",off);document.documentElement.classList.toggle("vsnp",off)}
+function fix(){document.querySelectorAll("#scr .vev.free").forEach(v=>{const t=v.querySelector(".vtab");if(!t||v.querySelector(".vfree"))return;const n=[...v.childNodes].find(x=>x.nodeType===3&&x.nodeValue.trim());if(!n)return;const sp=document.createElement("span");sp.className="vfree";sp.textContent=n.nodeValue;sp.style.maxWidth="calc(100% - "+(t.offsetWidth+10)+"px)";n.replaceWith(sp)})}
+const later=()=>{place();fix()};const _r=render;render=function(){_r.apply(this,arguments);requestAnimationFrame(later);setTimeout(place,350);setTimeout(place,700)};addEventListener("resize",place);requestAnimationFrame(later);setTimeout(later,400);
+document.addEventListener("click",e=>{if(!e.target.closest("#vsplus"))return;e.preventDefault();
+ if(S.view==="sport"){const c=document.querySelector("#scr .cta[data-prog]");if(c){c.click();return}}
+ nsOpen()});})();
+</script>
 </body></html>
